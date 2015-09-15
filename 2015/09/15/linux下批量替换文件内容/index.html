@@ -3,21 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | 码农故事</title>
+  <title>linux下批量替换文件内容 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+  <meta name="description" content="demo12sed -i &quot;s/查找字段/替换字段/g&quot; `grep 查找字段 -rl 路径`sed -i &quot;s/查找字段/替换字段/g&quot; ./*">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://www.iloveandroid.com/2015/09/14/hello-world/index.html">
+<meta property="og:title" content="linux下批量替换文件内容">
+<meta property="og:url" content="http://www.iloveandroid.com/2015/09/15/linux下批量替换文件内容/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2015-09-14T11:48:29.000Z">
+<meta property="og:description" content="demo12sed -i &quot;s/查找字段/替换字段/g&quot; `grep 查找字段 -rl 路径`sed -i &quot;s/查找字段/替换字段/g&quot; ./*">
+<meta property="og:updated_time" content="2015-09-15T01:05:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="linux下批量替换文件内容">
+<meta name="twitter:description" content="demo12sed -i &quot;s/查找字段/替换字段/g&quot; `grep 查找字段 -rl 路径`sed -i &quot;s/查找字段/替换字段/g&quot; ./*">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -58,11 +55,6 @@ Quick">
 							<div class="ribbon"></div>
 						</div>
 						
-						<div class="icon-wrap icon-link hide" data-idx="2">
-							<div class="loopback_l"></div>
-							<div class="loopback_r"></div>
-						</div>
-						
 						
 						<div class="icon-wrap icon-me hide" data-idx="3">
 							<div class="user"></div>
@@ -77,8 +69,6 @@ Quick">
 					<ul class="tips-inner">
 						<li>菜单</li>
 						<li>标签</li>
-						
-						<li>友情链接</li>
 						
 						
 						<li>关于我</li>
@@ -100,18 +90,18 @@ Quick">
 				        
 							<li><a href="/categories/linux基础">linux基础</a></li>
 				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
 						</ul>
 					</nav>
 					<nav class="header-nav">
 						<div class="social">
 							
-								<a class="github" target="_blank" href="/#" title="github">github</a>
+								<a class="github" target="_blank" href="https://github.com/ashimidashajia" title="github">github</a>
 					        
-								<a class="weibo" target="_blank" href="/#" title="weibo">weibo</a>
-					        
-								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
-					        
-								<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+								<a class="weibo" target="_blank" href="http://weibo.com/u/5324408874" title="weibo">weibo</a>
 					        
 						</div>
 					</nav>
@@ -120,34 +110,16 @@ Quick">
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a>
 					</div>
 				</section>
 				
 				
 				
-				<section class="switch-part switch-part3">
-					<div id="js-friends">
-					
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">奥巴马的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">卡卡的美丽传说</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">本泽马的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">吉格斯的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">习大大大不同</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">托蒂的博客</a>
-			        
-			        </div>
-				</section>
-				
 
 				
 				
-				<section class="switch-part switch-part4">
+				<section class="switch-part switch-part3">
 				
 					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
 				</section>
@@ -183,30 +155,30 @@ Quick">
 		        
 					<li><a href="/categories/linux基础">linux基础</a></li>
 		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
 		        <div class="clearfix"></div>
 				</ul>
 			</nav>
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="/#" title="github">github</a>
+						<a class="github" target="_blank" href="https://github.com/ashimidashajia" title="github">github</a>
 			        
-						<a class="weibo" target="_blank" href="/#" title="weibo">weibo</a>
-			        
-						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
-			        
-						<a class="zhihu" target="_blank" href="/#" title="zhihu">zhihu</a>
+						<a class="weibo" target="_blank" href="http://weibo.com/u/5324408874" title="weibo">weibo</a>
 			        
 				</div>
 			</nav>
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-linux下批量替换文件内容" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/14/hello-world/" class="article-date">
-  	<time datetime="2015-09-14T11:48:29.000Z" itemprop="datePublished">2015-09-14</time>
+      <a href="/2015/09/15/linux下批量替换文件内容/" class="article-date">
+  	<time datetime="2015-09-15T01:05:13.000Z" itemprop="datePublished">2015-09-15</time>
 </a>
     </div>
   
@@ -219,7 +191,7 @@ Quick">
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      linux下批量替换文件内容
     </h1>
   
 
@@ -227,7 +199,15 @@ Quick">
       
       <div class="article-info article-info-post">
         
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux常用命令/">linux常用命令</a></li></ul>
+	</div>
+
         
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/linux基础/">linux基础</a>
+	</div>
+
 
         <div class="clearfix"></div>
       </div>
@@ -235,15 +215,13 @@ Quick">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a><br><a id="more"></a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+        <hr>
+<h2 id="demo">demo</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> `grep 查找字段 -rl 路径`</span><br><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> ./*</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>倘若字符串中包含“/“等特殊字符串，可以:</p>
+<pre><code class="bash">sed -i <span class="string">"s#查找字段#替换字段#g"</span> `grep 查找字段 -rl 路径`
+sed -i <span class="string">"s#查找字段#替换字段#g"</span> ./*
+</code></pre>
 
       
     </div>
@@ -253,11 +231,15 @@ Quick">
     
 <nav id="article-nav">
   
-  
-    <a href="/2015/09/14/linux下批量替换文件内容/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">linux下批量替换文件内容</div>
-      <strong class="article-nav-caption">></strong>
+    <a href="/2015/09/15/利用清华大学开源镜像下载 Android5.1 源码/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          利用清华大学开源镜像下载 Android5.1 源码
+        
+      </div>
     </a>
+  
   
 </nav>
 
@@ -284,7 +266,7 @@ Quick">
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="hello-world" data-title="Hello World" data-url="http://www.iloveandroid.com/2015/09/14/hello-world/"></div>
+	<div class="ds-thread" data-thread-key="linux下批量替换文件内容" data-title="linux下批量替换文件内容" data-url="http://www.iloveandroid.com/2015/09/15/linux下批量替换文件内容/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
@@ -316,7 +298,12 @@ Quick">
       	</div>
     </div>
   </div>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+<br>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </footer>
+
     </div>
     
   <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
