@@ -9,14 +9,14 @@
 First, Gradle scripts are configuration scripts. As the script executes, it configures an object of a particular type. For example, as a build script executes, it configures an object of">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Gradle中的对象与工作流程">
-<meta property="og:url" content="http://www.iloveandroid.com/2015/09/16/Gradle-project/index.html">
+<meta property="og:url" content="http://www.iloveandroid.com/2015/09/17/Gradle_project/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="简述引用官方文档中的原话：
 First, Gradle scripts are configuration scripts. As the script executes, it configures an object of a particular type. For example, as a build script executes, it configures an object of">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/gradle-porject-1.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Gradle-project-2.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Gradle-project-3.png">
-<meta property="og:updated_time" content="2015-09-16T12:36:01.000Z">
+<meta property="og:updated_time" content="2015-09-17T01:52:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Gradle中的对象与工作流程">
 <meta name="twitter:description" content="简述引用官方文档中的原话：
@@ -176,11 +176,11 @@ First, Gradle scripts are configuration scripts. As the script executes, it conf
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-Gradle-project" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Gradle_project" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/16/Gradle-project/" class="article-date">
-  	<time datetime="2015-09-16T12:36:01.000Z" itemprop="datePublished">2015-09-16</time>
+      <a href="/2015/09/17/Gradle_project/" class="article-date">
+  	<time datetime="2015-09-17T01:52:45.000Z" itemprop="datePublished">2015-09-17</time>
 </a>
     </div>
   
@@ -234,6 +234,11 @@ First, Gradle scripts are configuration scripts. As the script executes, it conf
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">println <span class="string">'gradleHomeDir: '</span>+ gradle.gradleHomeDir</span><br><span class="line">println <span class="string">'gradleUserHomeDir: '</span>+gradle.gradleUserHomeDir</span><br><span class="line">println <span class="string">'gradleVersion: '</span>+ gradle.gradleVersion</span><br></pre></td></tr></table></figure>
 <p>执行 gradle  tasks，结果如下：</p>
 <figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">gradleHomeDir:</span> <span class="regexp">/home/</span>shajia<span class="regexp">/tools/</span>gradle-<span class="number">2.6</span></span><br><span class="line"><span class="string">gradleUserHomeDir:</span> <span class="regexp">/home/</span>shajia/.gradle</span><br><span class="line"><span class="string">gradleVersion:</span> <span class="number">2.6</span></span><br></pre></td></tr></table></figure>
+<h3 id="Gradle中的三个对象">Gradle中的三个对象</h3><p>Gradle构建过程中有三个对象，Gradle对象，settings对象，project对象。</p>
+<p>前面提到了，在执行gradle XXX命令的时候，就会创建一个全局唯一额gradle对象。</p>
+<p>settings对象，其实可以理解为对应的是settings.gradle脚本，通常也之有一个。</p>
+<p>project对象，可以理解为有多少个build.gradle脚本，就有多少个project对象。</p>
+<p>这个三个对象相关的属性和操作方法请参考官方文档。</p>
 <h3 id="Gradle构建的三个阶段">Gradle构建的三个阶段</h3><p>Gradle整个构建过程包含三个阶段，分别是初始化阶段，配置阶段以及执行阶段。</p>
 <h4 id="初始化阶段:"><font color="#ff5588">初始化阶段:</font></h4><p>Gradle支持单个项目和多个项目同时编译。在初始化阶段，就是要决定本次构建包含哪些子项目，并且为这些被包含的子项目创建project对象。</p>
 <p>settings.gradle中指明了当前构建包含哪些子项目，如果是单一项目的，可以没有该脚本，但是如果构建多个项目，那么必须有该脚本，内容形式如下：</p>
@@ -255,6 +260,9 @@ First, Gradle scripts are configuration scripts. As the script executes, it conf
 <h4 id="方法2：">方法2：</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">task hello&#123;</span><br><span class="line"></span><br><span class="line">    doLast&#123;</span><br><span class="line">    println <span class="string">'hello'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可以简写为<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">task</span> hello &lt;&lt; &#123;</span><br><span class="line">    <span class="keyword">println</span> <span class="string">'hello'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>该方式创建的任务会在执行阶段被执行,task中有一个action list，task运行时会顺序执行action list中的action，doLast或者doFirst后面跟的闭包就是一个action，doLast是把action插入到list的最后面，而doFirst是把action插入到list的最前面。</p>
+<h3 id="task任务的配置">task任务的配置</h3><p>这里介绍两种方法。</p>
+<h4 id="方法1：-1">方法1：</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">task hello &#123;</span><br><span class="line">    name = <span class="string">'shajia'</span><span class="comment">//我将该区域理解为配置区域，这里的代码都在配置阶段执行，初始化一些变量等</span></span><br><span class="line">    doLast&#123;</span><br><span class="line">    println name  <span class="comment">//在执行阶段执行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="方法2：-1">方法2：</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">task hello &lt;&lt;&#123;</span><br><span class="line">    println name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">hello.configure&#123;</span><br><span class="line">    name = <span class="string">'shajia'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="tasks任务的依赖">tasks任务的依赖</h3><p>Gradle中有一些默认的任务:</p>
 <p>assemble:该任务包含了项目中的所有打包相关的任务，比如java项目中打的jar包，Android项目中打的apk.</p>
 <p>check: 该任务包含了项目中所有验证相关的任务，比如运行测试的任务,代码规范检查等</p>
@@ -264,8 +272,11 @@ First, Gradle scripts are configuration scripts. As the script executes, it conf
 <p>Gradle会自动检查一个任务的输入和输出。比如连续两次运行build任务的，Gradle会报告所有的任务都已经是最新刚运行过的了，不需要再次运行。这样的话，任务之间就算是有相互依赖，也不会导致重复的执行。比如说你可能经常看到下面的结果：</p>
 <figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">XXXX<span class="string">[UP-TO_DATE]</span></span><br></pre></td></tr></table></figure>
 <p>就表示不需要重新编译。</p>
-<p>更改test根目录下的build.gradle:</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">println</span> <span class="string">'gradleHomeDir: '</span>+ gradle.gradleHomeDir</span><br><span class="line"><span class="keyword">println</span> <span class="string">'gradleUserHomeDir: '</span>+gradle.gradleUserHomeDir</span><br><span class="line"><span class="keyword">println</span> <span class="string">'gradleVersion: '</span>+ gradle.gradleVersion</span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> hello&#123;</span><br><span class="line">    <span class="keyword">println</span> <span class="string">'-------configure phase--------'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">task</span> hello &lt;&lt;&#123;</span><br><span class="line">    <span class="keyword">println</span> <span class="string">'-----exec phase----------'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里同样介绍两种设置依赖的方法。</p>
+<h4 id="方法1：-2">方法1：</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">task A &lt;&lt; &#123;</span><br><span class="line">    println <span class="string">' I am from A'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task B &lt;&lt;&#123;</span><br><span class="line">    println <span class="string">'I am from B'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">A.dependsOn B</span><br></pre></td></tr></table></figure>
+<p>你执行 gradle task A的时候就会先执行task B 在执行task A.</p>
+<h4 id="方法2：-2">方法2：</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">task A  &#123;</span><br><span class="line">    dependsOn B</span><br><span class="line">    doLast&#123;</span><br><span class="line">    println <span class="string">'I am from A'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task B &lt;&lt;&#123;</span><br><span class="line">    println <span class="string">'I am from B'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里是把依赖关系方到了配置区域里了。</p>
 
       
     </div>
@@ -275,8 +286,17 @@ First, Gradle scripts are configuration scripts. As the script executes, it conf
     
 <nav id="article-nav">
   
+    <a href="/2015/09/17/Gradle_ndk/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          让Gradleg构建支持NDK
+        
+      </div>
+    </a>
   
-    <a href="/2015/09/16/Gradle-important-syntax/" id="article-nav-older" class="article-nav-link-wrap">
+  
+    <a href="/2015/09/17/Gradle_important-syntax/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">Gradle构建中的重要语法</div>
       <strong class="article-nav-caption">></strong>
     </a>
@@ -306,7 +326,7 @@ First, Gradle scripts are configuration scripts. As the script executes, it conf
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Gradle-project" data-title="Gradle中的对象与工作流程" data-url="http://www.iloveandroid.com/2015/09/16/Gradle-project/"></div>
+	<div class="ds-thread" data-thread-key="Gradle_project" data-title="Gradle中的对象与工作流程" data-url="http://www.iloveandroid.com/2015/09/17/Gradle_project/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
