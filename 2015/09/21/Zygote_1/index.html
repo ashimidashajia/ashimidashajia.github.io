@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 Lollipop的Zygote分析——上篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="整体介绍因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。
+app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行A">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 Lollipop的Zygote分析——上篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/21/Zygote_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="整体介绍因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。
+app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行A">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/zygote-1-1.png">
+<meta property="og:updated_time" content="2015-09-21T02:02:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 Lollipop的Zygote分析——上篇">
+<meta name="twitter:description" content="整体介绍因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。
+app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行A">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 10px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Zygote_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/21/Zygote_1/" class="article-date">
+  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 Lollipop的Zygote分析——上篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="整体介绍">整体介绍</h3><p>因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。</p>
+<p>app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行APK程序的核心服务。zygote进程首先加载启动ART虚拟机，然后在加载一些系统核心类和资源，这些都是其他APK程序都可能要用到的资源。最后zygote进程进入监听状态。一旦Android上层有创建新APK进程的需求，zygote进程便会为其分裂出新的进程。这个APK新进程，一开始便拥有了ART虚拟机和zygote预先加载的各种系统类和资源，能大大加速apk应用的启动，同时也能节省很大的内存开支。</p>
+<p>这里解释一下，为什么zygote进程要预先加载系统资源。zygote进程实际上是利用fork分裂出新的进程的，linux内核采用了写时复制技术：内核只为新生成的子进程创建虚拟空间结构，它们来自于父进程的虚拟地址结构，但是不为子进程的虚拟地址分配物理内存，它们共享父进程的物理空间，当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间。</p>
+<p>通常来说，在利用fork创建出的子进程中会调用exec系统调用，去执行新的其他程序。在fork之后exec之前两个进程用的是相同的物理空间（内存区），子进程的代码段、数据段、堆栈都是指向父进程的物理空间，也就是说，两者的虚拟空间不同，但其对应的物理空间是同一个。当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间，如果不是因为exec，内核会给子进程的数据段、堆栈段分配相应的物理空间（至此两者有各自的进程空间，互不影响），而代码段继续共享父进程的物理空间（两者的代码完全相同）。而如果是因为exec，由于两者执行的代码不同，子进程的代码段也会分配单独的物理空间。    </p>
+<p>因为Android上层APK程序不会去修改zygote进程预先加载的系统类和系统资源，所以就不需要为每个APK进程重新分配这些资源，所有APK程序都共用在zygote预先加载的这些资源，所以性能自然也就提高了。</p>
+<a id="more"></a>
+<h3 id="zygote在init-rc中的配置">zygote在init.rc中的配置</h3><p>app_process进程，是在init.rc中通过引入下面的文件被配置的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> /init.$&#123;ro.zygote&#125;.rc</span><br></pre></td></tr></table></figure>
+<p>在Android源码/system/core/rootdir中，有如下图所示的四个与zygote相关的文件</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/zygote-1-1.png" alt="zygote.rc"></p>
+<p>可见，究竟是将这个四个文件中的哪一个导入到init.rc中是由ro.zygote这个只读属性决定的。</p>
+<p>google在Android 5.0中加入了对64位CPU的支持，这些zygote相关的rc文件就是与32位和64位CPU有关系。如果ro.zygote为zygote32,那么说明只支持32位程序；如果是zygote64,那么只支持64位程序；如果是zygote32_64,说明支持32位程序为主，兼容64位程序；如果是zygote64_32说明支持64位程序为主，兼容32位程序。</p>
+<p>下面是zygote64_32.rc中的内容：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">service zygote /<span class="keyword">system</span>/bin/app_process64 -Xzygote /<span class="keyword">system</span>/bin <span class="comment">--zygote --start-system-server --socket-name=zygote</span></span><br><span class="line">    class main</span><br><span class="line">    <span class="built_in">socket</span> zygote stream <span class="number">660</span> root <span class="keyword">system</span></span><br><span class="line">    onrestart <span class="built_in">write</span> /sys/android_power/request_state wake</span><br><span class="line">    onrestart <span class="built_in">write</span> /sys/power/state <span class="command"><span class="keyword">on</span></span></span><br><span class="line">    onrestart restart media</span><br><span class="line">    onrestart restart netd</span><br><span class="line"></span><br><span class="line">service zygote_secondary /<span class="keyword">system</span>/bin/app_process32 -Xzygote /<span class="keyword">system</span>/bin <span class="comment">--zygote --socket-name=zygote_secondary</span></span><br><span class="line">    class main</span><br><span class="line">    <span class="built_in">socket</span> zygote_secondary stream <span class="number">660</span> root <span class="keyword">system</span></span><br><span class="line">    onrestart restart zygote</span><br></pre></td></tr></table></figure>
+<p>其中app_process64 和app_process32 就是zygote进程的可执行程序，启动后会改名成zygote。</p>
+<p>顾名思义，zygote_secondary即app_process32是一个运行在32位的进程，它所连接的库也都是32位的。而zygote就是运行在64位的进程，它所连接的库都是64位的。在不考虑有32/64兼容库的情况下，一个进程如果要正确运行，就必须从可执行程序入口开始到所有使用的库都保持32/64位的一致性。因为zygote进程是所有第三方应用程序的父进程，所以可以认为，如果应用程序是32位的，那没他的父进程也肯定是32位，换句话说，如果需要启动某个32位的应用，那么肯定是通过32位的zygote进程fork出来的。</p>
+<h3 id="zygote代码分析">zygote代码分析</h3><p>app_process相关的代码在:Android源码/frameworks/base/cmds/app_process中。都是c++代码，那么就好办了，找到main函数，也就找到了zygote进程的入口了。</p>
+<p>main函数在app_main.cpp中,另外传入的参数为 -Xzygote /system/bin –zygote –socket-name=zygote （或者zygote_second）</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">int main(int argc, char* const argv[])</span><br><span class="line">&#123;</span><br><span class="line">............................................................................</span><br><span class="line"></span><br><span class="line">    AppRuntime runtime(argv[0], computeArgBlockSize(argc, argv));//AppRuntime继承自AndroidRuntime类</span><br><span class="line">    // Process command line arguments</span><br><span class="line">    // ignore argv[0]</span><br><span class="line">    argc--;</span><br><span class="line">    argv++;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">..............................................................................</span><br><span class="line">   int i;</span><br><span class="line">    for (i = 0; i &lt; argc; i++) &#123;</span><br><span class="line">        if (argv[i][0] != '-') &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        if (argv[i][1] == '-' &amp;&amp; argv[i][2] == 0) &#123;</span><br><span class="line">            ++i; // Skip --.</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        runtime.addOption(strdup(argv[i]));//-------传递的参数是 -Xzygote，结束后i=1</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Parse runtime arguments.  Stop at first unrecognized option.</span><br><span class="line">    bool zygote = false;</span><br><span class="line">    bool startSystemServer = false;</span><br><span class="line">    bool application = false;</span><br><span class="line">    String8 niceName;</span><br><span class="line">    String8 className;</span><br><span class="line"></span><br><span class="line">    ++i;  // Skip unused "parent dir" argument. --------------------i=2</span><br><span class="line">    while (i &lt; argc) &#123;</span><br><span class="line">        const char* arg = argv[i++];</span><br><span class="line">        if (strcmp(arg, "--zygote") == 0) &#123;</span><br><span class="line">            zygote = true;</span><br><span class="line">            niceName = ZYGOTE_NICE_NAME;</span><br><span class="line">        &#125; else if (strcmp(arg, "--start-system-server") == 0) &#123;</span><br><span class="line">            startSystemServer = true;</span><br><span class="line">        &#125; else if (strcmp(arg, "--application") == 0) &#123;</span><br><span class="line">            application = true;</span><br><span class="line">        &#125; else if (strncmp(arg, "--nice-name=", 12) == 0) &#123;</span><br><span class="line">            niceName.setTo(arg + 12);</span><br><span class="line">        &#125; else if (strncmp(arg, "--", 2) != 0) &#123;</span><br><span class="line">            className.setTo(arg);</span><br><span class="line">            break;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            --i;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">.............................................................................</span><br><span class="line">    if (!niceName.isEmpty()) &#123; //niceNmae为 zygote</span><br><span class="line">        runtime.setArgv0(niceName.string());</span><br><span class="line">        set_process_name(niceName.string());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (zygote) &#123;</span><br><span class="line">        runtime.start("com.android.internal.os.ZygoteInit", args);//---------很关键的函数,在ANdroidRuntime类中实现，args为start-system-server</span><br><span class="line">    &#125; else if (className) &#123;</span><br><span class="line">        runtime.start("com.android.internal.os.RuntimeInit", args);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        fprintf(stderr, "Error: no class name or --zygote supplied.\n");</span><br><span class="line">        app_usage();</span><br><span class="line">        LOG_ALWAYS_FATAL("app_process: no class name or --zygote supplied.");</span><br><span class="line">        return 10;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>main函数流程还是比较清晰的，创建AppRuntime的对象runtime,然后就是解析参数，决定下一步要做什么。</p>
+<p>传递的参数包含了–zygote参数和–start-system-server参数，zygote和startSystemServer都为true，所以main函数最后执行的是</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">runtime.start(<span class="string">"com.android.internal.os.ZygoteInit"</span>, args)<span class="comment">// args为start-system-server</span></span><br></pre></td></tr></table></figure>
+<h4 id="AppRuntime的start函数">AppRuntime的start函数</h4><p>AppRuntime类继承于AndroidRuntime类，自身没有实现start函数，所以main()函数中调用的runtime.start()肯定调用的是其父类是AndroidRuntime的start()函数。</p>
+<p>AndroidRuntime对应的代码位于frameworks/base/core/jni/AndroidRuntime.cpp，</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> AndroidRuntime::start(<span class="keyword">const</span> <span class="keyword">char</span>* className, <span class="keyword">const</span> Vector&lt;String8&gt;&amp; options)</span><br><span class="line">&#123;</span><br><span class="line">    ALOGD(<span class="string">"&gt;&gt;&gt;&gt;&gt;&gt; START %s uid %d &lt;&lt;&lt;&lt;&lt;&lt;\n"</span>,</span><br><span class="line">            className != <span class="literal">NULL</span> ? className : <span class="string">"(unknown)"</span>, getuid());</span><br><span class="line">.............................................................................................</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">const</span> String8 <span class="title">startSystemServer</span><span class="params">(<span class="string">"start-system-server"</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * 'startSystemServer == true' means runtime is obsolete and not run from</span><br><span class="line">     * init.rc anymore, so we print out the boot start event here.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; options.size(); ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (options[i] == startSystemServer) &#123;</span><br><span class="line">           <span class="comment">/* track our progress through the boot sequence */</span></span><br><span class="line">           <span class="keyword">const</span> <span class="keyword">int</span> LOG_BOOT_PROGRESS_START = <span class="number">3000</span>;</span><br><span class="line">           LOG_EVENT_LONG(LOG_BOOT_PROGRESS_START,  ns2ms(systemTime(SYSTEM_TIME_MONOTONIC)));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* rootDir = getenv(<span class="string">"ANDROID_ROOT"</span>);<span class="comment">//-------------如果没有设置ANDROID_ROOT环境变量，就将其设置为/system</span></span><br><span class="line">    <span class="keyword">if</span> (rootDir == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        rootDir = <span class="string">"/system"</span>;</span><br><span class="line">        <span class="keyword">if</span> (!hasDir(<span class="string">"/system"</span>)) &#123;</span><br><span class="line">            LOG_FATAL(<span class="string">"No root directory specified, and /android does not exist."</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        setenv(<span class="string">"ANDROID_ROOT"</span>, rootDir, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//const char* kernelHack = getenv("LD_ASSUME_KERNEL");</span></span><br><span class="line">    <span class="comment">//ALOGD("Found LD_ASSUME_KERNEL='%s'\n", kernelHack);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* start the virtual machine */</span></span><br><span class="line">    JniInvocation jni_invocation;<span class="comment">//------------------初始化JNI环境，里面做了很重要的工作，加载对应的虚拟机so库</span></span><br><span class="line">    jni_invocation.Init(<span class="literal">NULL</span>);</span><br><span class="line">    JNIEnv* env;</span><br><span class="line">    <span class="keyword">if</span> (startVm(&amp;mJavaVM, &amp;env) != <span class="number">0</span>) &#123; <span class="comment">//------------------启动虚拟机</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    onVmCreated(env);<span class="comment">//-----------------该方法是一个虚函数，是由其子类负责实现的</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * Register android functions.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">if</span> (startReg(env) &lt; <span class="number">0</span>) &#123;----------------------为Android核心类在虚拟机中为其注册所需的的JNI函数</span><br><span class="line">        ALOGE(<span class="string">"Unable to register all android natives\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">.................................................................................................................</span><br><span class="line">    <span class="keyword">char</span>* slashClassName = toSlashClassName(className);<span class="comment">// classname为传递过来的参数com.android.internal.os.ZygoteInit，该函数作用是将其转换为com/android/internal/os/ZygoteInit</span></span><br><span class="line">    jclass startClass = env-&gt;FindClass(slashClassName);</span><br><span class="line">    <span class="keyword">if</span> (startClass == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"JavaVM unable to locate class '%s'\n"</span>, slashClassName);</span><br><span class="line">        <span class="comment">/* keep going */</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        jmethodID startMeth = env-&gt;GetStaticMethodID(startClass, <span class="string">"main"</span>,</span><br><span class="line">            <span class="string">"([Ljava/lang/String;)V"</span>);</span><br><span class="line">        <span class="keyword">if</span> (startMeth == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            ALOGE(<span class="string">"JavaVM unable to find main() in '%s'\n"</span>, className);</span><br><span class="line">            <span class="comment">/* keep going */</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;找className指定的<span class="keyword">class</span>的main函数，并以options为参数，调用main函数</span><br><span class="line">            env-&gt;CallStaticVoidMethod(startClass, startMeth, strArray);</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">if</span> <span class="number">0</span></span></span><br><span class="line">            <span class="keyword">if</span> (env-&gt;ExceptionCheck())</span><br><span class="line">                threadExitUncaughtException(env);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(slashClassName);</span><br><span class="line"></span><br><span class="line">    ALOGD(<span class="string">"Shutting down VM\n"</span>);</span><br><span class="line">    <span class="keyword">if</span> (mJavaVM-&gt;DetachCurrentThread() != JNI_OK)</span><br><span class="line">        ALOGW(<span class="string">"Warning: unable to detach main thread\n"</span>);</span><br><span class="line">    <span class="keyword">if</span> (mJavaVM-&gt;DestroyJavaVM() != <span class="number">0</span>)</span><br><span class="line">        ALOGW(<span class="string">"Warning: VM did not shut down cleanly\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AndroidRunTime.start函数主要完成了三项工作：</p>
+<font color="#ff5588">1.启动虚拟机</font>
+
+<p>首先初始化JNI环境：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">JniInvocation jni_invocation;</span><br><span class="line">jni_invocation.Init(<span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure></p>
+<p>这部分代码实现在Android源码/libnativehelper/JniInvocation.cpp中。这里有一个很重要的步骤，就是加载虚拟机实现so库。Android4.4开始引入了ART虚拟机，但是默认的还是dalvik虚拟机。但是从Andoroid 5.0开始就只有ART虚拟机了。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> HAVE_ANDROID_OS</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span>* kLibrarySystemProperty = <span class="string">"persist.sys.dalvik.vm.lib.2"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span>* kDebuggableSystemProperty = <span class="string">"ro.debuggable"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span>* kDebuggableFallback = <span class="string">"0"</span>;  <span class="comment">// Not debuggable.</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span>* kLibraryFallback = <span class="string">"libart.so"</span>;</span><br></pre></td></tr></table></figure>
+<p>我们使用的就是Android系统，所以HAVE_ANDROID_OS必然是设置了，persist.sys.dalvik.vm.lib.2”记录了使用的是哪种虚拟机。在Android 5.0以上版本的设备中，执行如下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/ <span class="comment"># getprop persist.sys.dalvik.vm.lib.2</span></span><br><span class="line">libart.so</span><br></pre></td></tr></table></figure></p>
+<p>可知加载的库就是ART虚拟机的实现库libart.so。</p>
+<p>接下来是调用AndroidRuntime的startVm方法启动ART虚拟机。</p>
+<p>最后是调用AndroidRuntime子类，也就是app_main.cpp中定义的AppRuntime类中的onVmCreated函数。</p>
+<font color="#ff5588">2.向虚拟机注册需要的Native函数</font>
+
+<p>基本Android的每个模块都有一些native实现需要和Java代码关联起来，前面也说过了事先注册能够提高性能。</p>
+<p>调用AndroidRuntime类中的startReg注册JNI函数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*static*/</span> <span class="keyword">int</span> AndroidRuntime::startReg(JNIEnv* env)</span><br><span class="line">&#123;</span><br><span class="line">   </span><br><span class="line">......................................................................................</span><br><span class="line">    <span class="keyword">if</span> (register_jni_procs(gRegJNI, NELEM(gRegJNI), env) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        env-&gt;PopLocalFrame(<span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    env-&gt;PopLocalFrame(<span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//createJavaThread("fubar", quickTest, (void*) "hello");</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中gRegJNI是一个数组</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> RegJNIRec gRegJNI[] = &#123;</span><br><span class="line">    REG_JNI(register_com_android_internal_os_RuntimeInit),</span><br><span class="line">    REG_JNI(register_android_os_SystemClock),</span><br><span class="line">    REG_JNI(register_android_util_EventLog),</span><br><span class="line">    REG_JNI(register_android_util_Log),</span><br><span class="line">...........................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>宏REG——JNI</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> REG_JNI(name)      &#123; name &#125;</span></span><br><span class="line">  <span class="keyword">struct</span> RegJNIRec &#123;</span><br><span class="line">      <span class="keyword">int</span> (*mProc)(JNIEnv*);</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+<p>注册jni函数的动作很简单，只是在遍历array数组，并尝试回调每个数组项的mProc回调函数.注册JNI其实也很好理解，主要写过JNI程序的都知道定义的JNI函数是给某个上层JAVA类调用的嘛，注册的意思就是注册给哪个类了，哪个类才能调用这些JNI函数。</p>
+<font color="#ff5588">3.找className指定的class的main函数，并以options为参数，调用main函数</font>
+
+<p>AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并利用JNI技术的CallStaticVoidMethod()调用其静态的main()函数，从这一步开始，Android系统从native层进入到了JAVA的世界了。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/21/setupGitlabEnvironment/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          持续集成系统搭建之Gitlab篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Zygote_1" data-title="Android 5.1 Lollipop的Zygote分析——上篇" data-url="http://www.iloveandroid.net/2015/09/21/Zygote_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

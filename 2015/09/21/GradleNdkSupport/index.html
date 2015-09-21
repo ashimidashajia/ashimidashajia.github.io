@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>让Gradleg构建支持NDK | 码农故事</title>
+  <title>让Gradle构建支持NDK | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="原本google公司承诺Android studio 1.3开始支持NDK,但是现在已经到Android studio 1.4 beat 3了，对NDK的支持还是实验性的。那么既然已经对Gradle的有了了解了，那索性就学着添加相关的task让利用$NDK/ndk-build命令编译。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="让Gradleg构建支持NDK">
-<meta property="og:url" content="http://www.iloveandroid.net/2015/09/17/GradleNdkSupport/index.html">
+<meta property="og:title" content="让Gradle构建支持NDK">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/21/GradleNdkSupport/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="原本google公司承诺Android studio 1.3开始支持NDK,但是现在已经到Android studio 1.4 beat 3了，对NDK的支持还是实验性的。那么既然已经对Gradle的有了了解了，那索性就学着添加相关的task让利用$NDK/ndk-build命令编译。">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Gradle-jni-1.png">
-<meta property="og:updated_time" content="2015-09-17T01:54:14.000Z">
+<meta property="og:updated_time" content="2015-09-21T02:02:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="让Gradleg构建支持NDK">
+<meta name="twitter:title" content="让Gradle构建支持NDK">
 <meta name="twitter:description" content="原本google公司承诺Android studio 1.3开始支持NDK,但是现在已经到Android studio 1.4 beat 3了，对NDK的支持还是实验性的。那么既然已经对Gradle的有了了解了，那索性就学着添加相关的task让利用$NDK/ndk-build命令编译。">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
@@ -109,7 +109,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 10px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
 					</div>
 				</section>
 				
@@ -174,8 +174,8 @@
       <div class="body-wrap"><article id="post-GradleNdkSupport" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/17/GradleNdkSupport/" class="article-date">
-  	<time datetime="2015-09-17T02:06:24.000Z" itemprop="datePublished">2015-09-17</time>
+      <a href="/2015/09/21/GradleNdkSupport/" class="article-date">
+  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
 </a>
     </div>
   
@@ -188,7 +188,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      让Gradleg构建支持NDK
+      让Gradle构建支持NDK
     </h1>
   
 
@@ -250,11 +250,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/09/17/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2015/09/21/Zygote_2/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度
+          Android 5.1 Lollipop的Zygote分析——下篇
         
       </div>
     </a>
@@ -290,7 +290,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="GradleNdkSupport" data-title="让Gradleg构建支持NDK" data-url="http://www.iloveandroid.net/2015/09/17/GradleNdkSupport/"></div>
+	<div class="ds-thread" data-thread-key="GradleNdkSupport" data-title="让Gradle构建支持NDK" data-url="http://www.iloveandroid.net/2015/09/21/GradleNdkSupport/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
