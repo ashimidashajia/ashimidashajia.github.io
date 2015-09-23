@@ -107,7 +107,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 13.33px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 20px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
 					</div>
 				</section>
 				
@@ -170,6 +170,71 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-setupPhabricatorEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/23/setupPhabricatorEnvironment_2/" class="article-date">
+  	<time datetime="2015-09-23T08:55:22.000Z" itemprop="datePublished">2015-09-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/23/setupPhabricatorEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.</p>
+<p>官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -P jenkins</span><br></pre></td></tr></table></figure>
+<p>这样就会卸载我们上次安装的jenkins了.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/23/setupPhabricatorEnvironment_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-studyGitlab_1" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -422,6 +487,69 @@
 
 
   
+    <article id="post-ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" class="article-date">
+  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/">ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。</p>
+<p>1.先检查cpu是否支持ardware virtualization,返回0表示不支持<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">egrep -c '(vmx|svm)' /<span class="keyword">proc</span>/cpuinfo</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/提高效率/">提高效率</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -470,69 +598,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/21/Zygote_2/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" class="article-date">
-  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/">ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。</p>
-<p>1.先检查cpu是否支持ardware virtualization,返回0表示不支持<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">egrep -c '(vmx|svm)' /<span class="keyword">proc</span>/cpuinfo</span><br></pre></td></tr></table></figure></p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/提高效率/">提高效率</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -726,69 +791,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/17/GradleProject/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-GradleImportantSyntax" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/17/GradleImportantSyntax/" class="article-date">
-  	<time datetime="2015-09-17T02:06:09.000Z" itemprop="datePublished">2015-09-17</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/17/GradleImportantSyntax/">Gradle构建中的重要语法</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇博客中，我们简单的利用Gradle从零开始构建了一个简单的Android app项目，对build.gradle中的有些语法，可能不是很熟悉，所以很有必要理解Gradle的重要语法。通过这边文章，希望能读懂简单build,gradle，最重要的是如何查阅文档。</p>
-<h2 id="‘’，“”，’‘’_‘’‘">‘’，“”，’‘’ ‘’‘</h2><p>看gradle脚本的时候，发现有的字符串是’’,有的是“”,还有的是’’’ ‘’’ 他们都用在什么地方呢？</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/17/GradleImportantSyntax/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

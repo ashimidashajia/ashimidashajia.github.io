@@ -3,19 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>构建神器Gradle学习资料 | 码农故事</title>
+  <title>持续集成系统搭建之利用Tomact搭建Jenkins篇 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="谷歌官方推出的Android开发工具Android Studio自带的构建工具是Gradle,号称构建神器。所以很有必要学习如何使用这个神器帮助我们构建大型项目。">
+  <meta name="description" content="之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.
+官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins
+1sudo dpkg -P j">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建神器Gradle学习资料">
-<meta property="og:url" content="http://www.iloveandroid.net/2015/09/17/GradleStudy/index.html">
+<meta property="og:title" content="持续集成系统搭建之利用Tomact搭建Jenkins篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/23/setupPhabricatorEnvironment_2/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="谷歌官方推出的Android开发工具Android Studio自带的构建工具是Gradle,号称构建神器。所以很有必要学习如何使用这个神器帮助我们构建大型项目。">
-<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/gradle-study-doc.png">
-<meta property="og:updated_time" content="2015-09-16T03:16:46.000Z">
+<meta property="og:description" content="之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.
+官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins
+1sudo dpkg -P j">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-14.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-15.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-16.png">
+<meta property="og:updated_time" content="2015-09-23T08:55:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="构建神器Gradle学习资料">
-<meta name="twitter:description" content="谷歌官方推出的Android开发工具Android Studio自带的构建工具是Gradle,号称构建神器。所以很有必要学习如何使用这个神器帮助我们构建大型项目。">
+<meta name="twitter:title" content="持续集成系统搭建之利用Tomact搭建Jenkins篇">
+<meta name="twitter:description" content="之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.
+官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins
+1sudo dpkg -P j">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -171,11 +179,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-GradleStudy" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-setupPhabricatorEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/17/GradleStudy/" class="article-date">
-  	<time datetime="2015-09-17T02:05:46.000Z" itemprop="datePublished">2015-09-17</time>
+      <a href="/2015/09/23/setupPhabricatorEnvironment_2/" class="article-date">
+  	<time datetime="2015-09-23T08:55:22.000Z" itemprop="datePublished">2015-09-23</time>
 </a>
     </div>
   
@@ -188,7 +196,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      构建神器Gradle学习资料
+      持续集成系统搭建之利用Tomact搭建Jenkins篇
     </h1>
   
 
@@ -197,7 +205,7 @@
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
 	</div>
 
         
@@ -212,18 +220,33 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>谷歌官方推出的Android开发工具Android Studio自带的构建工具是Gradle,号称构建神器。所以很有必要学习如何使用这个神器帮助我们构建大型项目。</p>
+        <p>之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.</p>
+<p>官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -P jenkins</span><br></pre></td></tr></table></figure>
+<p>这样就会卸载我们上次安装的jenkins了.</p>
 <a id="more"></a>
-<p>网上关于Gradle的学习资料也很多，这里我列举一下我学习的时候看的一些资料。</p>
-<p>邓凡平大神最近写了一篇关于Gradle的学习博客：<a href="http://blog.csdn.net/innost/article/details/48228651" target="_blank" rel="external">深入理解Android之Gradle</a>，个人觉得可以大大提高学习Gradle的效率。</p>
-<p>Gradle基于Groovy语言，其<a href="http://www.groovy-lang.org/api.html" target="_blank" rel="external">官方文档</a></p>
-<p>Gradle官方资料：</p>
-<p>从<a href="http://gradle.org/" target="_blank" rel="external">Gradle官方</a>下载gradle最新版安装包，是一个压缩包，解压即可使用。里面包括了十分重要的离线文档，如下图所示</p>
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gradle-study-doc.png" alt="Gradle官方离线文档"></p>
-<p>谷歌Android studio gradle 插件官方资料：</p>
-<p><a href="https://developer.android.com/tools/building/plugin-for-gradle.html" target="_blank" rel="external">Android Plugin for Gradle</a>,仅仅简单的介绍了插件的用法，在该网页右面有一个离线帮助文档的下载包链接，这也是学习利用gradle构建android项目的绝佳资料。可能需要翻墙，这里给出我上传的链接。</p>
-<p><a href="http://7xj6ce.com1.z0.glb.clouddn.com/android-gradle-plugin-dsl.zip" target="_blank" rel="external">Android Plugin for Gradle doc</a> 右键另存为.</p>
-<p>先通读邓凡平大神的博客，对Gradle有个基础的认识，接下来就是结合官方帮助文档，动手实践了，千万不要花大量时间看网上找资料。接下来几篇文章就开始通过动手实践，逐步掌握Gradle的基本用法。</p>
+<p>首先从<a href="http://tomcat.apache.org/download-70.cgi" target="_blank" rel="external">Tomcat官网</a>下载其安装包,版本是7.0.64.</p>
+<p>Tomcat安装前,请先确保安装了java jdk.记得配置java环境变量.</p>
+<p>在家目录中创建文件夹</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~<span class="regexp">/jenkins/jenkins</span>_home -p</span><br></pre></td></tr></table></figure>
+<p>将apache-tomcat-7.0.64.tar.gz解压之~/jenkins中,然后删除~/jenkins/apache-tomcat-7.0.64/webapps文件夹内的所有文件,拷贝jenkins.war到该目录,并且重名为ROOT.war</p>
+<p>修改jenkins/apache-tomcat-7.0.64/context.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">Environment</span> <span class="attribute">name</span>=<span class="value">"JENKINS_HOME"</span> <span class="attribute">value</span>=<span class="value">"~/jenkins/jenkins_home"</span> <span class="attribute">type</span>=<span class="value">"java.lang.String"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>修改jenkins/apache-tomcat-7.0.64/server.xml,修改端口号</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">Connector</span> <span class="attribute">port</span>=<span class="value">"8002"</span> <span class="attribute">URIEncoding</span>= "<span class="attribute">utf-8</span>" <span class="attribute">protocol</span>=<span class="value">"HTTP/1.1"</span></span><br><span class="line">               <span class="attribute">connectionTimeout</span>=<span class="value">"20000"</span></span><br><span class="line">               <span class="attribute">redirectPort</span>=<span class="value">"8443"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>修改~/jenkins/apache-tomcat-7.0.64/bin/catalina.sh,在注释结束的地方添加:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-server -Xms8192m -Xmx8192m -Xmn2048m -XX:PermSize=1024m -XX:MaxPermSize=2048m -XX:+UseParallelOldGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/home/你的用户名/tomcat/dumpfile/heap.bin  -Xloggc:/home/你的用户名/tomcat/logs/gc.log"</span></span><br></pre></td></tr></table></figure>
+<p>上面的内存分配请酌情设置.</p>
+<p>然后进入~/jenkins/apache-tomcat-7.0.64/bin/ 执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./catalina.sh start</span><br></pre></td></tr></table></figure>
+<p>在浏览器上输入ip:8002,出现如下所示</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-14.png" alt=""></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-15.png" alt=""><br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-16.png" alt=""></p>
+<p>说明已经成功更改工作目录了.以后备份jenkins,只需要备份这个文件夹即可.</p>
+<p>添加管理员账号,以及下载插件等等操作,请参考上一篇文章.</p>
+<p>现在还有一个问题是开启启动jenkins.</p>
+<p>修改/etc/rc.local</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/home/godin-ci/jenkins/apache-tomcat-<span class="number">7.0</span>.<span class="number">64</span>/bin/catalina.sh start &gt;/dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> &amp;</span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -233,18 +256,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/09/17/GradleHelloworld/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          利用Gradle从零开始构建一个Android App工程
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/09/15/新的开始/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">新的开始</div>
+    <a href="/2015/09/22/studyGitlab_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">持续集成系统学习之Gitlab篇</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -273,7 +287,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="GradleStudy" data-title="构建神器Gradle学习资料" data-url="http://www.iloveandroid.net/2015/09/17/GradleStudy/"></div>
+	<div class="ds-thread" data-thread-key="setupPhabricatorEnvironment_2" data-title="持续集成系统搭建之利用Tomact搭建Jenkins篇" data-url="http://www.iloveandroid.net/2015/09/23/setupPhabricatorEnvironment_2/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
