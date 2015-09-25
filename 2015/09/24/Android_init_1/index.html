@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 init进程分析上篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言Android系统是运行在linux内核之上的,熟悉linux的人应该都知道内核启动后,第一个进程是init进程.Android系统当然也不例外.只不过相对于原生linux init进程,Android 的init进程有其自己的特点和规则.
+Android init进程会初始化Android的属性系统,这个后续会单独介绍,因为属性系统很重要.init进程主要是加载和解析.rc文件,来启动And">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 init进程分析上篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/24/Android_init_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前言Android系统是运行在linux内核之上的,熟悉linux的人应该都知道内核启动后,第一个进程是init进程.Android系统当然也不例外.只不过相对于原生linux init进程,Android 的init进程有其自己的特点和规则.
+Android init进程会初始化Android的属性系统,这个后续会单独介绍,因为属性系统很重要.init进程主要是加载和解析.rc文件,来启动And">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-1.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-2.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-3.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-4.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-7.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-5.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-6.PNG">
+<meta property="og:updated_time" content="2015-09-23T16:32:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 init进程分析上篇">
+<meta name="twitter:description" content="前言Android系统是运行在linux内核之上的,熟悉linux的人应该都知道内核启动后,第一个进程是init进程.Android系统当然也不例外.只不过相对于原生linux init进程,Android 的init进程有其自己的特点和规则.
+Android init进程会初始化Android的属性系统,这个后续会单独介绍,因为属性系统很重要.init进程主要是加载和解析.rc文件,来启动And">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 20px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_init_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/Android_init_1/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 init进程分析上篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="前言">前言</h3><p>Android系统是运行在linux内核之上的,熟悉linux的人应该都知道内核启动后,第一个进程是init进程.Android系统当然也不例外.只不过相对于原生linux init进程,Android 的init进程有其自己的特点和规则.</p>
+<p>Android init进程会初始化Android的属性系统,这个后续会单独介绍,因为属性系统很重要.init进程主要是加载和解析.rc文件,来启动Android系统的服务.</p>
+<a id="more"></a>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-1.PNG" alt="Android boot"></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-2.PNG" alt="Android_boot2"></p>
+<p>init进程会启动很多守护进程,这些守护进程都是c/c++实现的,后续文章都会对这些守护进程一一介绍.zygote进程前面已经介绍过了.</p>
+<h3 id="-rc文件">.rc文件</h3><p>.rc脚本使用的是一种初始化语言，其中包含了4类声明：</p>
+<p>1）Action</p>
+<p>2）Command</p>
+<p>3）Service</p>
+<p>4）Option</p>
+<p>该语言规定，Action和Service是以一种“段”（Section）的形式出现的，其中每个Action 段可以含有若干Command，而每个Service段可以含有若干Option。段只有起始标记，却没有明确的结束标记，也就是说，是用“后一个段”的起始来结束“前一个段”的。 </p>
+<font color="#ff5588">通俗的说Action段里面的内容,都是各种命令;Service段中包含一个可执行程序,以及对这个可执行程序所做的一些配置</font>
+
+
+<h4 id="rc文件的位置">rc文件的位置</h4><p>分两种情况介绍:</p>
+<p>1.源码中的位置.</p>
+<p>rc文件在源码中的位置有两个地方:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android源码/system/core/rootdir</span><br></pre></td></tr></table></figure>
+<p>里面内容如下所示,主要是Android系统公共的rc配置.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-3.PNG" alt="rootdir"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android源码/device/手机厂商/某个具体机型</span><br></pre></td></tr></table></figure>
+<p>这里面的rc,如下所示,主要是设备所特有的配置.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-4.PNG" alt="device"></p>
+<p>上图所示是摩托 nexus 6,其中shamu是N6手机的研发代号.</p>
+<p>2.ROM包中的位置</p>
+<p>所有的.rc文件都是ramdisk.img的一部分,而ramdisk.img又是boot.img的一部分.通过名字可以看出来ramdisk是一个基于内存的文件系统,所以不要通过adb shell等方式修改手机中的.rc文件,那样手机重启之后又会从boot分区中加载原来的ramdisk到内存中去.</p>
+<p>ramdisk其实挂在到了手机的/目录,所以.rc文件都是在手机/目录下的.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-7.PNG" alt=""></p>
+<p>上图所示是ramdisk解压之后的文件夹中的内容.</p>
+<h4 id="rc文件语法">rc文件语法</h4><font color="#ff5588">Action段:</font>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">on  &lt;trigger&gt;</span><br><span class="line"> &lt;<span class="built_in">command</span>1&gt;</span><br><span class="line"> &lt;<span class="built_in">command</span>2&gt;</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+<p>Action可以理解为一个任务,这个任务包含若干条命令,而且只有当满足某个条件的时候,才会触发这个任务.上面所示的trigger即是触发条件.</p>
+<table>
+<thead>
+<tr>
+<th>trigger</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boot</td>
+<td style="text-align:center">init启动阶段</td>
+</tr>
+<tr>
+<td>name=value</td>
+<td style="text-align:center">当属性名对应的值设置为指定值时触发.</td>
+</tr>
+<tr>
+<td>device-added-path</td>
+<td style="text-align:center">当添加设备时触发</td>
+</tr>
+<tr>
+<td>device-removed-path</td>
+<td style="text-align:center">当移除设备时触发</td>
+</tr>
+<tr>
+<td>service-exited-name</td>
+<td style="text-align:center">当指定的服务退出时触发</td>
+</tr>
+</tbody>
+</table>
+<p>其中主要的init启动阶段,如下所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-5.PNG" alt="init 几个阶段"></p>
+<p>可以结合init.rc文件,查看上图中各阶段都执行了哪些命令.</p>
+<p>其中还可以手动触发:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">on mytrigger</span><br><span class="line">    xxxxx</span><br><span class="line"></span><br><span class="line">on boot</span><br><span class="line">    trigger mytrigger</span><br></pre></td></tr></table></figure>
+<p>上面的含义是在boot阶段中,利用trigger命令手动触发了mytrigger.</p>
+<p>另外要注意的是,属性触发是很有用的一种触发方式.因为属性值可以在程序中灵活设置,后续讲解属性系统的时候,会结合实例来演示其用法.</p>
+<font color="#ff5588">Service段:</font>
+
+<p>Service表示一个服务程序，会有init进程启动。因为init.rc中描述的服务往往都是Android核心服务，所以基本上所有的服务会在退出时自动重启。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">service &lt;name&gt; &lt;pathname&gt; [&lt;arguments&gt;]*</span><br><span class="line"> &lt;option&gt;</span><br><span class="line"> &lt;option&gt;</span><br><span class="line">  ......</span><br></pre></td></tr></table></figure>
+<p>下图所示是来自init.rc中的片段</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init-6.PNG" alt=""></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>critical</td>
+<td style="text-align:center">据设备相关的关键服务，如果在4分钟内，此服务重复启动了4次，那么设备将会重启进入recovery模式。</td>
+</tr>
+<tr>
+<td>disable</td>
+<td style="text-align:center">服务不会自动运行，必须显式地通过start命令来启动。</td>
+</tr>
+<tr>
+<td>oneshot</td>
+<td style="text-align:center">当此服务退出时不会自动重启.</td>
+</tr>
+<tr>
+<td>onrestart</td>
+<td style="text-align:center">当服务重启时执行一条指令</td>
+</tr>
+<tr>
+<td>class name</td>
+<td style="text-align:center">给服务指定一个类属,这样方便操作多个服务同时启动或停止.默认情况下为default</td>
+</tr>
+<tr>
+<td>user username</td>
+<td style="text-align:center">在执行此服务之前先切换用户名。当前默认为root.</td>
+</tr>
+<tr>
+<td>group groupname</td>
+<td style="text-align:center">类似于user,切换组名</td>
+</tr>
+<tr>
+<td>setenv name value</td>
+<td style="text-align:center">设置环境变量</td>
+</tr>
+<tr>
+<td>socket name type perm user group</td>
+<td style="text-align:center">在/dev/socket/下创建一个unix domain的socket，并传递创建的文件描述符fd给服务进程.其中type必须为dgram或stream,seqpacket.用户名和组名默认为0</td>
+</tr>
+</tbody>
+</table>
+<p>除了Action和Service，.rc中还有一个import,可以导入其他.rc脚本文件的内容.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import /init.environ.rc</span><br><span class="line">import /init.usb.rc</span><br><span class="line">import /init.<span class="variable">$&#123;ro.hardware&#125;</span>.rc</span><br><span class="line">import /init.<span class="variable">$&#123;ro.zygote&#125;</span>.rc</span><br><span class="line">import /init.trace.rc</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/24/新的开始/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          新的开始
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_init_1" data-title="Android 5.1 init进程分析上篇" data-url="http://www.iloveandroid.net/2015/09/24/Android_init_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

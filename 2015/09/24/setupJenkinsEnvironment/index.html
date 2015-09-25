@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>持续集成系统搭建之Jenkins篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="现在开始搭建Jenkins环境，他的主要作用是每当有代码经过审阅提交到gitlab之后，自动拉取代码，编译运行和测试。
+安装jenkins从Jenkins官网中下载Jenkins最新的deb包。
+首先安装一个依赖：1sudo apt-get install daemon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持续集成系统搭建之Jenkins篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/24/setupJenkinsEnvironment/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="现在开始搭建Jenkins环境，他的主要作用是每当有代码经过审阅提交到gitlab之后，自动拉取代码，编译运行和测试。
+安装jenkins从Jenkins官网中下载Jenkins最新的deb包。
+首先安装一个依赖：1sudo apt-get install daemon">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-4.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-3.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-5.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-6.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-8.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-9.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-10.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-11.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-12.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-13.png">
+<meta property="og:updated_time" content="2015-09-21T14:56:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="持续集成系统搭建之Jenkins篇">
+<meta name="twitter:description" content="现在开始搭建Jenkins环境，他的主要作用是每当有代码经过审阅提交到gitlab之后，自动拉取代码，编译运行和测试。
+安装jenkins从Jenkins官网中下载Jenkins最新的deb包。
+首先安装一个依赖：1sudo apt-get install daemon">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 20px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-setupJenkinsEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/setupJenkinsEnvironment/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      持续集成系统搭建之Jenkins篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在开始搭建Jenkins环境，他的主要作用是每当有代码经过审阅提交到gitlab之后，自动拉取代码，编译运行和测试。</p>
+<h3 id="安装jenkins">安装jenkins</h3><p>从<a href="http://jenkins-ci.org/" target="_blank" rel="external">Jenkins官网</a>中下载Jenkins最新的deb包。</p>
+<p>首先安装一个依赖：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install daemon</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>然后</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">sudo</span> <span class="tag">dpkg</span> <span class="tag">-i</span> <span class="tag">jenkins_1</span><span class="class">.630_all</span><span class="class">.deb</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/default/jenkins</span><br></pre></td></tr></table></figure>
+<p>将端口由8080改为8002<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HTTP_PORT=<span class="number">8002</span></span><br></pre></td></tr></table></figure></p>
+<p>重启jenkins</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo  /etc/init.d/jenkins restart</span><br></pre></td></tr></table></figure>
+<h3 id="添加管理员账号">添加管理员账号</h3><p>Jenkins默认安装是没有启用访问控制的,输入ip:端口号便可以名访问（如下图所示）,要启用安全控制,访问Jenkins web界面。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-1.png" alt="jenkins"></p>
+<p>现在要做的就是添加一个管理员账号，每次登陆的时候验证通过，才能访问。</p>
+<p>首先如下图所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-2.png" alt="ss"></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-4.png" alt="aa"></p>
+<p>接着就可以注册了</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-3.png" alt="注册"></p>
+<p>注册成功后,再次进入配置界面</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-5.png" alt=""></p>
+<p>取消注册,对匿名用户进行权限相关设置，一般只设置读的权限功能设置.</p>
+<h3 id="插件配置">插件配置</h3><p>需要安装gitlab的插件</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-6.png" alt=""></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-8.png" alt=""></p>
+<p>可以勾选gitlab的所有插件,至少安装上面所勾选的两个插件.</p>
+<p>然后在安装 gradle插件</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-9.png" alt="gradle"></p>
+<h3 id="系统设置">系统设置</h3><p>首先配置JDK</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-10.png" alt=""></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-11.png" alt="jdk"></p>
+<p>在配置邮箱:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-12.png" alt=""><br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jenkins-env-13.png" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/24/setupJenkinsEnvironment_2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          持续集成系统搭建之利用Tomact搭建Jenkins篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/24/setupGitlabEnvironment/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">持续集成系统搭建之Gitlab篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="setupJenkinsEnvironment" data-title="持续集成系统搭建之Jenkins篇" data-url="http://www.iloveandroid.net/2015/09/24/setupJenkinsEnvironment/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

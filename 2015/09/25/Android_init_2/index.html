@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 init进程分析下篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="解析rc文件init进程相关的源码位置:1Android源码/system/core/init/init.c
+在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 init进程分析下篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/25/Android_init_2/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="解析rc文件init进程相关的源码位置:1Android源码/system/core/init/init.c
+在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init_2-1.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-init-2-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-init-2-2.png">
+<meta property="og:updated_time" content="2015-09-25T07:27:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 init进程分析下篇">
+<meta name="twitter:description" content="解析rc文件init进程相关的源码位置:1Android源码/system/core/init/init.c
+在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 20px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_init_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/25/Android_init_2/" class="article-date">
+  	<time datetime="2015-09-25T07:27:31.000Z" itemprop="datePublished">2015-09-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 init进程分析下篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="解析rc文件">解析rc文件</h3><p>init进程相关的源码位置:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android源码/system/core/init/init.c</span><br></pre></td></tr></table></figure></p>
+<p>在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：</p>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">init_parse_config_file</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *fn)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *data;</span><br><span class="line">    data = read_file(fn, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (!data) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    parse_config(fn, data);</span><br><span class="line">    DUMP();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先用read_file()把脚本内容读入一块内存，而后调用parse_config()解析这块内存。<br>parse_config()的代码截选如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">parse_config</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *fn, <span class="keyword">char</span> *s)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    . . . . . . </span><br><span class="line">    state.parse_line = parse_line_no_op;<span class="comment">//初始化为一个空函数,后面会在parse_new_section中对其重新赋值</span></span><br><span class="line">    . . . . . .</span><br><span class="line">    <span class="keyword">for</span> () &#123;</span><br><span class="line">        <span class="keyword">switch</span> (next_token(&amp;state)) &#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">        <span class="keyword">case</span> T_NEWLINE:   <span class="comment">// 遇到新行,就该处理上一行了</span></span><br><span class="line">            state.line++;</span><br><span class="line">            <span class="keyword">if</span> (nargs) &#123;</span><br><span class="line">                <span class="keyword">int</span> kw = lookup_keyword(args[<span class="number">0</span>]);</span><br><span class="line">                <span class="keyword">if</span> (kw_is(kw, SECTION)) &#123;</span><br><span class="line">                    state.parse_line(&amp;state, <span class="number">0</span>, <span class="number">0</span>);  <span class="comment">// 不同section的parse_line也不同</span></span><br><span class="line">                    parse_new_section(&amp;state, kw, nargs, args);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    state.parse_line(&amp;state, nargs, args);<span class="comment">//利用parse_line解析每个段除了第一行以外的其他行的内容</span></span><br><span class="line">                &#125;</span><br><span class="line">                nargs = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">         <span class="keyword">case</span> T_TEXT: <span class="comment">//每一行所有单词都写入args数组中,当解析这一行的时候,就会用到args数组了</span></span><br><span class="line">            <span class="keyword">if</span> (nargs &lt; INIT_PARSER_MAXARGS) &#123;</span><br><span class="line">                args[nargs++] = state.text;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它在逐行分析init.rc脚本，判断每一行的第一个参数是什么类型的，如果是action或service类型的，就表示要创建一个新的section节点了，此时它会设置一下解析后续行的解析函数，也就是给state-&gt;parse_line赋值。针对service类型，解析后续行的函数是parse_line_service()，而针对action类型，解析后续行的函数则是parse_line_action()。 </p>
+<p>parse_config()里有3个地方值得我们注意：</p>
+<ol>
+<li><p>lookup_keyword()和kw_is()</p>
+</li>
+<li><p>parse_new_section()</p>
+</li>
+<li><p>state.parse_line()</p>
+</li>
+</ol>
+<h4 id="查询每行首单词关键字">查询每行首单词关键字</h4><p>在rc文件中,没一行的第一个单词都要是关键字,意思就是说必须是Android定义好的关键字,不能随便写.</p>
+<p>lookup_keyword()的定义截选如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">lookup_keyword</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (*s++) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'c'</span>:</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"opy"</span>)) <span class="keyword">return</span> K_copy;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"apability"</span>)) <span class="keyword">return</span> K_capability;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"hdir"</span>)) <span class="keyword">return</span> K_chdir;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"hroot"</span>)) <span class="keyword">return</span> K_chroot;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"lass"</span>)) <span class="keyword">return</span> K_class;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"lass_start"</span>)) <span class="keyword">return</span> K_class_start;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"lass_stop"</span>)) <span class="keyword">return</span> K_class_stop;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"lass_reset"</span>)) <span class="keyword">return</span> K_class_reset;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"onsole"</span>)) <span class="keyword">return</span> K_console;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"hown"</span>)) <span class="keyword">return</span> K_chown;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"hmod"</span>)) <span class="keyword">return</span> K_chmod;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"ritical"</span>)) <span class="keyword">return</span> K_critical;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'d'</span>:</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"isabled"</span>)) <span class="keyword">return</span> K_disabled;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(s, <span class="string">"omainname"</span>)) <span class="keyword">return</span> K_domainname;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">........................</span><br><span class="line">........................</span><br></pre></td></tr></table></figure>
+<p>逻辑很简单,就是以每行首单词的首字母索引匹配.</p>
+<p>那么该函数返回值是什么含义呢?<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> K_copy</span><br><span class="line"><span class="keyword">return</span> K_capability</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>实际上,可以理解为有一张表,存储了所有的额关键字,而上面函数的返回值就是该关键字在表中的索引.</p>
+<p>如下所示是KEYWORD的定义,参数含义是该关键字符号标示,标志,参数个数,以及用来处理这个关键字的函数.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KEYWORD(symbol, flags, nargs, func) \</span><br><span class="line">    [ K_##symbol ] = &#123; #symbol, func, nargs + <span class="number">1</span>, flags, &#125;,</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">int</span> (*func)(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> nargs;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags;</span><br><span class="line">&#125; keyword_info[KEYWORD_COUNT] = &#123;</span><br><span class="line">    [ K_UNKNOWN ] = &#123; <span class="string">"unknown"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> &#125;,</span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"keywords.h"</span></span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里用到了一点儿小技巧，两次include了keywords.h头文件，其实keywords.h中会先定义一次KEYWORD宏，其主要目的是为了形成一个顺序排列的enum，而后就#undef KEYWORD了。接着上面代码中再次定义了KEYWORD宏，这次的主要目的是为了形成一个struct数组，即keyword_info数组。 </p>
+<p>keywords.h的部分代码:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> KEYWORD</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_chroot</span><span class="params">(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_chdir</span><span class="params">(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_class_start</span><span class="params">(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span>;</span><br><span class="line">. . . . . .</span><br><span class="line">. . . . . .</span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> __MAKE_KEYWORD_ENUM__</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KEYWORD(symbol, flags, nargs, func) K_##symbol,</span></span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    K_UNKNOWN,</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">    KEYWORD(capability,  OPTION,  <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">    KEYWORD(chdir,       COMMAND, <span class="number">1</span>, do_chdir)</span><br><span class="line">    KEYWORD(chroot,      COMMAND, <span class="number">1</span>, do_chroot)</span><br><span class="line">    KEYWORD(<span class="keyword">class</span>,       OPTION,  <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">    . . . . . .</span><br><span class="line">    . . . . . .</span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> __MAKE_KEYWORD_ENUM__</span></span><br><span class="line">    KEYWORD_COUNT,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">undef</span> __MAKE_KEYWORD_ENUM__</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">undef</span> KEYWORD</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<p>第一次引用该头文件的时候KEYWORD宏没有被定义,所以会按照头文件中KEYWORD宏的定义<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一次</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KEYWORD(symbol, flags, nargs, func) K_##symbol,</span></span><br></pre></td></tr></table></figure></p>
+<p>后面跟着定义了一个枚举类型数据,正好可以做索引嘛.而且头文件末尾还取消了对该宏的定义.</p>
+<p>第二次引用该头文件时,前面已经定义了该宏<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KEYWORD(symbol, flags, nargs, func) \</span><br><span class="line">    [ K_##symbol ] = &#123; #symbol, func, nargs + <span class="number">1</span>, flags, &#125;,</span></span><br></pre></td></tr></table></figure></p>
+<p>所以头文件如下图所示部分,就不成立了.<br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_init_2-1.PNG" alt=""></p>
+<p>这时在拐回去看下面的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"keywords.h"</span></span></span><br><span class="line"> </span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> KEYWORD(symbol, flags, nargs, func) \</span><br><span class="line">    [ K_##symbol ] = &#123; #symbol, func, nargs + <span class="number">1</span>, flags, &#125;,</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">int</span> (*func)(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args);</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> nargs;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> flags;</span><br><span class="line">&#125; keyword_info[KEYWORD_COUNT] = &#123;</span><br><span class="line">    [ K_UNKNOWN ] = &#123; <span class="string">"unknown"</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> &#125;,</span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"keywords.h"</span></span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">undef</span> KEYWORD</span></span><br></pre></td></tr></table></figure>
+<p>keywords.h中会先定义一次KEYWORD宏，其主要目的是为了形成一个顺序排列的enum，而后就#undef KEYWORD了。接着上面代码中再次定义了KEYWORD宏，这次的主要目的是为了形成一个struct数组，即keyword_info数组。</p>
+<p>这里在说下KEYWORD中第二个参数flags,它表示这个关键字的类型,有三种类型</p>
+<ol>
+<li><p>option: 结合service段使用,可以理解为是给可执行程序的附件配置</p>
+</li>
+<li><p>command: 结合Action段使用,是一条命令</p>
+</li>
+<li><p>section: 表明是action段还是Service段还是import</p>
+</li>
+</ol>
+<p>kw_is()宏的定义如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> kw_is(kw, type) (keyword_info[kw].flags &amp; (type))</span></span><br></pre></td></tr></table></figure>
+<p>这个宏用来判断关键字的类型.第一个参数kw就是关键字在keyword_info中的数组下标,利用其flags位和给定的type做位与运算.</p>
+<p>rc文件中每行首单词都要进行关键字类型的判断,以此来进行相应的操作.</p>
+<p>keyword_info数组如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-init-2-1.png" alt="keyword_info数组"></p>
+<h3 id="解析section段">解析section段</h3><p>一旦解析除rc文件某一行是on或者service或者import开头,就意味着一个新段的开始.此时会调用parse_new_section来解析这个新段</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">parse_new_section</span><span class="params">(<span class="keyword">struct</span> parse_state *state, <span class="keyword">int</span> kw,</span><br><span class="line">                       <span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"[ %s %s ]\n"</span>, args[<span class="number">0</span>],</span><br><span class="line">           nargs &gt; <span class="number">1</span> ? args[<span class="number">1</span>] : <span class="string">""</span>);</span><br><span class="line">    <span class="keyword">switch</span>(kw) &#123;</span><br><span class="line">    <span class="keyword">case</span> K_service:</span><br><span class="line">        state-&gt;context = parse_service(state, nargs, args);</span><br><span class="line">        <span class="keyword">if</span> (state-&gt;context) &#123;</span><br><span class="line">            state-&gt;parse_line = parse_line_service;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> K_on:</span><br><span class="line">        state-&gt;context = parse_action(state, nargs, args);</span><br><span class="line">        <span class="keyword">if</span> (state-&gt;context) &#123;</span><br><span class="line">            state-&gt;parse_line = parse_line_action;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> K_import:</span><br><span class="line">        parse_import(state, nargs, args);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    state-&gt;parse_line = parse_line_no_op;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>逻辑很清晰是吧,就是解析前面提到的三种段而已.</p>
+<h4 id="解析service段">解析service段</h4><p>parse_service()的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> *<span class="title">parse_service</span><span class="params">(<span class="keyword">struct</span> parse_state *state, <span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> service *svc;</span><br><span class="line">    <span class="keyword">if</span> (nargs &lt; <span class="number">3</span>) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"services must have a name and a program\n"</span>);<span class="comment">//格式 on servicename  service对应的可执行程序路径 传递给可执行程序的参数;其中参数是可选项</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!valid_name(args[<span class="number">1</span>])) &#123;<span class="comment">//service name</span></span><br><span class="line">        parse_error(state, <span class="string">"invalid service name '%s'\n"</span>, args[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    svc = service_find_by_name(args[<span class="number">1</span>]);<span class="comment">//依据服务的名字在链表中查找是否有了这个服务,有的话,不处理,说明有多个重名service的话,只会处理第一个</span></span><br><span class="line">    <span class="keyword">if</span> (svc) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"ignored duplicate definition of service '%s'\n"</span>, args[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    nargs -= <span class="number">2</span>;</span><br><span class="line">    svc = <span class="built_in">calloc</span>(<span class="number">1</span>, <span class="keyword">sizeof</span>(*svc) + <span class="keyword">sizeof</span>(<span class="keyword">char</span>*) * nargs);<span class="comment">//分配一个新的service结构体</span></span><br><span class="line">    <span class="keyword">if</span> (!svc) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"out of memory\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//依据解析的内容,初始化service结构体</span></span><br><span class="line">    svc-&gt;name = args[<span class="number">1</span>];</span><br><span class="line">    svc-&gt;classname = <span class="string">"default"</span>;</span><br><span class="line">    <span class="built_in">memcpy</span>(svc-&gt;args, args + <span class="number">2</span>, <span class="keyword">sizeof</span>(<span class="keyword">char</span>*) * nargs);</span><br><span class="line">    svc-&gt;args[nargs] = <span class="number">0</span>;</span><br><span class="line">    svc-&gt;nargs = nargs;</span><br><span class="line">    svc-&gt;onrestart.name = <span class="string">"onrestart"</span>;</span><br><span class="line">    <span class="comment">/*这个service重启的时候,需要执行写命令,此时commands还是空的*/</span></span><br><span class="line">    list_init(&amp;svc-&gt;onrestart.commands);</span><br><span class="line">    <span class="comment">/*将service结构体加入service链表中去*/</span></span><br><span class="line">    list_add_tail(&amp;service_list, &amp;svc-&gt;slist);</span><br><span class="line">    <span class="keyword">return</span> svc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总体上解析service段时,会创建一个新的service结构体，填入service名等信息，并连入service_list总表中。注意，此时该service节点的onrestart.commands部分还是个空链表，因为现在只是分析了service XXX 这一行,他下面的行还没解析.</p>
+<p>parse_new_section()中为service明确指定了解析后续行的函数parse_line_service()。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">parse_line_service</span><span class="params">(<span class="keyword">struct</span> parse_state *state, <span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> service *svc = state-&gt;context;</span><br><span class="line">    <span class="keyword">struct</span> command *cmd;</span><br><span class="line">    . . . . . .</span><br><span class="line">    kw = lookup_keyword(args[<span class="number">0</span>]);   <span class="comment">// 同样每一行的首单词也要查关键字表</span></span><br><span class="line">    <span class="keyword">switch</span> (kw) &#123;</span><br><span class="line">    <span class="keyword">case</span> K_capability:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> K_class:</span><br><span class="line">        <span class="keyword">if</span> (nargs != <span class="number">2</span>) &#123;</span><br><span class="line">            parse_error(state, <span class="string">"class option requires a classname\n"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            svc-&gt;classname = args[<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> K_console:</span><br><span class="line">        svc-&gt;flags |= SVC_CONSOLE;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line"><span class="keyword">case</span> K_disabled:</span><br><span class="line">. . . . . .</span><br><span class="line"><span class="keyword">case</span> K_onrestart:</span><br><span class="line">        nargs--;</span><br><span class="line">        args++;</span><br><span class="line">        kw = lookup_keyword(args[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">if</span> (!kw_is(kw, COMMAND)) &#123;</span><br><span class="line">            parse_error(state, <span class="string">"invalid command '%s'\n"</span>, args[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        kw_nargs = kw_nargs(kw);</span><br><span class="line">        <span class="keyword">if</span> (nargs &lt; kw_nargs) &#123;</span><br><span class="line">            parse_error(state, <span class="string">"%s requires %d %s\n"</span>, args[<span class="number">0</span>], kw_nargs - <span class="number">1</span>,</span><br><span class="line">                kw_nargs &gt; <span class="number">2</span> ? <span class="string">"arguments"</span> : <span class="string">"argument"</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        cmd = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(*cmd) + <span class="keyword">sizeof</span>(<span class="keyword">char</span>*) * nargs);</span><br><span class="line">        cmd-&gt;func = kw_func(kw);</span><br><span class="line">        cmd-&gt;nargs = nargs;</span><br><span class="line">        <span class="built_in">memcpy</span>(cmd-&gt;args, args, <span class="keyword">sizeof</span>(<span class="keyword">char</span>*) * nargs);</span><br><span class="line">        list_add_tail(&amp;svc-&gt;onrestart.commands, &amp;cmd-&gt;clist);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">. . . . . .</span><br><span class="line">service的的option中比较麻烦的是onrestart，因为它本身又是个action段，可携带若干个子command.</span><br></pre></td></tr></table></figure>
+<p>下面是service中常见的option：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>)K_capability</span><br><span class="line"><span class="number">2</span>)K_class</span><br><span class="line"><span class="number">3</span>)K_console</span><br><span class="line"><span class="number">4</span>)K_disabled</span><br><span class="line"><span class="number">5</span>)K_ioprio</span><br><span class="line"><span class="number">6</span>)K_group</span><br><span class="line"><span class="number">7</span>)K_user下面是service中常见的option：</span><br><span class="line"><span class="number">1</span>)K_capability</span><br><span class="line"><span class="number">2</span>)K_class</span><br><span class="line"><span class="number">3</span>)K_console</span><br><span class="line"><span class="number">4</span>)K_disabled</span><br><span class="line"><span class="number">5</span>)K_ioprio</span><br><span class="line"><span class="number">6</span>)K_group</span><br><span class="line"><span class="number">7</span>)K_user</span><br><span class="line"><span class="number">8</span>)K_keycodes</span><br><span class="line"><span class="number">9</span>)K_oneshot</span><br><span class="line"><span class="number">10</span>)K_onrestart</span><br><span class="line"><span class="number">11</span>)K_critical</span><br><span class="line"><span class="number">12</span>)K_setenv</span><br><span class="line"><span class="number">13</span>)K_socket</span><br><span class="line"><span class="number">14</span>)K_seclabel </span><br><span class="line"><span class="number">8</span>)K_keycodes</span><br><span class="line"><span class="number">9</span>)K_oneshot</span><br><span class="line"><span class="number">10</span>)K_onrestart</span><br><span class="line"><span class="number">11</span>)K_critical</span><br><span class="line"><span class="number">12</span>)K_setenv</span><br><span class="line"><span class="number">13</span>)K_socket</span><br><span class="line"><span class="number">14</span>)K_seclabel</span><br></pre></td></tr></table></figure></p>
+<p>再次回头看 parse_config函数,else部分是不是就很清楚了.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-init-2-2.png" alt=""></p>
+<p>service 结构体定义如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> service &#123;</span><br><span class="line">        <span class="comment">/* list of all services */</span></span><br><span class="line">    <span class="keyword">struct</span> listnode slist;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *classname;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> flags;</span><br><span class="line">    <span class="keyword">pid_t</span> pid;</span><br><span class="line">    <span class="keyword">time_t</span> time_started;    <span class="comment">/* time of last start */</span></span><br><span class="line">    <span class="keyword">time_t</span> time_crashed;    <span class="comment">/* first crash within inspection window */</span></span><br><span class="line">    <span class="keyword">int</span> nr_crashed;         <span class="comment">/* number of times crashed within window */</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">uid_t</span> uid;</span><br><span class="line">    <span class="keyword">gid_t</span> gid;</span><br><span class="line">    <span class="keyword">gid_t</span> supp_gids[NR_SVC_SUPP_GIDS];</span><br><span class="line">    <span class="keyword">size_t</span> nr_supp_gids;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> *seclabel;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> socketinfo *sockets;</span><br><span class="line">    <span class="keyword">struct</span> svcenvinfo *envvars;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> action onrestart;  <span class="comment">/* Actions to execute on restart. */</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* keycodes for triggering this service via /dev/keychord */</span></span><br><span class="line">    <span class="keyword">int</span> *keycodes;</span><br><span class="line">    <span class="keyword">int</span> nkeycodes;</span><br><span class="line">    <span class="keyword">int</span> keychord_id;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ioprio_class;</span><br><span class="line">    <span class="keyword">int</span> ioprio_pri;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> nargs;</span><br><span class="line">    <span class="comment">/* "MUST BE AT THE END OF THE STRUCT" */</span></span><br><span class="line">    <span class="keyword">char</span> *args[<span class="number">1</span>];</span><br><span class="line">&#125;; <span class="comment">/*     ^-------'args' MUST be at the end of this struct! */</span></span><br></pre></td></tr></table></figure>
+<p>当rc文件解析完之后,所有的service会在一个service_list链表中去,注意重名的service只会被解析一个.</p>
+<h4 id="解析action段">解析action段</h4><p>和解析service段几乎一样,这里会申请一个action结构体,并且初始化他,然后加入一个action_list链表中去.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> *<span class="title">parse_action</span><span class="params">(<span class="keyword">struct</span> parse_state *state, <span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> action *act;</span><br><span class="line">    <span class="keyword">if</span> (nargs &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"actions must have a trigger\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (nargs &gt; <span class="number">2</span>) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"actions may not have extra parameters\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    act = <span class="built_in">calloc</span>(<span class="number">1</span>, <span class="keyword">sizeof</span>(*act));</span><br><span class="line">    act-&gt;name = args[<span class="number">1</span>];</span><br><span class="line">    list_init(&amp;act-&gt;commands);<span class="comment">//commands还是空的,会在parse_line_action中被初始化</span></span><br><span class="line">    list_init(&amp;act-&gt;qlist);</span><br><span class="line">    list_add_tail(&amp;action_list, &amp;act-&gt;alist);<span class="comment">//加入action_list链表</span></span><br><span class="line">        <span class="comment">/* <span class="label">XXX add to hash */</span></span><br><span class="line">    return act;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">parse_line_action</span><span class="params">(<span class="keyword">struct</span> parse_state* state, <span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> command *cmd;</span><br><span class="line">    <span class="keyword">struct</span> action *act = state-&gt;context;</span><br><span class="line">    <span class="keyword">int</span> (*func)(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args);</span><br><span class="line">    <span class="keyword">int</span> kw, n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nargs == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    kw = lookup_keyword(args[<span class="number">0</span>]);<span class="comment">//当然要查看关键字了,因为已经为每个关键字都事先定义好了处理函数了</span></span><br><span class="line">    <span class="keyword">if</span> (!kw_is(kw, COMMAND)) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"invalid command '%s'\n"</span>, args[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    n = kw_nargs(kw);</span><br><span class="line">    <span class="keyword">if</span> (nargs &lt; n) &#123;</span><br><span class="line">        parse_error(state, <span class="string">"%s requires %d %s\n"</span>, args[<span class="number">0</span>], n - <span class="number">1</span>,</span><br><span class="line">            n &gt; <span class="number">2</span> ? <span class="string">"arguments"</span> : <span class="string">"argument"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cmd = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(*cmd) + <span class="keyword">sizeof</span>(<span class="keyword">char</span>*) * nargs);</span><br><span class="line">    cmd-&gt;func = kw_func(kw);</span><br><span class="line">    cmd-&gt;line = state-&gt;line;</span><br><span class="line">    cmd-&gt;filename = state-&gt;filename;</span><br><span class="line">    cmd-&gt;nargs = nargs;</span><br><span class="line">    <span class="built_in">memcpy</span>(cmd-&gt;args, args, <span class="keyword">sizeof</span>(<span class="keyword">char</span>*) * nargs);</span><br><span class="line">    list_add_tail(&amp;act-&gt;commands, &amp;cmd-&gt;clist);<span class="comment">//这里初始化了commands!!!!</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="解析import">解析import</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">parse_import</span><span class="params">(<span class="keyword">struct</span> parse_state *state, <span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> listnode *import_list = state-&gt;priv;</span><br><span class="line">    <span class="keyword">struct</span> import *import;</span><br><span class="line">    <span class="keyword">char</span> conf_file[PATH_MAX];</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (nargs != <span class="number">2</span>) &#123;</span><br><span class="line">        ERROR(<span class="string">"single argument needed for import\n"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ret = expand_props(conf_file, args[<span class="number">1</span>], <span class="keyword">sizeof</span>(conf_file));</span><br><span class="line">    <span class="keyword">if</span> (ret) &#123;</span><br><span class="line">        ERROR(<span class="string">"error while handling import on line '%d' in '%s'\n"</span>,</span><br><span class="line">              state-&gt;line, state-&gt;filename);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    import = <span class="built_in">calloc</span>(<span class="number">1</span>, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> import));</span><br><span class="line">    import-&gt;filename = strdup(conf_file);</span><br><span class="line">    list_add_tail(import_list, &amp;import-&gt;<span class="built_in">list</span>);</span><br><span class="line">    INFO(<span class="string">"found import '%s', adding to import list"</span>, import-&gt;filename);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>import段处理很简单，parse_import()函数只是把脚本中的所有import语句先汇总成一个链表，记入state结构中，parse_config()会做处理</p>
+<p>parse_config末尾<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">parser_done:</span><br><span class="line">    list_for_each(node, &amp;import_list) &#123;</span><br><span class="line">         <span class="keyword">struct</span> import *import = node_to_item(node, <span class="keyword">struct</span> import, <span class="built_in">list</span>);</span><br><span class="line">         <span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">         INFO(<span class="string">"importing '%s'"</span>, import-&gt;filename);</span><br><span class="line">         ret = init_parse_config_file(import-&gt;filename);</span><br><span class="line">         <span class="keyword">if</span> (ret)</span><br><span class="line">             ERROR(<span class="string">"could not import file '%s' from '%s'\n"</span>,</span><br><span class="line">                   import-&gt;filename, fn);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结">总结</h3><p>init_parse_config_file(“/init.rc”)执行后,会形成两个链表:action_list和service_list.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/24/Zygote_2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 Lollipop的Zygote分析——下篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_init_2" data-title="Android 5.1 init进程分析下篇" data-url="http://www.iloveandroid.net/2015/09/25/Android_init_2/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

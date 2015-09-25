@@ -171,11 +171,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-setupJenkinsEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Android_init_2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/23/setupJenkinsEnvironment_2/" class="article-date">
-  	<time datetime="2015-09-23T11:38:39.000Z" itemprop="datePublished">2015-09-23</time>
+      <a href="/2015/09/25/Android_init_2/" class="article-date">
+  	<time datetime="2015-09-25T07:27:31.000Z" itemprop="datePublished">2015-09-25</time>
 </a>
     </div>
   
@@ -188,7 +188,322 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/23/setupJenkinsEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
+      <a class="article-title" href="/2015/09/25/Android_init_2/">Android 5.1 init进程分析下篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="解析rc文件">解析rc文件</h3><p>init进程相关的源码位置:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android源码/system/core/init/init.c</span><br></pre></td></tr></table></figure></p>
+<p>在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/25/Android_init_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/Zygote_2/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/24/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
+<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
+<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/24/Zygote_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/24/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/">ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。</p>
+<p>1.先检查cpu是否支持ardware virtualization,返回0表示不支持<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">egrep -c '(vmx|svm)' /<span class="keyword">proc</span>/cpuinfo</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/提高效率/">提高效率</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/24/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-studyGitlab_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/studyGitlab_1/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/24/studyGitlab_1/">持续集成系统学习之Gitlab篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面我们搭建了持续集成系统,那么现在就开始看看如何使用他们.首先看看Gitlab如何使用吧.另外今天刚刚从CSDN上看到消息,Gitlab所属的公司A轮成功融资400万美元,同时也宣布gitlab 8.0这两天就会发布.真是令人振奋的消息.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/24/studyGitlab_1/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-setupPhabricatorEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/setupPhabricatorEnvironment/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/24/setupPhabricatorEnvironment/">持续集成系统搭建之Phabricator篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在开始搭建代码评审环境，Phabricator是FaceBook的一个开源工具，非常流行，支持代码提交前审阅和代码提交后审阅。</p>
+<h3 id="phab安装">phab安装</h3><p>Phab依赖的组件较多，有： APache（nginx、lighttpd）、MYSQL、PHP（&gt;5.2）、git、PHP的扩展。一个一个安装的比较麻烦，幸好官方也提供了一键安装脚本。<br>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/24/setupPhabricatorEnvironment/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-setupJenkinsEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/setupJenkinsEnvironment_2/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/24/setupJenkinsEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
     </h1>
   
 
@@ -219,69 +534,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/23/setupJenkinsEnvironment_2/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-studyGitlab_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/22/studyGitlab_1/" class="article-date">
-  	<time datetime="2015-09-22T08:10:12.000Z" itemprop="datePublished">2015-09-22</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/22/studyGitlab_1/">持续集成系统学习之Gitlab篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面我们搭建了持续集成系统,那么现在就开始看看如何使用他们.首先看看Gitlab如何使用吧.另外今天刚刚从CSDN上看到消息,Gitlab所属的公司A轮成功融资400万美元,同时也宣布gitlab 8.0这两天就会发布.真是令人振奋的消息.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/22/studyGitlab_1/#more">more >></a>
+          <a  href="/2015/09/24/setupJenkinsEnvironment_2/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -301,8 +554,8 @@
     <article id="post-setupJenkinsEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/21/setupJenkinsEnvironment/" class="article-date">
-  	<time datetime="2015-09-21T12:48:58.000Z" itemprop="datePublished">2015-09-21</time>
+      <a href="/2015/09/24/setupJenkinsEnvironment/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
 </a>
     </div>
   
@@ -315,7 +568,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/setupJenkinsEnvironment/">持续集成系统搭建之Jenkins篇</a>
+      <a class="article-title" href="/2015/09/24/setupJenkinsEnvironment/">持续集成系统搭建之Jenkins篇</a>
     </h1>
   
 
@@ -345,70 +598,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/21/setupJenkinsEnvironment/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-setupPhabricatorEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/setupPhabricatorEnvironment/" class="article-date">
-  	<time datetime="2015-09-21T10:22:20.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/setupPhabricatorEnvironment/">持续集成系统搭建之Phabricator篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>现在开始搭建代码评审环境，Phabricator是FaceBook的一个开源工具，非常流行，支持代码提交前审阅和代码提交后审阅。</p>
-<h3 id="phab安装">phab安装</h3><p>Phab依赖的组件较多，有： APache（nginx、lighttpd）、MYSQL、PHP（&gt;5.2）、git、PHP的扩展。一个一个安装的比较麻烦，幸好官方也提供了一键安装脚本。<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/setupPhabricatorEnvironment/#more">more >></a>
+          <a  href="/2015/09/24/setupJenkinsEnvironment/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -428,8 +618,8 @@
     <article id="post-setupGitlabEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/21/setupGitlabEnvironment/" class="article-date">
-  	<time datetime="2015-09-21T07:53:53.000Z" itemprop="datePublished">2015-09-21</time>
+      <a href="/2015/09/24/setupGitlabEnvironment/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
 </a>
     </div>
   
@@ -442,7 +632,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/setupGitlabEnvironment/">持续集成系统搭建之Gitlab篇</a>
+      <a class="article-title" href="/2015/09/24/setupGitlabEnvironment/">持续集成系统搭建之Gitlab篇</a>
     </h1>
   
 
@@ -470,7 +660,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/21/setupGitlabEnvironment/#more">more >></a>
+          <a  href="/2015/09/24/setupGitlabEnvironment/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -487,11 +677,11 @@
 
 
   
-    <article id="post-ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-linux下批量替换文件内容" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" class="article-date">
-  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
+      <a href="/2015/09/24/linux下批量替换文件内容/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
 </a>
     </div>
   
@@ -504,7 +694,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/">ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度</a>
+      <a class="article-title" href="/2015/09/24/linux下批量替换文件内容/">linux下批量替换文件内容</a>
     </h1>
   
 
@@ -513,8 +703,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。</p>
-<p>1.先检查cpu是否支持ardware virtualization,返回0表示不支持<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">egrep -c '(vmx|svm)' /<span class="keyword">proc</span>/cpuinfo</span><br></pre></td></tr></table></figure></p>
+        <hr>
+<h2 id="demo">demo</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> `grep 查找字段 -rl 路径`</span><br><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> ./*</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -522,7 +712,70 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/提高效率/">提高效率</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux常用命令/">linux常用命令</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/linux基础/">linux基础</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/24/linux下批量替换文件内容/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-利用清华大学开源镜像下载 Android5.1 源码" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/24/利用清华大学开源镜像下载 Android5.1 源码/" class="article-date">
+  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/24/利用清华大学开源镜像下载 Android5.1 源码/">利用清华大学开源镜像下载 Android5.1 源码</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>以前都是从Google的站点下载同步更新的，但是现在有了国内的镜像站点就好多了<br>清华大学不愧为国内第一名校，我等程序猿也能沾沾光，再也不愁为下载android源码而苦恼了！！<br>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android底层/">Android底层</a></li></ul>
 	</div>
 
       
@@ -533,264 +786,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/21/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_2/" class="article-date">
-  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
-<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
-<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_2/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_1/" class="article-date">
-  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_1/">Android 5.1 Lollipop的Zygote分析——上篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="整体介绍">整体介绍</h3><p>因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。</p>
-<p>app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行APK程序的核心服务。zygote进程首先加载启动ART虚拟机，然后在加载一些系统核心类和资源，这些都是其他APK程序都可能要用到的资源。最后zygote进程进入监听状态。一旦Android上层有创建新APK进程的需求，zygote进程便会为其分裂出新的进程。这个APK新进程，一开始便拥有了ART虚拟机和zygote预先加载的各种系统类和资源，能大大加速apk应用的启动，同时也能节省很大的内存开支。</p>
-<p>这里解释一下，为什么zygote进程要预先加载系统资源。zygote进程实际上是利用fork分裂出新的进程的，linux内核采用了写时复制技术：内核只为新生成的子进程创建虚拟空间结构，它们来自于父进程的虚拟地址结构，但是不为子进程的虚拟地址分配物理内存，它们共享父进程的物理空间，当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间。</p>
-<p>通常来说，在利用fork创建出的子进程中会调用exec系统调用，去执行新的其他程序。在fork之后exec之前两个进程用的是相同的物理空间（内存区），子进程的代码段、数据段、堆栈都是指向父进程的物理空间，也就是说，两者的虚拟空间不同，但其对应的物理空间是同一个。当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间，如果不是因为exec，内核会给子进程的数据段、堆栈段分配相应的物理空间（至此两者有各自的进程空间，互不影响），而代码段继续共享父进程的物理空间（两者的代码完全相同）。而如果是因为exec，由于两者执行的代码不同，子进程的代码段也会分配单独的物理空间。    </p>
-<p>因为Android上层APK程序不会去修改zygote进程预先加载的系统类和系统资源，所以就不需要为每个APK进程重新分配这些资源，所有APK程序都共用在zygote预先加载的这些资源，所以性能自然也就提高了。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-GradleNdkSupport" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/GradleNdkSupport/" class="article-date">
-  	<time datetime="2015-09-21T02:02:15.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/GradleNdkSupport/">让Gradle构建支持NDK</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原本google公司承诺Android studio 1.3开始支持NDK,但是现在已经到Android studio 1.4 beat 3了，对NDK的支持还是实验性的。那么既然已经对Gradle的有了了解了，那索性就学着添加相关的task让利用$NDK/ndk-build命令编译。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/GradleNdkSupport/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-GradleProject" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/17/GradleProject/" class="article-date">
-  	<time datetime="2015-09-17T02:06:14.000Z" itemprop="datePublished">2015-09-17</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/17/GradleProject/">Gradle中的对象与工作流程</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="简述">简述</h3><p>引用官方文档中的原话：</p>
-<p>First, Gradle scripts are configuration scripts. As the script executes, it configures an object of a particular type. For example, as a build script executes, it configures an object of type Project. This object is called the delegate object of the script. The following table shows the delegate for each type of Gradle script. </p>
-<p>大意就是说Gradle中的脚本最终都会转换为某个特定类型的对象。如下图所示：</p>
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gradle-porject-1.png" alt="Gradle 对象"></p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/17/GradleProject/#more">more >></a>
+          <a  href="/2015/09/24/利用清华大学开源镜像下载 Android5.1 源码/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
