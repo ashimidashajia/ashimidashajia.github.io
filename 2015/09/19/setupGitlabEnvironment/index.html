@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>持续集成系统搭建之Gitlab篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="公司领导让我搭建一个集代码管理，代码评审，自动化编译测试功能与一身的持续集成系统。现将搭建过程整理了一下，算是做个备份吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持续集成系统搭建之Gitlab篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/19/setupGitlabEnvironment/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="公司领导让我搭建一个集代码管理，代码评审，自动化编译测试功能与一身的持续集成系统。现将搭建过程整理了一下，算是做个备份吧。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-3.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-4.png">
+<meta property="og:updated_time" content="2015-09-25T07:42:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="持续集成系统搭建之Gitlab篇">
+<meta name="twitter:description" content="公司领导让我搭建一个集代码管理，代码评审，自动化编译测试功能与一身的持续集成系统。现将搭建过程整理了一下，算是做个备份吧。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 15px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 20px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-setupGitlabEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/19/setupGitlabEnvironment/" class="article-date">
+  	<time datetime="2015-09-19T01:41:12.000Z" itemprop="datePublished">2015-09-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      持续集成系统搭建之Gitlab篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>公司领导让我搭建一个集代码管理，代码评审，自动化编译测试功能与一身的持续集成系统。现将搭建过程整理了一下，算是做个备份吧。</p>
+<a id="more"></a>
+<p>首先搭建的是代码管理系统，这里使用的gitlab.功能十分强大，完全可以搭建一个私有的github。搭建在公司自己的服务器上，自由控制。</p>
+<p><a href="https://about.gitlab.com/downloads/#ubuntu1404" target="_blank" rel="external">gitlab官网</a>中有详细的步骤。</p>
+<h3 id="安装所需的组件">安装所需的组件</h3><p>执行下面的命令：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get <span class="operator"><span class="keyword">install</span> curl openssh-<span class="keyword">server</span> ca-certificates postfix</span></span><br></pre></td></tr></table></figure></p>
+<p>其中postfix配置界面，选择如下所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-1.png" alt="postfix配置"></p>
+<p>下一步,设置发送邮件的发送者名字。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-2.png" alt="mail name"></p>
+<h3 id="安装gitlab">安装gitlab</h3><p>国内不翻墙的话，是无法从官网下载安装包的。我已经下载了最新版本，并且上传到了百度云：</p>
+<p><a href="http://pan.baidu.com/s/1c0djCdi" target="_blank" rel="external">gitlab安装包</a></p>
+<p>下载后，执行如下命令，安装gilab</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i gitlab-ce_7<span class="number">.14</span><span class="number">.3</span>-ce<span class="number">.0</span>_amd64</span><br></pre></td></tr></table></figure>
+<h3 id="配置Gitlab">配置Gitlab</h3><p>主要是配置gitlab的中仓库存储的位置和配置邮件通知功能。</p>
+<p>gitlab的配置文件是/etc/gitlab/gitlab.rb</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/gi</span>tlab<span class="regexp">/gitlab.rb</span></span><br></pre></td></tr></table></figure>
+<p>找到git_data_dir，默认是被注释掉的，而且默认存储目录是/var/opt/gitlab/git-data,可以根据自己的实际情况修改为其他目录。</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#git_dat<span class="built_in">a_dir</span> <span class="string">"/var/opt/gitlab/git-data"</span></span><br><span class="line">git_dat<span class="built_in">a_dir</span> <span class="string">"XXXXXX"</span></span><br></pre></td></tr></table></figure>
+<p>重头戏是配置gitlab支持邮件通知功能，这样每当注册成员，或者将成员添加到某个项目等等操作的时候，相关人员都会收到邮件通知。</p>
+<p>腾讯企业邮箱配置：<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">####</span><br><span class="line"># gitlab.yml configuration #</span><br><span class="line">###</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># gitlab_rails['gitlab_ssh_host'] = 'ssh.host_example.com'</span></span><br><span class="line">gitlab_rails[<span class="string">'time_zone'</span>] = <span class="string">'Asia/Shanghai'</span></span><br><span class="line">gitlab_rails[<span class="string">'gitlab_email_enabled'</span>] = <span class="literal">true</span></span><br><span class="line">gitlab_rails[<span class="string">'gitlab_email_from'</span>] = <span class="string">'gitlab服务器发送邮件的邮箱'</span></span><br><span class="line"><span class="comment">#发送邮件时，显示的邮件发送者名称</span></span><br><span class="line">gitlab_rails[<span class="string">'gitlab_email_display_name'</span>] = <span class="string">'CI-gitlab'</span></span><br><span class="line">gitlab_rails[<span class="string">'gitlab_email_reply_to'</span>] = <span class="string">'gitlab服务器发送邮件的邮箱'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">##</span></span><br><span class="line"><span class="comment"># GitLab email server settings #</span></span><br><span class="line"><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">######</span><span class="comment">##</span></span><br><span class="line"><span class="comment"># see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/629def0a7a26e7c2326566f0758d4a27857b52a3/doc/settings/smtp.md#smtp-settings</span></span><br><span class="line"><span class="comment"># Use smtp instead of sendmail/postfix.</span></span><br><span class="line"></span><br><span class="line">gitlab_rails[<span class="string">'smtp_enable'</span>] = <span class="literal">true</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_address'</span>] = <span class="string">"smtp.exmail.qq.com"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_port'</span>] = <span class="number">465</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_user_name'</span>] = <span class="string">"gitlab服务器发送邮件的邮箱"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_password'</span>] = <span class="string">"邮箱的密码"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_domain'</span>] = <span class="string">"邮箱所在的域"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_authentication'</span>] = <span class="string">"login"</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_enable_starttls_auto'</span>] = <span class="literal">true</span></span><br><span class="line">gitlab_rails[<span class="string">'smtp_tls'</span>] = <span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
+<p>例如邮箱admin@owent.net，配置如下</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># <span class="atom">mail</span> <span class="atom">config</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_enable'</span>] = <span class="atom">true</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_address'</span>] = <span class="string">"smtp.exmail.qq.com"</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_port'</span>] = <span class="number">465</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_user_name'</span>] = <span class="string">"admin@owent.net"</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_password'</span>] = <span class="string">"admin@owent.net的密码"</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_domain'</span>] = <span class="string">"owent.net"</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_authentication'</span>] = <span class="string">"login"</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_enable_starttls_auto'</span>] = <span class="atom">true</span></span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'smtp_tls'</span>] = <span class="atom">true</span></span><br><span class="line"> </span><br><span class="line"># <span class="name">If</span> <span class="atom">your</span> <span class="name">SMTP</span> <span class="atom">server</span> <span class="atom">does</span> <span class="atom">not</span> <span class="atom">like</span> <span class="atom">the</span> <span class="atom">default</span> <span class="string">'From: gitlab@localhost'</span> <span class="atom">you</span></span><br><span class="line"># # <span class="atom">can</span> <span class="atom">change</span> <span class="atom">the</span> <span class="string">'From'</span> <span class="atom">with</span> <span class="atom">this</span> <span class="atom">setting</span>.</span><br><span class="line"><span class="atom">gitlab_rails</span>[<span class="string">'gitlab_email_from'</span>] = <span class="string">'admin@owent.net'</span></span><br></pre></td></tr></table></figure>
+<p>配置访问地址</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">external_url</span> <span class="string">'http://XXXX'</span></span><br></pre></td></tr></table></figure>
+<p>然后在/etc/hosts</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>       XXXX</span><br></pre></td></tr></table></figure>
+<h3 id="生效配置和启动gitlab">生效配置和启动gitlab</h3><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo /etc/<span class="keyword">init</span>.d/networking restart</span><br><span class="line">sudo /etc/<span class="keyword">init</span>.d/<span class="keyword">postfix</span> restart</span><br><span class="line">sudo gitlab-ctl reconfigure</span><br></pre></td></tr></table></figure>
+<p>等待一分钟左右：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Running handlers:</span><br><span class="line">Running handlers complete</span><br><span class="line">Chef Client finished, <span class="number">179</span>/<span class="number">199</span> resources updated in <span class="number">61.709449475</span> seconds</span><br><span class="line">gitlab Reconfigured!</span><br></pre></td></tr></table></figure>
+<p>配置成功。</p>
+<h3 id="使用">使用</h3><p>在本地浏览器中输入你在/etc/hosts设置的域名，在其他机器上利用服务器IP地址也可访问。</p>
+<p>如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-3.png" alt="gitlab login"></p>
+<p>默认管理员的账户密码：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Username</span>: <span class="string">root</span></span><br><span class="line"><span class="attribute">Password</span>: <span class="string">5iveL!fe</span></span><br></pre></td></tr></table></figure>
+<p>登陆成功后，会提示你为root账号修改密码：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gitlab-env-4.png" alt="修改密码"></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/19/setupJenkinsEnvironment/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          持续集成系统搭建之Jenkins篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/18/GradleNdkSupport/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">让Gradle构建支持NDK</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="setupGitlabEnvironment" data-title="持续集成系统搭建之Gitlab篇" data-url="http://www.iloveandroid.net/2015/09/19/setupGitlabEnvironment/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
