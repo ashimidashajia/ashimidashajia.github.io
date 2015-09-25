@@ -175,7 +175,7 @@
   
     <div class="article-meta">
       <a href="/2015/09/25/Android_init_2/" class="article-date">
-  	<time datetime="2015-09-25T07:27:31.000Z" itemprop="datePublished">2015-09-25</time>
+  	<time datetime="2015-09-25T07:31:39.000Z" itemprop="datePublished">2015-09-25</time>
 </a>
     </div>
   
@@ -188,7 +188,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/25/Android_init_2/">Android 5.1 init进程分析下篇</a>
+      <a class="article-title" href="/2015/09/25/Android_init_2/">Android 5.1 init进程分析中篇</a>
     </h1>
   
 
@@ -234,11 +234,11 @@
 
 
   
-    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Android_init_1" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/24/Zygote_2/" class="article-date">
-  	<time datetime="2015-09-24T01:46:38.000Z" itemprop="datePublished">2015-09-24</time>
+      <a href="/2015/09/24/Android_init_1/" class="article-date">
+  	<time datetime="2015-09-24T07:33:06.000Z" itemprop="datePublished">2015-09-24</time>
 </a>
     </div>
   
@@ -251,7 +251,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/24/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
+      <a class="article-title" href="/2015/09/24/Android_init_1/">Android 5.1 init进程分析上篇</a>
     </h1>
   
 
@@ -260,9 +260,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
-<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
-<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
+        <h3 id="前言">前言</h3><p>Android系统是运行在linux内核之上的,熟悉linux的人应该都知道内核启动后,第一个进程是init进程.Android系统当然也不例外.只不过相对于原生linux init进程,Android 的init进程有其自己的特点和规则.</p>
+<p>Android init进程会初始化Android的属性系统,这个后续会单独介绍,因为属性系统很重要.init进程主要是加载和解析.rc文件,来启动Android系统的服务.</p>
       
     </div>
     
@@ -281,7 +280,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/24/Zygote_2/#more">more >></a>
+          <a  href="/2015/09/24/Android_init_1/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
