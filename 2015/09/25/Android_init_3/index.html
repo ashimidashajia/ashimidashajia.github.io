@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Android 5.1 Lollipop init分析下篇 | 码农故事</title>
+  <title>Android 5.1 init进程分析下篇 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前面我们只是解析了rc文件,并且将其内容填充到了两个链表:action_list和service_list中去.那么这些action和service是怎么被执行的呢?现在就来详细分析下吧.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 5.1 Lollipop init分析下篇">
+<meta property="og:title" content="Android 5.1 init进程分析下篇">
 <meta property="og:url" content="http://www.iloveandroid.net/2015/09/25/Android_init_3/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="前面我们只是解析了rc文件,并且将其内容填充到了两个链表:action_list和service_list中去.那么这些action和service是怎么被执行的呢?现在就来详细分析下吧.">
-<meta property="og:updated_time" content="2015-09-25T09:53:55.000Z">
+<meta property="og:updated_time" content="2015-09-25T09:58:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 5.1 Lollipop init分析下篇">
+<meta name="twitter:title" content="Android 5.1 init进程分析下篇">
 <meta name="twitter:description" content="前面我们只是解析了rc文件,并且将其内容填充到了两个链表:action_list和service_list中去.那么这些action和service是怎么被执行的呢?现在就来详细分析下吧.">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
@@ -187,7 +187,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Android 5.1 Lollipop init分析下篇
+      Android 5.1 init进程分析下篇
     </h1>
   
 
@@ -273,7 +273,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">restart_service_if_needed</span><span class="params">(<span class="keyword">struct</span> service *svc)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">time_t</span> next_start_time = svc-&gt;time_started + <span class="number">5</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (next_start_time &lt;= gettime()) &#123;</span><br><span class="line">        svc-&gt;flags &amp;= (~SVC_RESTARTING);</span><br><span class="line">        service_start(svc, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> ((next_start_time &lt; process_needs_restart) ||</span><br><span class="line">        (process_needs_restart == <span class="number">0</span>)) &#123;</span><br><span class="line">        process_needs_restart = next_start_time;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>为了防止出现service连续紧密重启的情况，next_start_time会赋值为svc-&gt;time_started + 5，也就是说，至少得喘息个5毫秒，然后才能进行下一次重启。这就是Android中重启service的具体流程。 </p>
 <p>init还有一个是组合键启动某个service,但是现在用的不多了,也就不说了.</p>
-<h3 id="总结">总结</h3><p>init进程中有三个链表,action_list,action_queue,service_list.其中action_queue中是当前要被执行的action,会在init中的for循环中被循环检测执行.service是通过action中的start或者class_start触发执行的.service的重启利用到了signal信号的机制.服务被重启后,会设置init.srv.servicename的属性值为SVC_RESTARTING.service的重启也是在for循环中执行的,如果某个服务频繁重启,那么至少间隔5毫秒.</p>
+<h3 id="总结">总结</h3><p>init进程中有三个链表,action_list,action_queue,service_list.其中action_queue中是当前要被执行的action,会在init中的for循环中被循环检测执行,而且执行完后,就会从action_queue链表中删除.service是通过action中的start或者class_start触发执行的.service的重启利用到了signal信号的机制.服务被重启后,会设置init.srv.servicename的属性值为SVC_RESTARTING.service的重启也是在for循环中执行的,如果某个服务频繁重启,那么至少间隔5毫秒.</p>
 
       
     </div>
@@ -314,7 +314,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android_init_3" data-title="Android 5.1 Lollipop init分析下篇" data-url="http://www.iloveandroid.net/2015/09/25/Android_init_3/"></div>
+	<div class="ds-thread" data-thread-key="Android_init_3" data-title="Android 5.1 init进程分析下篇" data-url="http://www.iloveandroid.net/2015/09/25/Android_init_3/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
