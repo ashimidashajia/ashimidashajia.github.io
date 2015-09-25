@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iloveandroid.net/2015/09/20/studyGitlab_1/</loc>
+    <lastmod>2015-09-25T07:49:27.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2015/09/18/ubuntu14.04%20%E5%AE%89%E8%A3%85HAXM(KVM)%E6%8F%90%E5%8D%87android%E8%99%9A%E6%8B%9F%E6%9C%BAAndroid%20x86%E8%BF%90%E8%A1%8C%E9%80%9F%E5%BA%A6/</loc>
     <lastmod>2015-09-25T07:47:24.000Z</lastmod>
   </url>
@@ -84,11 +89,6 @@
   <url>
     <loc>http://www.iloveandroid.net/2015/09/25/Android_init_2/</loc>
     <lastmod>2015-09-25T07:32:44.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/09/24/studyGitlab_1/</loc>
-    <lastmod>2015-09-23T14:14:00.000Z</lastmod>
   </url>
   
   <url>
