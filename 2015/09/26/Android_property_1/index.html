@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 property属性系统分析上篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="简介在”init进程分析”系统文章中,主要介绍了init进程如何处理rc文件,没有过多讲解init进程启动的相关核心服务.例如Android属性系统等,接下来的会逐个讲解init进程启动的核心android服务.
+Android属性系统其实可以理解为键值对:属性名字和属性值;很类似于windows上的注册表.
+我们可以通过在adb shell里敲入getprop命令来获取当前系统的所有属性内容:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 property属性系统分析上篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/26/Android_property_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="简介在”init进程分析”系统文章中,主要介绍了init进程如何处理rc文件,没有过多讲解init进程启动的相关核心服务.例如Android属性系统等,接下来的会逐个讲解init进程启动的核心android服务.
+Android属性系统其实可以理解为键值对:属性名字和属性值;很类似于windows上的注册表.
+我们可以通过在adb shell里敲入getprop命令来获取当前系统的所有属性内容:">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_property-1-1.png">
+<meta property="og:updated_time" content="2015-09-28T05:53:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 property属性系统分析上篇">
+<meta name="twitter:description" content="简介在”init进程分析”系统文章中,主要介绍了init进程如何处理rc文件,没有过多讲解init进程启动的相关核心服务.例如Android属性系统等,接下来的会逐个讲解init进程启动的核心android服务.
+Android属性系统其实可以理解为键值对:属性名字和属性值;很类似于windows上的注册表.
+我们可以通过在adb shell里敲入getprop命令来获取当前系统的所有属性内容:">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_property_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/26/Android_property_1/" class="article-date">
+  	<time datetime="2015-09-25T16:27:43.000Z" itemprop="datePublished">2015-09-26</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 property属性系统分析上篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介">简介</h3><p>在”init进程分析”系统文章中,主要介绍了init进程如何处理rc文件,没有过多讲解init进程启动的相关核心服务.例如Android属性系统等,接下来的会逐个讲解init进程启动的核心android服务.</p>
+<p>Android属性系统其实可以理解为键值对:属性名字和属性值;很类似于windows上的注册表.</p>
+<p>我们可以通过在adb shell里敲入getprop命令来获取当前系统的所有属性内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/ <span class="comment"># getprop                                                </span></span><br><span class="line">[ARGH]: [ARGH]</span><br><span class="line">[dalvik.vm.dex2oat-Xms]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.dex2oat-Xmx]: [<span class="number">512</span>m]</span><br><span class="line">[dalvik.vm.heapsize]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.image-dex2oat-Xms]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.image-dex2oat-Xmx]: [<span class="number">64</span>m]</span><br><span class="line">...................................</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>我们还可以敲入类似“getprop 属性名”的命令来获取特定属性的值。另外，设置属性值的方法也很简单，只需敲入“setprop 属性名 新值”命令即可。</p>
+<p>Android 属性机制如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_property-1-1.png" alt="android 属性"></p>
+<p>大部分属性是记录在某些文件中的,Android系统会在init进程启动的时候,加载这些文件,初始化属性系统.那些属性键值对是存储在一块儿共享内存中的,所有的属性都可以直读取,但是不能直接设置属性.设置属性的时候,必须依赖于property service.实际上就是socket通信.</p>
+<p>总的来说有以下特点:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>）  系统一启动就会从若干属性脚本文件中加载属性内容；</span><br><span class="line"><span class="number">2</span>）  系统中的所有属性（key/value）会存入同一块共享内存中；</span><br><span class="line"><span class="number">3</span>）  系统中的各个进程会将这块共享内存映射到自己的内存空间，这样就可以直接读取属性内容了；</span><br><span class="line"><span class="number">4</span>）  系统中只有一个实体可以设置、修改属性值，它就是属性服务（Property Service）；</span><br><span class="line"><span class="number">5</span>）  不同进程只可以通过socket方式，向属性服务发出修改属性值的请求，而不能直接修改属性值；</span><br><span class="line"><span class="number">6</span>）  共享内存中的键值内容会以一种字典树的形式进行组织。</span><br></pre></td></tr></table></figure>
+<p>存储属性的文件:<br><figure class="highlight haskell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/<span class="default"><span class="keyword">default</span>.prop</span></span><br><span class="line">/system/build.prop</span><br><span class="line">/system/<span class="default"><span class="keyword">default</span>.prop（该文件不一定存在）</span></span><br><span class="line">/<span class="typedef"><span class="keyword">data</span>/local.prop</span></span><br><span class="line">/<span class="typedef"><span class="keyword">data</span>/property目录里的若干脚本</span></span><br></pre></td></tr></table></figure></p>
+<p>以ro开头的属性都是只读属性,以persist开头的属性,一般都是从/data/property目录中加载的.</p>
+<p>个人理解属性系统有两个作用:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">１，设置属性触发相应动作</span><br><span class="line">２，作为程序中的判断条件</span><br></pre></td></tr></table></figure></p>
+<h3 id="初始化共享内存">初始化共享内存</h3><p>属性是存储在共享内存中的,而要在使用共享内存之前呢,又必须要先初始化共享内存.初始化之后,肯定要加载那些存储属性的文件等等.这些都是init进程中完成的.</p>
+<p>init.c 的main函数中调用了property_init函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">property_init</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    init_property_area();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">init_property_area</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (property_area_inited)</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(__system_property_area_init())<span class="comment">//会以读写方式打开/dev/__properties__</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(init_workspace(&amp;pa_workspace, <span class="number">0</span>))<span class="comment">//这里面会以只读方式再次打开/dev/__properties__</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    fcntl(pa_workspace.fd, F_SETFD, FD_CLOEXEC);</span><br><span class="line"></span><br><span class="line">    property_area_inited = <span class="number">1</span>;<span class="comment">//表明共享内存已经被初始化了</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>system_property_area_init用来初始化共享内存.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> __system_property_area_init()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> map_prop_area_rw();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">map_prop_area_rw</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">/* dev is a tmpfs that we can use to carve a shared workspace</span><br><span class="line">     * out of, so let's do that...</span><br><span class="line">     */</span></span><br><span class="line">    <span class="comment">//proerty_file是 /dev/__properties__,要注意,这里是以可读可写方式打开的,这个文件描述符是给property service使用的</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> fd = open(property_filename,</span><br><span class="line">                        O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC | O_EXCL, <span class="number">0444</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (errno == EACCES) &#123;</span><br><span class="line">            <span class="comment">/* for consistency with the case where the process has already</span><br><span class="line">             * mapped the page in and segfaults when trying to write to it</span><br><span class="line">             */</span></span><br><span class="line">            <span class="built_in">abort</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Is this really required ? Does android run on any kernels that</span></span><br><span class="line">    <span class="comment">// don't support O_CLOEXEC ?</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> ret = fcntl(fd, F_SETFD, FD_CLOEXEC);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ftruncate(fd, PA_SIZE) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pa_size = PA_SIZE;</span><br><span class="line">    pa_data_size = pa_size - <span class="keyword">sizeof</span>(prop_area);</span><br><span class="line">    compat_mode = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//----------------pa_size大小为128K</span></span><br><span class="line">    <span class="keyword">void</span> *<span class="keyword">const</span> memory_area = mmap(<span class="literal">NULL</span>, pa_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (memory_area == MAP_FAILED) &#123;</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    prop_area *pa = <span class="keyword">new</span>(memory_area) prop_area(PROP_AREA_MAGIC, PROP_AREA_VERSION);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* plug into the lib property services */</span></span><br><span class="line">    __system_property_area__ = pa;<span class="comment">//共享内存的起始地址存储在这个全局变量上</span></span><br><span class="line"></span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，在init进程的main()函数里，打开了一个设备文件“/dev/<strong>properties</strong>”，并把它设定为128KB大小，接着调用mmap()将这块内存映射到init进程空间了。这个内存的首地址被记录在<strong>system_property_area</strong>全局变量里，以后每添加或修改一个属性，都会基于这个<strong>system_property_area</strong>变量来计算位置。</p>
+<p>在来看下面的函数:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">init_workspace</span><span class="params">(workspace *w, size_t size)</span><span class="comment">//size传入的参数值是0</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *data;</span><br><span class="line">    <span class="keyword">int</span> fd = open(PROP_FILENAME, O_RDONLY | O_NOFOLLOW);<span class="comment">//以只读的方式再次打开/dev/__properties__,</span></span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    w-&gt;size = size;</span><br><span class="line">    w-&gt;fd = fd;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>打开的句柄记录在pa_workspace.fd处，以后每当init进程调用service_start()时，会执行下面的代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (properties_inited()) &#123;</span><br><span class="line">         get_property_workspace(&amp;fd, &amp;sz);</span><br><span class="line">         <span class="built_in">sprintf</span>(tmp, <span class="string">"%d,%d"</span>, dup(fd), sz);</span><br><span class="line">         add_environment(<span class="string">"ANDROID_PROPERTY_WORKSPACE"</span>, tmp);</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+<p>说白了就是把 pa_workspace.fd 的句柄记入一个名叫“ ANDROID_PROPERTY_WORKSPACE ”的环境变量去,另外size似乎没什么用,一直是0.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/ <span class="comment"># echo $ANDROID_PROPERTY_WORKSPACE                       </span></span><br><span class="line"><span class="number">8</span>,<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>存入环境变量的作用是其他进程可以很方便拿到文件描述符fd,利用这个fd就可以读取属性值了.</p>
+<p>为什么要两次open那个/dev/<strong>properties</strong>文件呢？是这样的：第一次open的句柄，最终是给属性服务自己用的，所以需要有读写权限；而第二次open的句柄，会被记入pa_workspace.fd，并在合适时机添加进环境变量，供其他进程使用，因此只能具有读取权限。</p>
+<h3 id="初始化属性系统">初始化属性系统</h3><p>main()函数在设置好属性内存块之后，会调用queue_builtin_action()函数向内部的action_list列表添加一个action.后续，系统会在合适时机回调“由queue_builtin_action()的参数”所指定的property_service_init_action()函数.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">property_service_init_action</span><span class="params">(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">/* read any property files on system or data and</span><br><span class="line">     * fire up the property service.  This must happen</span><br><span class="line">     * after the ro.foo properties are set above so</span><br><span class="line">     * that /data/local.prop cannot interfere with them.</span><br><span class="line">     */</span></span><br><span class="line">    start_property_service();</span><br><span class="line">    <span class="keyword">if</span> (get_property_set_fd() &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        ERROR(<span class="string">"start_property_service() failed\n"</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">start_property_service</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fd;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    fd = create_socket(PROP_SERVICE_NAME, SOCK_STREAM, <span class="number">0666</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span>(fd &lt; <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">    fcntl(fd, F_SETFD, FD_CLOEXEC);</span><br><span class="line">    fcntl(fd, F_SETFL, O_NONBLOCK);</span><br><span class="line"></span><br><span class="line">    listen(fd, <span class="number">8</span>);</span><br><span class="line">    property_set_fd = fd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很简单,就是创建了一个套接字,然后监听.这个套接字是UNIX域的,在/dev/socket/property_service.</p>
+<p>这个socket是专门用来监听其他进程发来的“修改”属性值的命令的，它被设置成“非阻塞”（O_NONBLOCK）的socket。 </p>
+<h3 id="加载属性文件">加载属性文件</h3><p>属性文件位置:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PROP_PATH_RAMDISK_DEFAULT  <span class="string">"/default.prop"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PROP_PATH_SYSTEM_BUILD     <span class="string">"/system/build.prop"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PROP_PATH_SYSTEM_DEFAULT   <span class="string">"/system/default.prop"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PROP_PATH_VENDOR_BUILD     <span class="string">"/vendor/build.prop"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PROP_PATH_LOCAL_OVERRIDE   <span class="string">"/data/local.prop"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PROP_PATH_FACTORY          <span class="string">"/factory/factory.prop"</span></span></span><br></pre></td></tr></table></figure></p>
+<p>属性文件的加载也是在init.c的main函数中.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INFO(<span class="string">"property init\n"</span>);</span><br><span class="line"> property_load_boot_defaults();</span><br></pre></td></tr></table></figure>
+<p>core/init/Property_service.c:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">property_load_boot_defaults</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    load_properties_from_file(PROP_PATH_RAMDISK_DEFAULT, <span class="literal">NULL</span>);<span class="comment">//加载/default.prop</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里只是加载了根目录下的default.prop.也就是ramdisk中的default.prop,那么其他属性文件却没有在main函数中看到有加载.那就只有一种可能了,就是rc文件中肯定有与属性相关的段.</p>
+<p>init.rc中,果不其然有与属性相关的段:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">on load_all_props_action</span><br><span class="line">    load_all_props</span><br><span class="line"></span><br><span class="line">on late-init</span><br><span class="line">    ...............................</span><br><span class="line">    trigger load_all_props_action</span><br><span class="line">    ...............................</span><br></pre></td></tr></table></figure></p>
+<p>load_all_props是一个关键字,其处理函数为:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">do_load_all_props</span><span class="params">(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nargs == <span class="number">1</span>) &#123;</span><br><span class="line">        load_all_props();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>core/init/Property_service.c:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">load_all_props</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    load_properties_from_file(PROP_PATH_SYSTEM_BUILD, <span class="literal">NULL</span>);</span><br><span class="line">    load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT, <span class="literal">NULL</span>);</span><br><span class="line">    load_properties_from_file(PROP_PATH_VENDOR_BUILD, <span class="literal">NULL</span>);</span><br><span class="line">    load_properties_from_file(PROP_PATH_FACTORY, <span class="string">"ro.*"</span>);</span><br><span class="line"></span><br><span class="line">    load_override_properties();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Read persistent properties after all default values have been loaded. */</span></span><br><span class="line">    load_persistent_properties();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>加载完所有的属性文件之后,还要进行一个很重要的操作.前面我们提到过,属性可以作为触发条件对吧,那么既然现在我们已经加载了所有的属性,那么就可以看看这些属性是否可以触发某些动作了.</p>
+<p>init.c main函数中:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* run all property triggers based on current state of the properties */</span></span><br><span class="line">queue_builtin_action(queue_property_triggers_action, <span class="string">"queue_property_triggers"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>与当初init.rc里记录的某action的触发条件匹配时，就把该action插入action_queue的尾部.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/26/Android_property_2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android 5.1 property属性系统分析下篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/25/Android_init_3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 init进程分析下篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_property_1" data-title="Android 5.1 property属性系统分析上篇" data-url="http://www.iloveandroid.net/2015/09/26/Android_property_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

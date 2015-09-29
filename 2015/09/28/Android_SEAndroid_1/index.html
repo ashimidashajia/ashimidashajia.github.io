@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 SEAndroid分析之启动篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 SEAndroid分析之启动篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/28/Android_SEAndroid_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroi">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-3.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-4.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-5.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-6.png">
+<meta property="og:updated_time" content="2015-09-29T03:53:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 SEAndroid分析之启动篇">
+<meta name="twitter:description" content="前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroi">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_SEAndroid_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/28/Android_SEAndroid_1/" class="article-date">
+  	<time datetime="2015-09-28T05:55:41.000Z" itemprop="datePublished">2015-09-28</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 SEAndroid分析之启动篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroid中,root用户,也仅仅是一个普通用户而已.</p>
+<a id="more"></a>
+<h3 id="Android_sandbox_模型">Android sandbox 模型</h3><p>Android基于linux系统,Android 自然而然的继承了linux的沙箱模型,只不过Android做了稍许修改而已.</p>
+<p>linux系统中每个用户都有一个UID,不同用户之间的数据是隔离的,在没有授权的情况下,用户只能访问自己的数据,而不能访问其他用户的数据.同一用户启动的进程,其UID和GID一致,但是可以通过使用setuid和setgid等系统调用改变UID和GID.Linux 支持多用户工作，每个用户之间都使用了因为UID不同,进而达到相互隔离，互不影响,起到沙箱的作用.</p>
+<p>Android扩展了Linux内核安全模型的用户与权限机制，将多用户操作系统的用户隔离机制巧妙地移植为应用程序隔离。在linux中，一个用户标识（UID）识别一个给定用户；在Android上，一个UID则识别一个应用程序。在安装应用程序时向其分配UID。应用程序在设备上存续期间内，其UID保持不变。仅限用于允许或限制应用程序（而非用户）对设备资源的访问。如此，Android的安全机制与Linux内核的安全模型完美衔接！不同的应用程序分别属于不同的用户，因此，应用程序运行于自己独立的进程空间，与UID不同的应用程序自然形成资源隔离，如此便形成了一个操作系统级别的应用程序“沙箱”。</p>
+<p>Android系统中将UID通常称为APP ID.在手机:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/system/packages.list</span><br></pre></td></tr></table></figure>
+<p>中记录了当前系统安装的App信息,其中就有UID,也就是APP ID.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-1.png" alt="packages.list"></p>
+<p>其中第二列就是APP ID.Android 系统本身定义了很多UID,比如1000 代表 system用户等.</p>
+<p>Android源码/system/core/include/private/android_filesystem_config.h中记录了Android系统定义的用户UID</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_ROOT             <span class="number">0</span>  <span class="comment">/* traditional unix root user */</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_SYSTEM        <span class="number">1000</span>  <span class="comment">/* system server */</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_RADIO         <span class="number">1001</span>  <span class="comment">/* telephony subsystem, RIL */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_BLUETOOTH     <span class="number">1002</span>  <span class="comment">/* bluetooth subsystem */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_GRAPHICS      <span class="number">1003</span>  <span class="comment">/* graphics devices */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_INPUT         <span class="number">1004</span>  <span class="comment">/* input devices */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_AUDIO         <span class="number">1005</span>  <span class="comment">/* audio devices */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_CAMERA        <span class="number">1006</span>  <span class="comment">/* camera devices */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_LOG           <span class="number">1007</span>  <span class="comment">/* log devices */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_COMPASS       <span class="number">1008</span>  <span class="comment">/* compass device */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_MOUNT         <span class="number">1009</span>  <span class="comment">/* mountd socket */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_WIFI          <span class="number">1010</span>  <span class="comment">/* wifi subsystem */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_ADB           <span class="number">1011</span>  <span class="comment">/* android debug bridge (adbd) </span><br><span class="line"> . . . . . . </span><br><span class="line">#define AID_SDCARD_RW     1015  <span class="comment">/* external storage write access */</span></span><br><span class="line">. . . . . </span><br><span class="line">#define AID_SDCARD_R      1028  <span class="comment">/* external storage read access */</span></span><br><span class="line">. . . . </span><br><span class="line">#define AID_APP          10000  <span class="comment">/* first app user */</span></span><br><span class="line"></span><br><span class="line">...................</span><br><span class="line"></span><br><span class="line">#define AID_USER        100000  <span class="comment">/* offset for uid ranges for each user */</span></span><br><span class="line"></span><br><span class="line">..........</span></span></span><br></pre></td></tr></table></figure>
+<p>可以看到安装的app的 UID是从10000开始分配的.另外要注意的是,Android 已经支持多用户了,多用户机制后面有机会的话,会单独开文章介绍.Android多用户在手机上没有太大的使用场景,因为手机通常属于私人设备,不像PC那样,可能有多个人使用,有必要设置多个账号.所以现在手机厂商默认都将android多用户机制裁剪掉了.</p>
+<p>adb shell 登陆手机终端,并执行ps命令:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-2.png" alt=""></p>
+<p>第一列就是APPID,类似uY_aXXX,如上图所示.其中XXX是相对于AID_APP.Y是Android user id(这里的 user id和前面说的UID含义不一样,是Android多用户中的某个用户ID).</p>
+<p>前面android_filesystem_config.h中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_USER        <span class="number">100000</span>  <span class="comment">/* offset for uid ranges for each user */</span></span></span><br></pre></td></tr></table></figure>
+<p>可以看到每个 Android user id之间相差100000.比如上图中的u0_a12,实际上就是100000+12=100012,也就是说其APPID是100012.</p>
+<p><font color="#ff5588">实际上linux 沙箱模型可以归结为一句话,进程的权限,取决于启动他的用户的权限.比如说某个进程是root启动的,那么他就拥有root权限.</font>这种控制模型叫做DAC,全称是Discretionary Access Control，翻译为自主访问控制.</p>
+<h4 id="特殊权限标志位">特殊权限标志位</h4><p>su这个程序,大家应该都不陌生,有了他,就能获取root权限.它是怎么做到的呢?</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/system/xbin <span class="comment"># ll su</span></span><br><span class="line">-rwsr-x--- root     shell      <span class="number">338416</span> <span class="number">2015</span>-<span class="number">02</span>-<span class="number">14</span> <span class="number">16</span>:<span class="number">10</span> su</span><br></pre></td></tr></table></figure>
+<p>看第一列,似乎多了一个特殊的权限标志位”s”,这个特殊权限标志位叫做SUID.</p>
+<p>当一个设置了SUID 位的可执行文件被执行时，该文件将以所有者的身份运行，也就是说无论谁来执行这个文件，他都有文件所有者的特权。再来看su他的拥有者是谁,是root.所以su才能使其他程序获得root权限.</p>
+<h4 id="Capability">Capability</h4><p>Linux系统分为root用户和非root用户，root用户至高无上，想干嘛干嘛，至于非root用户权限有限，想获得root权限，可以通过setuid系统调用实现。如果一个进程想要一个大于非root用户权限，只能将自己提升到root权限；实际上此进程并不需要这么多权限，这可能会导致很多风险(一个进程权限太大)，所以POSIX制定了Capability机制来细分root的权限。</p>
+<p>Android系统中也使用到了这个机制.</p>
+<p>Android源码/system/core/include/private/android_filesystem_capability.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_CHOWN <span class="number">0</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_DAC_OVERRIDE <span class="number">1</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_DAC_READ_SEARCH <span class="number">2</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_FOWNER <span class="number">3</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_FSETID <span class="number">4</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_KILL <span class="number">5</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SETGID <span class="number">6</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SETUID <span class="number">7</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SETPCAP <span class="number">8</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_LINUX_IMMUTABLE <span class="number">9</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_NET_BIND_SERVICE <span class="number">10</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_NET_BROADCAST <span class="number">11</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_NET_ADMIN <span class="number">12</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_NET_RAW <span class="number">13</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_IPC_LOCK <span class="number">14</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_IPC_OWNER <span class="number">15</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SYS_MODULE <span class="number">16</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SYS_RAWIO <span class="number">17</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SYS_CHROOT <span class="number">18</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SYS_PTRACE <span class="number">19</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SYS_PACCT <span class="number">20</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SYS_ADMIN <span class="number">21</span></span></span><br><span class="line">. . . . .  .</span><br></pre></td></tr></table></figure>
+<p>共有37个权限.</p>
+<p>怎么查看进程具备哪些Capability呢?</p>
+<p>我现在以 adb shell的方式连接到了 user版本的android设备,我想看 shell终端具有哪些能力,可以如下操作:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">130</span>|shell@shamu:/ $ ps | grep shell                                            </span><br><span class="line">shell     <span class="number">5960</span>  <span class="number">1</span>     <span class="number">16980</span>  <span class="number">212</span>   ffffffff <span class="number">00000000</span> S /sbin/adbd</span><br><span class="line">shell     <span class="number">5979</span>  <span class="number">5960</span>  <span class="number">9320</span>   <span class="number">764</span>   c017b054 b6eb2130 S /system/bin/sh</span><br><span class="line">shell     <span class="number">6045</span>  <span class="number">5979</span>  <span class="number">10676</span>  <span class="number">992</span>   <span class="number">00000000</span> b6f537e8 R ps</span><br><span class="line">shell     <span class="number">6046</span>  <span class="number">5979</span>  <span class="number">10676</span>  <span class="number">988</span>   c022f7ac b6f237e8 S grep</span><br><span class="line">shell@shamu:/ $</span><br></pre></td></tr></table></figure>
+<p>找到 shell的进程号为5979.然后就从proc文件系统中查看shell进程具有哪些能力了:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">. . . . . </span><br><span class="line">CapInh: <span class="number">0000000000000000</span></span><br><span class="line">CapPrm: <span class="number">0000000000000000</span></span><br><span class="line">CapEff: <span class="number">0000000000000000</span>d</span><br><span class="line">CapBnd: <span class="number">00000000000000</span>c0</span><br><span class="line">. . . . .</span><br></pre></td></tr></table></figure>
+<p>是以位图的形式表示的,前面说过有37个能力 ,所有37个bit来表示,为1说明具有相应的能力;为0说明不具备相应的能力.</p>
+<p>其中 CapPrm表示进程具有的最大能力集,CapEff表示当前进程的有效能力集,通常是CapPrm的子集;CapInh表示当前进程启动其他程序,那些可以被继承的能力.</p>
+<p>CapBnd很重要,表示边界能力.上面shell进程CapBnd的能力位图为c0,即11000000,从android_filesystem_capability.h可以可知其代表</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SETGID <span class="number">6</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> CAP_SETUID <span class="number">7</span></span></span><br></pre></td></tr></table></figure>
+<p>意味着从shell启动的程序,就算具备特权标志位,他的能力也会被限制为CapBnd.shell进程CapInh也为0,所以从shell启动的进程的能力被限制为CAP_SETUID和 CAP_SETGID capabilities,其他能力都被限制了.</p>
+<p>也就是说,你有su,也白搭,因为你的能力被完全限制了,只有37种能力中的两种.倘若你执行的操作不涉及37种能力,则不受影响.当然如果你的设备是 eng或者debug版本的话,默认能力是全打开的.</p>
+<p>能力是对root权限的切割,目前只切割出了这37种能力而已.</p>
+<h3 id="SEAndroid的引入">SEAndroid的引入</h3><p>DAC太过宽松了，那么SELinux如何解决这个问题呢？原来，它在DAC之外，设计了一个新的安全模型，叫MAC（Mandatory Access Control），翻译为强制访问控制。MAC的处世哲学非常简单：即任何进程想在SELinux系统中干任何事情，都必须先在安全策略配置文件中赋予权限。凡是没有出现在安全策略配置文件中的权限，进程就没有该权限.</p>
+<p>如下图所示:<br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-3.png" alt=""></p>
+<p>Subject:主体,通常指的是可执行程序.</p>
+<p>Object: 客体,通常指某种资源,如文件,硬件等.</p>
+<p>用规则来描述主体是否对客体有某种操作权限.</p>
+<p>例如，我们可以设定这样的一个管理策略，不允许用户A将它创建的文件F授予用户B访问。这样无论用户A如何修改文件F的权限位，用户B都是无法访问文件F的。这种安全访问模型可以强有力地保护系统的安全。</p>
+<h4 id="SELinux架构">SELinux架构</h4><p>SEAndroid可以理解为是SELinux的精简版,更适合移动设备.所以有必要介绍下SELinux的架构.</p>
+<p>Linux内核中有一个Linux Security Modules,简称LSM框架,允许第三方权限访问机制挂接到内核中来.很类似于linux驱动模型,框架什么的都有了,只要你按照这个框架写的东西,都可以挂接到内核中去.SElinux就是由美国NSA按照linux内核安全模型框架编写的基于MAC访问控制的模块.</p>
+<p>可以将LSM框架简单的理解为一系列的Hook方法,这些方法会在访问资源的时候被调用,用来简称是否有权限.</p>
+<p>下图所示中间部分,即为LSM模块.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-4.png" alt=""></p>
+<p>当某一进程主体发起对某一个文件客体写操作的时候,LSM模块Hook到了此次请求,LSM内部的Object Manager首先在 权限访问缓存中查找是否有对应的规则,如果没有的话,Security server就会去查询安全策略中是否有该规则.如果没有的话,就拒绝此次操作;有的话,就将查询到的规则放到访问向量缓存中去,然后向Object Manager报告,允许此次操作,那么最后进程主体就可以对客体文件进行写操作了.</p>
+<p>SELinux的三种状态:</p>
+<p>Disable: 关闭</p>
+<p>Permissive: 宽松状态,违反策略,紧紧是提示而已,操作仍能进行</p>
+<p>Enforcing: 执行状态,违反策略,操作会被拒绝执行.</p>
+<p>adb shell进入android 设备终端,执行如下命令,可以查看当前状态:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell@shamu:/ $ getenforce                                                     </span><br><span class="line">Enforcing</span><br></pre></td></tr></table></figure>
+<p>可以使用 setenforce命令,在Permission和Enforcing状态切换,如果是Disable的话,不能切换状态.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># getenforce</span></span><br><span class="line">Enforcing</span><br><span class="line"><span class="comment"># setenforce 0</span></span><br><span class="line"><span class="comment"># getenforce</span></span><br><span class="line">Permissive</span><br><span class="line"><span class="comment"># setenforce 1</span></span><br><span class="line"><span class="comment"># getenforce</span></span><br><span class="line">Enforcing</span><br></pre></td></tr></table></figure>
+<p>Android 4.2之前的系统都是Disable.</p>
+<p>Android 4.3: Permissive.</p>
+<p>– With all domains permissive + unconfined.</p>
+<p>Android 4.4: Enforcing.</p>
+<p>– Enforcing for installd, netd, vold, and zygote.<br>– Permissive for app domains (logging denials).<br>– Permissive + unconfined for all other domains.</p>
+<p>Android 5.0: Enforcing.从此版本开始,有了较完备的支持.</p>
+<h4 id="查看SELinux_安全上下文">查看SELinux 安全上下文</h4><p>在相关命令前,加-Z即可查看SElinux 安全上下文,如下图所示</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-5.png" alt=""></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-6.png" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/26/Android_property_2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 property属性系统分析下篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_SEAndroid_1" data-title="Android 5.1 SEAndroid分析之启动篇" data-url="http://www.iloveandroid.net/2015/09/28/Android_SEAndroid_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

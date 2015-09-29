@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 property属性系统分析下篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面我们提到,当加载了所有的属性文件之后,会去检查属性作为触发条件的action,并把满足触发条件的action加入到action_queue链表中去.
+那么还有一种很常见的情况,就是Android系统运行的时候修改属性值,这样也可能导致某些action因为触发条件满足,而被触发.那么这些是如何检测的呢?
+还是看 init.c中的main函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 property属性系统分析下篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/26/Android_property_2/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面我们提到,当加载了所有的属性文件之后,会去检查属性作为触发条件的action,并把满足触发条件的action加入到action_queue链表中去.
+那么还有一种很常见的情况,就是Android系统运行的时候修改属性值,这样也可能导致某些action因为触发条件满足,而被触发.那么这些是如何检测的呢?
+还是看 init.c中的main函数">
+<meta property="og:updated_time" content="2015-09-28T05:53:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 property属性系统分析下篇">
+<meta name="twitter:description" content="前面我们提到,当加载了所有的属性文件之后,会去检查属性作为触发条件的action,并把满足触发条件的action加入到action_queue链表中去.
+那么还有一种很常见的情况,就是Android系统运行的时候修改属性值,这样也可能导致某些action因为触发条件满足,而被触发.那么这些是如何检测的呢?
+还是看 init.c中的main函数">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_property_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/26/Android_property_2/" class="article-date">
+  	<time datetime="2015-09-26T11:56:42.000Z" itemprop="datePublished">2015-09-26</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 property属性系统分析下篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面我们提到,当加载了所有的属性文件之后,会去检查属性作为触发条件的action,并把满足触发条件的action加入到action_queue链表中去.</p>
+<p>那么还有一种很常见的情况,就是Android系统运行的时候修改属性值,这样也可能导致某些action因为触发条件满足,而被触发.那么这些是如何检测的呢?</p>
+<p>还是看 init.c中的main函数</p>
+<a id="more"></a>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">for() &#123;</span><br><span class="line">        int nr, i, timeout = -1;</span><br><span class="line"></span><br><span class="line">        execute_one_command();//执行action_queue链表中的action</span><br><span class="line">        restart_processes();//重启那些需要重启的service</span><br><span class="line"></span><br><span class="line">        if (!property_set_fd_init &amp;&amp; get_property_set_fd() &gt; 0) &#123;//第一次执行for循环的时候,这个if的条件才满足</span><br><span class="line"> </span><br><span class="line">           /*</span><br><span class="line">            初始化属性服务的时候调用property_service_init_action函数,它内部调用start_property_service创建socket</span><br><span class="line">            ,然后将socket描述符赋给property_set_fd</span><br><span class="line">            ,get_property_set_fd函数用来获取这个socket描述符</span><br><span class="line">            */</span><br><span class="line">            ufds[fd_count].fd = get_property_set_fd();</span><br><span class="line"></span><br><span class="line">            ufds[fd_count].events = POLLIN;</span><br><span class="line">            ufds[fd_count].revents = 0;</span><br><span class="line">            fd_count++;</span><br><span class="line">            property_set_fd_init = 1;//下次for循环,if条件就不满足了</span><br><span class="line">        &#125;</span><br><span class="line">        if (!signal_fd_init &amp;&amp; get_signal_fd() &gt; 0) &#123;//监听由init进程fork的子进程中哪些被杀死了</span><br><span class="line">            ufds[fd_count].fd = get_signal_fd();</span><br><span class="line">            ufds[fd_count].events = POLLIN;</span><br><span class="line">            ufds[fd_count].revents = 0;</span><br><span class="line">            fd_count++;</span><br><span class="line">            signal_fd_init = 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (!keychord_fd_init &amp;&amp; get_keychord_fd() &gt; 0) &#123;//组合按键</span><br><span class="line">            ufds[fd_count].fd = get_keychord_fd();</span><br><span class="line">            ufds[fd_count].events = POLLIN;</span><br><span class="line">            ufds[fd_count].revents = 0;</span><br><span class="line">            fd_count++;</span><br><span class="line">            keychord_fd_init = 1;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">............................</span><br><span class="line">for (i = 0; i &lt; fd_count; i++) &#123;</span><br><span class="line">            if (ufds[i].revents &amp; POLLIN) &#123;</span><br><span class="line">                if (ufds[i].fd == get_property_set_fd())//循环监听是否有向property socket发送请求</span><br><span class="line">                    handle_property_set_fd();</span><br><span class="line">                else if (ufds[i].fd == get_keychord_fd())//监听是否有组合按键按下</span><br><span class="line">                    handle_keychord();</span><br><span class="line">                else if (ufds[i].fd == get_signal_fd())//处理因子进程挂掉而发来的信号</span><br><span class="line">                    handle_signal();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">..................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="处理属性设置请求">处理属性设置请求</h3><p>当捕获到设置属性的请求的时候,会调用handle_property_set_fd函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handle_property_set_fd</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    prop_msg msg;</span><br><span class="line">    . . . . . .</span><br><span class="line">    <span class="comment">/*后面会利用poll机制,监听这个accept返回的描述符,一旦有数据可读,就会去读取数据到msg中*/</span></span><br><span class="line">    <span class="keyword">if</span> ((s = accept(property_set_fd, (<span class="keyword">struct</span> sockaddr *) &amp;addr, &amp;addr_size)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    . . . . . . </span><br><span class="line">    <span class="keyword">switch</span>(msg.cmd) &#123;<span class="comment">//msg是读取到的数据</span></span><br><span class="line">    <span class="keyword">case</span> PROP_MSG_SETPROP:</span><br><span class="line">        <span class="comment">/*</span><br><span class="line">            #define PROP_NAME_MAX   32</span><br><span class="line">            #define PROP_VALUE_MAX  92</span><br><span class="line">        说明设置属性时，属性名和属性值的长度都是有限制的</span><br><span class="line">        */</span></span><br><span class="line">        msg.name[PROP_NAME_MAX-<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        msg.value[PROP_VALUE_MAX-<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        . . . . . .</span><br><span class="line">        <span class="comment">/*根据msg.name做不同的处理*/</span></span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">memcmp</span>(msg.name,<span class="string">"ctl."</span>,<span class="number">4</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            . . . . . .</span><br><span class="line">        <span class="keyword">if</span> (check_control_mac_perms(msg.value, source_ctx)) &#123;</span><br><span class="line">                handle_control_message((<span class="keyword">char</span>*) msg.name + <span class="number">4</span>, (<span class="keyword">char</span>*) msg.value);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ERROR(<span class="string">"sys_prop: Unable to %s service ctl [%s] uid:%d gid:%d pid:%d\n"</span>,</span><br><span class="line">                        msg.name + <span class="number">4</span>, msg.value, cr.uid, cr.gid, cr.pid);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (check_perms(msg.name, cr.uid, cr.gid, source_ctx)) &#123;</span><br><span class="line">                property_set((<span class="keyword">char</span>*) msg.name, (<span class="keyword">char</span>*) msg.value);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ERROR(<span class="string">"sys_prop: permission denied uid:%d  name:%s\n"</span>,</span><br><span class="line">                      cr.uid, msg.name);</span><br><span class="line">            &#125;</span><br><span class="line">            . . . . . .</span><br><span class="line">            close(s);</span><br><span class="line">        &#125;</span><br><span class="line">        . . . . . .</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="处理ctr-">处理ctr.</h4><p>对于普通属性而言，主要是调用property_set()来设置属性值，但是有一类特殊属性是以“ctl.”开头的，它们本质上是一些控制命令.例如属性“ ctrl.start ”和“ ctrl.stop  ”是用来启动和停止某个service.如用adb shell登录后，输入setprop ctl.start bootanim就可以查看开机动画了，如果要关闭就输入setprop ctr.stop bootanim就可以了。 这种控制命令需调用handle_control_message()来处理。</p>
+<p>当然，并不是随便谁都可以发出这种控制命令的，也就是说，不是谁都可以成功设置以“ctl.”开头的特殊属性。handle_property_set_fd()会先调用check_control_mac_perms()来检查发起方是否具有相应的权限。 </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">check_control_mac_perms</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">char</span> *sctx)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     *  Create a name prefix out of ctl.&lt;service name&gt;</span><br><span class="line">     *  The new prefix allows the use of the existing</span><br><span class="line">     *  property service backend labeling while avoiding</span><br><span class="line">     *  mislabels based on true property prefixes.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">char</span> ctl_name[PROP_VALUE_MAX+<span class="number">4</span>];</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="built_in">snprintf</span>(ctl_name, <span class="keyword">sizeof</span>(ctl_name), <span class="string">"ctl.%s"</span>, name);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span> || (<span class="keyword">size_t</span>) ret &gt;= <span class="keyword">sizeof</span>(ctl_name))</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> check_mac_perms(ctl_name, sctx);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码中的注释也已经很清楚了,就是吧属性值加一个 “ctl.”的前缀,然后在调用check_mac_perms来真正检查权限:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">check_mac_perms</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">char</span> *sctx)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (is_selinux_enabled() &lt;= <span class="number">0</span>)<span class="comment">//如果没有开启SEAndroid,那么直接返回,也就是说不用检查权限了</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> *tctx = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">class</span> = <span class="string">"property_service"</span>;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *perm = <span class="string">"set"</span>;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!sctx)</span><br><span class="line">        <span class="keyword">goto</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!sehandle_prop)</span><br><span class="line">        <span class="keyword">goto</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (selabel_lookup(sehandle_prop, &amp;tctx, name, <span class="number">1</span>) != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">goto</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (selinux_check_access(sctx, tctx, <span class="keyword">class</span>, perm, (<span class="keyword">void</span>*) name) == <span class="number">0</span>)</span><br><span class="line">        result = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    freecon(tctx);</span><br><span class="line"> err:</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总的来说就是靠SEAndroid中的策略来判断是否有权限.这个和Android5.0之前的系统还是差别比较大的.想了解5.0之前的系统如何检查权限的,请阅读其源码吧.这里不在说了.针对SEAndroid,后续计划用好几篇文章来讲解.</p>
+<p>检查完权限后,要调用handle_control_message函数来处理了:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handle_control_message</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *msg, <span class="keyword">const</span> <span class="keyword">char</span> *arg)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(msg,<span class="string">"start"</span>)) &#123;</span><br><span class="line">        msg_start(arg);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(msg,<span class="string">"stop"</span>)) &#123;</span><br><span class="line">        msg_stop(arg);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(msg,<span class="string">"restart"</span>)) &#123;</span><br><span class="line">        msg_restart(arg);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ERROR(<span class="string">"unknown control msg '%s'\n"</span>, msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果socket发来的命令是“ctl.start”，那么就会走到msg_start(arg):<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">msg_start</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> service *svc = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *tmp = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *args = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strchr</span>(name, <span class="string">':'</span>))</span><br><span class="line">        svc = service_find_by_name(name);在service_list链表中查找这个service</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        tmp = strdup(name);</span><br><span class="line">        <span class="keyword">if</span> (tmp) &#123;</span><br><span class="line">            args = <span class="built_in">strchr</span>(tmp, <span class="string">':'</span>);</span><br><span class="line">            *args = <span class="string">'\0'</span>;</span><br><span class="line">            args++;</span><br><span class="line"></span><br><span class="line">            svc = service_find_by_name(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (svc) &#123;</span><br><span class="line">        service_start(svc, args);<span class="comment">//如果找到这个service,就启动他</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ERROR(<span class="string">"no such service '%s'\n"</span>, name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (tmp)</span><br><span class="line">        <span class="built_in">free</span>(tmp);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> service_start()常常会fork一个子进程，然后为它设置环境变量（ANDROID_PROPERTY_WORKSPACE）.在init.c main函数中的for循环里面,重启service的时候,也是会调用这个函数的.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">service_start</span><span class="params">(<span class="keyword">struct</span> service *svc, <span class="keyword">const</span> <span class="keyword">char</span> *dynamic_args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">    . . . . . .</span><br><span class="line">    pid = fork();</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">struct</span> socketinfo *si;</span><br><span class="line">        <span class="keyword">struct</span> svcenvinfo *ei;</span><br><span class="line">        <span class="keyword">char</span> tmp[<span class="number">32</span>];</span><br><span class="line">        <span class="keyword">int</span> fd, sz;</span><br><span class="line"> </span><br><span class="line">        umask(<span class="number">077</span>);</span><br><span class="line">        <span class="keyword">if</span> (properties_inited()) &#123;</span><br><span class="line">            get_property_workspace(&amp;fd, &amp;sz);</span><br><span class="line">            <span class="built_in">sprintf</span>(tmp, <span class="string">"%d,%d"</span>, dup(fd), sz);</span><br><span class="line">            add_environment(<span class="string">"ANDROID_PROPERTY_WORKSPACE"</span>, tmp);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">for</span> (ei = svc-&gt;envvars; ei; ei = ei-&gt;next)</span><br><span class="line">            add_environment(ei-&gt;name, ei-&gt;value);</span><br><span class="line">    . . . . . .</span><br></pre></td></tr></table></figure>
+<p>其中 get_property_workspace() 的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">get_property_workspace</span><span class="params">(<span class="keyword">int</span> *fd, <span class="keyword">int</span> *sz)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    *fd = pa_workspace.fd;</span><br><span class="line">    *sz = pa_workspace.size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>大家还记得前一篇文章介绍init_workspace()时，把打开的句柄记入pa_workspace.fd的句子吧，现在就是在用这个句柄。 这个句柄就是以可读方式打开/dev/<strong>properties</strong>,详情请看前一篇文章吧.</p>
+<p> 一切准备好后，service_start()会在fork的子进程中调用execve()，执行svc-&gt;args[0]所指定的可执行文件，然后还要再写个属性值,表明处于runing状态.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">service_start</span><span class="params">(<span class="keyword">struct</span> service *svc, <span class="keyword">const</span> <span class="keyword">char</span> *dynamic_args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    . . . . . .</span><br><span class="line">    . . . . . .</span><br><span class="line">    execve(svc-&gt;args[<span class="number">0</span>], (<span class="keyword">char</span>**) arg_ptrs, (<span class="keyword">char</span>**) ENV);</span><br><span class="line">    . . . . . .</span><br><span class="line">    . . . . . .</span><br><span class="line">    svc-&gt;time_started = gettime();</span><br><span class="line">    svc-&gt;pid = pid;</span><br><span class="line">    svc-&gt;flags |= SVC_RUNNING;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">if</span> (properties_inited())</span><br><span class="line">        notify_service_state(svc-&gt;name, <span class="string">"running"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中的notify_service_state()的代码如下： </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">notify_service_state</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *state)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> pname[PROP_NAME_MAX];</span><br><span class="line">    <span class="keyword">int</span> len = <span class="built_in">strlen</span>(name);</span><br><span class="line">    <span class="keyword">if</span> ((len + <span class="number">10</span>) &gt; PROP_NAME_MAX)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">snprintf</span>(pname, <span class="keyword">sizeof</span>(pname), <span class="string">"init.svc.%s"</span>, name);</span><br><span class="line">    property_set(pname, state);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很简单,就是设置init.svc.servicename  state,例如在 adb shell中:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/ <span class="comment"># getprop |grep  init.                                   </span></span><br><span class="line">[init.svc.adbd]: [running]</span><br><span class="line">[init.svc.bootanim]: [stopped]</span><br><span class="line">[init.svc.debuggerd64]: [running]</span><br><span class="line">[init.svc.debuggerd]: [running]</span><br><span class="line">[init.svc.drm]: [running]</span><br><span class="line">[init.svc.fuse_sdcard]: [running]</span><br><span class="line">.................................</span><br></pre></td></tr></table></figure>
+<p> 以上是handle_control_message()处理“ctl.start”命令时的情况，相应地还有处理“ctl.stop”命令的情况，此时会调用到msg_stop():</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">msg_stop</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> service *svc = service_find_by_name(name);<span class="comment">//在 service_list中查找service</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (svc) &#123;</span><br><span class="line">        service_stop(svc);<span class="comment">//停止该service</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        ERROR(<span class="string">"no such service '%s'\n"</span>, name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* The how field should be either SVC_DISABLED, SVC_RESET, or SVC_RESTART */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">service_stop_or_reset</span><span class="params">(<span class="keyword">struct</span> service *svc, <span class="keyword">int</span> how)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">/* The service is still SVC_RUNNING until its process exits, but if it has</span><br><span class="line">     * already exited it shoudn't attempt a restart yet. */</span></span><br><span class="line">    svc-&gt;flags &amp;= ~(SVC_RESTARTING | SVC_DISABLED_START);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((how != SVC_DISABLED) &amp;&amp; (how != SVC_RESET) &amp;&amp; (how != SVC_RESTART)) &#123;</span><br><span class="line">        <span class="comment">/* Hrm, an illegal flag.  Default to SVC_DISABLED */</span></span><br><span class="line">        how = SVC_DISABLED;</span><br><span class="line">    &#125;</span><br><span class="line">        <span class="comment">/* if the service has not yet started, prevent</span><br><span class="line">         * it from auto-starting with its class</span><br><span class="line">         */</span></span><br><span class="line">    <span class="keyword">if</span> (how == SVC_RESET) &#123;</span><br><span class="line">        svc-&gt;flags |= (svc-&gt;flags &amp; SVC_RC_DISABLED) ? SVC_DISABLED : SVC_RESET;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        svc-&gt;flags |= how;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (svc-&gt;pid) &#123;</span><br><span class="line">        NOTICE(<span class="string">"service '%s' is being killed\n"</span>, svc-&gt;name);</span><br><span class="line">        kill(-svc-&gt;pid, SIGKILL);</span><br><span class="line">        notify_service_state(svc-&gt;name, <span class="string">"stopping"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        notify_service_state(svc-&gt;name, <span class="string">"stopped"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>停止一个service时，主要是调用kill( )来杀死服务子进程，并将init.svc.xxx属性值设为stopping。</p>
+<h4 id="处理属性设置命令">处理属性设置命令</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handle_property_set_fd</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">        . . . . . .</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">memcmp</span>(msg.name,<span class="string">"ctl."</span>,<span class="number">4</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">            . . . . . .</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (check_perms(msg.name, cr.uid, cr.gid, source_ctx)) &#123;</span><br><span class="line">                property_set((<span class="keyword">char</span>*) msg.name, (<span class="keyword">char</span>*) msg.value);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ERROR(<span class="string">"sys_prop: permission denied uid:%d  name:%s\n"</span>,</span><br><span class="line">                      cr.uid, msg.name);</span><br><span class="line">            &#125;</span><br><span class="line">            . . . . . .</span><br><span class="line">            close(s);</span><br><span class="line">        &#125;</span><br><span class="line">        . . . . . .</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    . . . . . .</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要设置普通属性，同样要检查权限:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Checks permissions for setting system properties.</span><br><span class="line"> * Returns 1 if uid allowed, 0 otherwise.</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">check_perms</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">char</span> *sctx)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> app_id;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!<span class="built_in">strncmp</span>(name, <span class="string">"ro."</span>, <span class="number">3</span>))</span><br><span class="line">        name +=<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> check_mac_perms(name, sctx);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实际上还是通过调用check_mac_perms函数来检查权限,和前面ctl.一样.同样要注意和Android 5.0之前的系统的区别.</p>
+<p>权限检查通过之后，就可以真正设置属性了。前面我们已经说过，只有Property Service（即init进程）可以写入属性值，而普通进程最多只能通过socket向Property Service发出设置新属性值的请求，权限检查通过后,最终还得靠Property Service来写.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">property_set</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *value)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    prop_info *pi;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">    size_t namelen = strlen(name);</span><br><span class="line">    size_t valuelen = strlen(value);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*判断属性名和属性值的合法性,其实就是判断长度了,前面也介绍了属性名和属性值的长度是有限制的*/</span></span><br><span class="line">    <span class="keyword">if</span> (!is_legal_property_name(name, namelen)) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (valuelen &gt;= PROP_VALUE_MAX) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*查找要设置的属性,在共享内存中是否已经存在*/</span></span><br><span class="line">    pi = (prop_info*) __system_property_find(name);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*存在的话,检查是否是以ro.开头的,是的话,返回错误,因为ro.是只读属性,不能被改写的*/</span></span><br><span class="line">    <span class="keyword">if</span>(pi != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">/* ro.* properties may NEVER be modified once set */</span></span><br><span class="line">        <span class="keyword">if</span>(!strncmp(name, <span class="string">"ro."</span>, <span class="number">3</span>)) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        __system_property_update(pi, value, valuelen);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">/*不存在,那么就把新的属性和他的值写入共享内存*/</span></span><br><span class="line">        ret = __system_property_add(name, namelen, value, valuelen);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            ERROR(<span class="string">"Failed to set '%s'='%s'\n"</span>, name, value);</span><br><span class="line">            <span class="keyword">return</span> ret;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* If name starts with "net." treat as a DNS property. */</span></span><br><span class="line">    <span class="comment">/*如果设置的是net.change,那么直接返回,因为net.change的值是由系统来设置的*/</span></span><br><span class="line">    <span class="keyword">if</span> (strncmp(<span class="string">"net."</span>, name, strlen(<span class="string">"net."</span>)) == <span class="number">0</span>)  &#123;</span><br><span class="line">        <span class="keyword">if</span> (strcmp(<span class="string">"net.change"</span>, name) == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">       <span class="comment">/*</span><br><span class="line">        * The 'net.change' property is a special property used track when any</span><br><span class="line">        * 'net.*' property name is updated. It is _ONLY_ updated here. Its value</span><br><span class="line">        * contains the last updated 'net.*' property.</span><br><span class="line">        */</span></span><br><span class="line">         <span class="comment">/*如果设置的是net.开头的属性的话,还要把net.change的值设置为刚刚设置的属性名字*/</span></span><br><span class="line">        property_set(<span class="string">"net.change"</span>, name);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (persistent_properties_loaded &amp;&amp;</span><br><span class="line">            strncmp(<span class="string">"persist."</span>, name, strlen(<span class="string">"persist."</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">/*</span><br><span class="line">         * Don't write properties to disk until after we have read all default properties</span><br><span class="line">         * to prevent them from being overwritten by default values.</span><br><span class="line">         */</span></span><br><span class="line">    <span class="comment">/*如果要设置persist属性的话，只有在系统将所有的默认persist属性都加载完毕后，才能设置成功。</span><br><span class="line">    persist属性应该是那种会存入可持久化文件的属性，</span><br><span class="line">    这样，系统在下次启动后，可以将该属性的初始值设置为系统上次关闭时的值*/</span></span><br><span class="line">        write_persistent_property(name, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (strcmp(<span class="string">"selinux.reload_policy"</span>, name) == <span class="number">0</span> &amp;&amp;</span><br><span class="line">               strcmp(<span class="string">"1"</span>, value) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">/*   如果将“selinux.reload_policy”属性设为“1”了，那么要重新加载SEAndroid策略。*/</span></span><br><span class="line">        selinux_reload_policy();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*因为属性值发生了改变,所以要遍历action_list检查下是否满足了触发action的触发条件。*/</span></span><br><span class="line">    property_changed(name, value);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将满足触发条件的action,添加到action_queue链表中去,然后在init.c main函数中的for循环中,就会被执行了.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">property_changed</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *value)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (property_triggers_enabled)</span><br><span class="line">        queue_property_triggers(name, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">queue_property_triggers_action</span><span class="params">(<span class="keyword">int</span> nargs, <span class="keyword">char</span> **args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    queue_all_property_triggers();</span><br><span class="line">    <span class="comment">/* enable property triggers */</span></span><br><span class="line">    property_triggers_enabled = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="总结">总结</h3><p>Android 5.0属性的设置相较于之前的Android系统,主要变化是在权限检查这块,其他变化到不大.一般情况下,只要添加或者修改了某个属性的值(ctl.类的属性例外),都会遍历action_list链表,看看是否会触发某些action. property service服务,其实就是init进程本身了.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/28/Android_SEAndroid_1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android 5.1 SEAndroid分析之启动篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/26/Android_property_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 property属性系统分析上篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_property_2" data-title="Android 5.1 property属性系统分析下篇" data-url="http://www.iloveandroid.net/2015/09/26/Android_property_2/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

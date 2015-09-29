@@ -107,7 +107,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 20px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 20px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 20px;">构建</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
 					</div>
 				</section>
 				
@@ -170,6 +170,197 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-setupJenkinsEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/19/setupJenkinsEnvironment_2/" class="article-date">
+  	<time datetime="2015-09-19T07:42:41.000Z" itemprop="datePublished">2015-09-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/19/setupJenkinsEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.</p>
+<p>官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -P jenkins</span><br></pre></td></tr></table></figure>
+<p>这样就会卸载我们上次安装的jenkins了.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/19/setupJenkinsEnvironment_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-setupJenkinsEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/19/setupJenkinsEnvironment/" class="article-date">
+  	<time datetime="2015-09-19T05:41:52.000Z" itemprop="datePublished">2015-09-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/19/setupJenkinsEnvironment/">持续集成系统搭建之Jenkins篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在开始搭建Jenkins环境，他的主要作用是每当有代码经过审阅提交到gitlab之后，自动拉取代码，编译运行和测试。</p>
+<h3 id="安装jenkins">安装jenkins</h3><p>从<a href="http://jenkins-ci.org/">Jenkins官网</a>中下载Jenkins最新的deb包。</p>
+<p>首先安装一个依赖：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install daemon</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/19/setupJenkinsEnvironment/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-setupGitlabEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/19/setupGitlabEnvironment/" class="article-date">
+  	<time datetime="2015-09-19T01:41:12.000Z" itemprop="datePublished">2015-09-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/19/setupGitlabEnvironment/">持续集成系统搭建之Gitlab篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>公司领导让我搭建一个集代码管理，代码评审，自动化编译测试功能与一身的持续集成系统。现将搭建过程整理了一下，算是做个备份吧。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/19/setupGitlabEnvironment/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -615,130 +806,9 @@
 
 
   
-    <article id="post-linux下批量替换文件内容" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/14/linux下批量替换文件内容/" class="article-date">
-  	<time datetime="2015-09-14T08:35:30.000Z" itemprop="datePublished">2015-09-14</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/14/linux下批量替换文件内容/">linux下批量替换文件内容</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="demo">demo</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> `grep 查找字段 -rl 路径`</span><br><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> ./*</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux常用命令/">linux常用命令</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/linux基础/">linux基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/14/linux下批量替换文件内容/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-新的开始" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/14/新的开始/" class="article-date">
-  	<time datetime="2015-09-14T07:34:30.000Z" itemprop="datePublished">2015-09-14</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/14/新的开始/">新的开始</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>都说程序员写博客，是技术积淀的绝佳途径。其实，很早以前就想写博客了，但是因为种种原因没有坚持下来。主要原因是觉得自己技术功底不行，没什么可写的。现在想想，这是多愚蠢的想法。程序员一定要多思考，多实践，然后花些时间把过程记录下来，那么不知不觉也就成长了。另外在写东西的时候，往往能理解的更透彻，因为你要把他们转换为语言嘛，自然少不了又思考了好几遍了。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/随笔/">随笔</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/14/新的开始/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 </div>
