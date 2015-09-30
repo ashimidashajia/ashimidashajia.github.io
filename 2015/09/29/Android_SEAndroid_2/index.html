@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 SEAndroid分析之安全上下文语法篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面文章最后介绍了如何查看安全上下文.现在介绍下安全上下文的含义和规则.
+上下文是一个有固定格式的字符串:
+1username:role:type:an optional MLS security range
+如u:object_r:rootfs:s0就是一个安全上下文.在SEAndroid中最重要的是type字段的值,username和MLS字段通常都为u和s0.role也就两个角色罢了.所以说">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 SEAndroid分析之安全上下文语法篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/29/Android_SEAndroid_2/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面文章最后介绍了如何查看安全上下文.现在介绍下安全上下文的含义和规则.
+上下文是一个有固定格式的字符串:
+1username:role:type:an optional MLS security range
+如u:object_r:rootfs:s0就是一个安全上下文.在SEAndroid中最重要的是type字段的值,username和MLS字段通常都为u和s0.role也就两个角色罢了.所以说">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-7.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-2-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_SEandroid-2-3.PNG">
+<meta property="og:updated_time" content="2015-09-30T06:55:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 SEAndroid分析之安全上下文语法篇">
+<meta name="twitter:description" content="前面文章最后介绍了如何查看安全上下文.现在介绍下安全上下文的含义和规则.
+上下文是一个有固定格式的字符串:
+1username:role:type:an optional MLS security range
+如u:object_r:rootfs:s0就是一个安全上下文.在SEAndroid中最重要的是type字段的值,username和MLS字段通常都为u和s0.role也就两个角色罢了.所以说">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_SEAndroid_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/29/Android_SEAndroid_2/" class="article-date">
+  	<time datetime="2015-09-29T06:02:40.000Z" itemprop="datePublished">2015-09-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 SEAndroid分析之安全上下文语法篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面文章最后介绍了如何查看安全上下文.现在介绍下安全上下文的含义和规则.</p>
+<p>上下文是一个有固定格式的字符串:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username:role:<span class="built_in">type</span>:an optional MLS security range</span><br></pre></td></tr></table></figure>
+<p>如u:object_r:rootfs:s0就是一个安全上下文.在SEAndroid中最重要的是type字段的值,username和MLS字段通常都为u和s0.role也就两个角色罢了.所以说SEAndroid是基于类型控制的MAC机制.意味着SEAndroid的策略文件相比较SELinux来说,是比较简单的.</p>
+<p>与SEAndroid相关的核心源码在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Android源码/external/sepolicy 里面是Android系统默认的策略文件,厂商可以在device目录中添加和覆盖策略文件</span><br><span class="line">Android源码/external/libselinux 里面是SEAndroid核心库</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="role角色">role角色</h3><p>为了实现基于角色的访问控制,user可以被分配一个或者多个角色,不同的角色有不同的权限,每个角色可以被分配若干domain types.</p>
+<p>Android源码/external/sepolicy/roles:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">role r;</span><br><span class="line">role r types domain;</span><br></pre></td></tr></table></figure>
+<p>roles文件记录了当前系统定义了哪些角色,可见Android 5.1中仍然只是添加了一个角色r,r角色和domain属性关联,domain属性代表主体进程.</p>
+<p>当执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -Z</span><br></pre></td></tr></table></figure></p>
+<p>结果如下:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-7.png" alt=""></p>
+<p>这也验证了角色r适合进程相关联的了.</p>
+<p>除了角色r外,SElinux还有一个内置的角色object_r,这个角色是和资源关联的.</p>
+<p>当执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ll -Z</span><br></pre></td></tr></table></figure></p>
+<p>结果如下</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-2-2.png" alt=""></p>
+<p>也验证了object_r角色是和资源,也就是客体相关联的了.</p>
+<p>基于角色的访问控制在SEAndroid中不是重头戏.</p>
+<h4 id="Type类型">Type类型</h4><p>定义主体和客体所属的类型.</p>
+<p>基本语法:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> 类型名称 [,属性]</span><br></pre></td></tr></table></figure>
+<p>提到type,就不得不提属性了:</p>
+<p>Android源码/external/sepolicy/attributes</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">######################################</span></span><br><span class="line"><span class="comment"># Attribute declarations</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for devices.</span></span><br><span class="line">attribute dev_<span class="built_in">type</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for processes.</span></span><br><span class="line">attribute domain;</span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for filesystems.</span></span><br><span class="line">attribute fs_<span class="built_in">type</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for context= mounts.</span></span><br><span class="line">attribute contextmount_<span class="built_in">type</span>;</span><br><span class="line"></span><br><span class="line">. . . . .</span><br></pre></td></tr></table></figure>
+<p>上述文件中定义了SEAndroid中用到的所有属性,看到了吧,domain也是在这里定义的,而且注释也说的很清楚了,是用于进程的.fs_type表示文件,通常用于表示客体的类型,</p>
+<p>例如</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> adbd, domain;</span><br></pre></td></tr></table></figure>
+<p>定义了adbd类型,隶属于domain.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> rootfs, fs_<span class="built_in">type</span>;</span><br></pre></td></tr></table></figure>
+<p>定义rootfs类型,隶属于fs_type.</p>
+<h3 id="Object_Class_和_permissive">Object Class 和 permissive</h3><h4 id="permissive">permissive</h4><p>在早起Android版本源码中你可能会看到某些类型定义的时候,下面紧跟着permissive:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> adbd, domain;</span><br><span class="line">permissive adbd;</span><br></pre></td></tr></table></figure></p>
+<p>意味着此时adbd运行在 permissive状态.就算是Android系统本身工作在enforcing状态,adbd违反了策略文件中定义的访问规则,照样可以执行.</p>
+<h4 id="object_class">object class</h4><p>客体分了很多种类,比如文件,文件夹,连接文件,驱动设备文件等等.</p>
+<p>Android源码/external/sepolicy/security_classes:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class security</span><br><span class="line">class process</span><br><span class="line">class system</span><br><span class="line">class capability</span><br><span class="line"></span><br><span class="line"><span class="comment"># file-related classes</span></span><br><span class="line">class filesystem</span><br><span class="line">class file</span><br><span class="line">class dir</span><br><span class="line">class fd</span><br><span class="line">class lnk_file</span><br><span class="line">class chr_file</span><br><span class="line">class blk_file</span><br><span class="line">class sock_file</span><br><span class="line">class fifo_file</span><br><span class="line"></span><br><span class="line">. . . . .</span><br></pre></td></tr></table></figure>
+<p>security_classes文件中记录了当前SEAndroid所有的obejct class.</p>
+<p>与security_classes文件相对应的是下面的文件,其中记录做object class 所具备的相关permissions权限.</p>
+<p>Android源码/external/sepolicy/access_vectors:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Define a common prefix for file access vectors.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line">common file</span><br><span class="line">&#123;</span><br><span class="line">    ioctl</span><br><span class="line">    <span class="built_in">read</span></span><br><span class="line">    write</span><br><span class="line">    create</span><br><span class="line">    getattr</span><br><span class="line">    setattr</span><br><span class="line">    lock</span><br><span class="line">    relabelfrom</span><br><span class="line">    relabelto</span><br><span class="line">    append</span><br><span class="line">    unlink</span><br><span class="line">    link</span><br><span class="line">    rename</span><br><span class="line">    execute</span><br><span class="line">    swapon</span><br><span class="line">    quotaon</span><br><span class="line">    mounton</span><br><span class="line">&#125;</span><br><span class="line">. . . . .</span><br></pre></td></tr></table></figure>
+<p>只要是security_classes文件中有的object class,都会在access_vectors有其对应的操作许可,即可以执行哪些操作.</p>
+<p>Object classes 和他们分配的 permissions是由kernel内部LSM中的object manager来决定的,所以在不修改内核LSM模块源码的情况下,不要尝试修改上面的两个文件中的内容.</p>
+<h3 id="主体对客体的访问规则">主体对客体的访问规则</h3><p>除了定义主体和客体的安全上下文外,还需要定义主体对客体的访问规则,这也是所有策略文件中,数量最大的部分.</p>
+<p>定义访问规则,使用allow语句,其语法如下所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android_SEandroid-2-3.PNG" alt=""></p>
+<p>这里说明一个隐含规则,有时候把主体进程用doamin标示,而type仅仅标示客体.</p>
+<p>这里列举一个例子来解释上述语法中各个字段的含义.</p>
+<p>Android源码/external/sepolicy/adbd.te</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">allow adbd adb_device:chr_file rw_file_perms;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>其中adbd是一个关联了domain属性的名为adbd的主体type.主体是访问的发起者.</p>
+</li>
+<li><p>adb_device是客体type,也就是主体要访问的资源.</p>
+</li>
+</ol>
+<p>Android源码/external/sepolicy/device.te</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> adb_device, dev_<span class="built_in">type</span>;</span><br></pre></td></tr></table></figure>
+<p>可知adb_device关联了dev_type属性.</p>
+<p>Android源码/external/sepolicy/attributes</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># All types used for devices.</span></span><br><span class="line">attribute dev_<span class="built_in">type</span>;</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>chr_file指的是客体所属的类型class object.知道了所属类型后,那么就可以根据前面的介绍,从access_vectors得知相关的许可操作了.</p>
+</li>
+<li><p>有时候只是想要object class默认的许可中的某些许可,rw_file_perms就是这个作用,只是想要chr_file中众多许可中与可读可写相关的许可.</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class chr_file</span><br><span class="line">inherits file</span><br><span class="line">&#123;</span><br><span class="line">    execute_no_trans</span><br><span class="line">    entrypoint</span><br><span class="line">    execmod</span><br><span class="line">    open</span><br><span class="line">    audit_access</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>说明chr_file继承自file,也就是说file所具有的许可,他都继承了.</p>
+<p>rw_file_perms实际上是个宏,定义在global_macros中:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">define(`rw_file_perms<span class="string">', `&#123; r_file_perms w_file_perms &#125;'</span>)</span><br><span class="line">define(`r_file_perms<span class="string">', `&#123; getattr open read ioctl lock &#125;'</span>)</span><br><span class="line">define(`w_file_perms<span class="string">', `&#123; open append write &#125;'</span>)</span><br></pre></td></tr></table></figure>
+<font color="#ff5588">总的来说上面那个allow规则的含义是:允许安全上下文中type字段是adbd的主体访问安全上下文中type字段是adb_device的客体资源,对这些资源拥有读写权限.</font>
+
+<p>另外要注意的是客体也有可能是某个进程,主体也可能是某一文件,这些情况,不太多见,但也要知道.</p>
+<p>####其他规则</p>
+<p>dontaudit: 表示不记录某条违反规则的决策信息</p>
+<p>auditallow: 默认情况下是SELinux只记录那些权限检查失败的操作。allowaudit则使得权限检查成功的操作也被记录。注意，allowaudit只是允许记录，它和赋予权限没关系。赋予权限必须且只能使用allow语句。</p>
+<p>neverallow: 表示不允许主体对客体执行指定的操作.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/09/30/Android_SEAndroid_3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android 5.1 SEAndroid分析之type转换篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/28/Android_SEAndroid_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 SEAndroid分析之启动篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_SEAndroid_2" data-title="Android 5.1 SEAndroid分析之安全上下文语法篇" data-url="http://www.iloveandroid.net/2015/09/29/Android_SEAndroid_2/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

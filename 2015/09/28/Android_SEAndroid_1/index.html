@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-4.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-5.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-6.png">
-<meta property="og:updated_time" content="2015-09-29T03:53:41.000Z">
+<meta property="og:updated_time" content="2015-09-29T07:19:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 5.1 SEAndroid分析之启动篇">
 <meta name="twitter:description" content="前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroi">
@@ -270,6 +270,7 @@
 <p>下图所示中间部分,即为LSM模块.</p>
 <p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-4.png" alt=""></p>
 <p>当某一进程主体发起对某一个文件客体写操作的时候,LSM模块Hook到了此次请求,LSM内部的Object Manager首先在 权限访问缓存中查找是否有对应的规则,如果没有的话,Security server就会去查询安全策略中是否有该规则.如果没有的话,就拒绝此次操作;有的话,就将查询到的规则放到访问向量缓存中去,然后向Object Manager报告,允许此次操作,那么最后进程主体就可以对客体文件进行写操作了.</p>
+<p>DAC机制和MAC机制可以并存,执行的时候先检查DAC是否满足,如果不满足,那就不需要进行MAC检查了.只有当满足DAC之后,才会进行MAC检查.</p>
 <p>SELinux的三种状态:</p>
 <p>Disable: 关闭</p>
 <p>Permissive: 宽松状态,违反策略,紧紧是提示而已,操作仍能进行</p>
@@ -295,6 +296,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2015/09/29/Android_SEAndroid_2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android 5.1 SEAndroid分析之安全上下文语法篇
+        
+      </div>
+    </a>
   
   
     <a href="/2015/09/26/Android_property_2/" id="article-nav-older" class="article-nav-link-wrap">
