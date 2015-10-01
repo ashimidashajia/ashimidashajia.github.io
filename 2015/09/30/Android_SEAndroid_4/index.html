@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 SEAndroid分析之打标签 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
+给主体客体绑定SEAndroid上下文,可以称为打标签.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 SEAndroid分析之打标签">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_4/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
+给主体客体绑定SEAndroid上下文,可以称为打标签.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-4-1.png">
+<meta property="og:updated_time" content="2015-10-01T10:07:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 SEAndroid分析之打标签">
+<meta name="twitter:description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
+给主体客体绑定SEAndroid上下文,可以称为打标签.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_SEAndroid_4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/30/Android_SEAndroid_4/" class="article-date">
+  	<time datetime="2015-09-30T14:46:37.000Z" itemprop="datePublished">2015-09-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 SEAndroid分析之打标签
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
+<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
+<a id="more"></a>
+<h3 id="SEAndroid_初始化">SEAndroid 初始化</h3><p>SEAndroid的初始化,肯定是在init进程中完成的了.</p>
+<p>init.c main函数中的代码片段:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">union</span> selinux_callback cb;<span class="comment">//设置SEAndroid回调函数</span></span><br><span class="line">cb.func_log = log_callback;</span><br><span class="line">selinux_set_callback(SELINUX_CB_LOG, cb);</span><br><span class="line"></span><br><span class="line">cb.func_audit = audit_callback;</span><br><span class="line">selinux_set_callback(SELINUX_CB_AUDIT, cb);</span><br><span class="line"></span><br><span class="line">selinux_initialize();<span class="comment">//初始化SEAndroid</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* These directories were necessarily created before initial policy load;</span><br><span class="line"> * and therefore need their security context restored to the proper value.</span><br><span class="line"> * This must happen before /dev is populated by ueventd.</span><br><span class="line"> */</span></span><br><span class="line"><span class="comment">/*将下面的目录的安全上下文恢复到系统原始设置*/</span></span><br><span class="line">restorecon(<span class="string">"/dev"</span>);</span><br><span class="line">restorecon(<span class="string">"/dev/socket"</span>);</span><br><span class="line">restorecon(<span class="string">"/dev/__properties__"</span>);</span><br><span class="line">restorecon_recursive(<span class="string">"/sys"</span>);</span><br></pre></td></tr></table></figure>
+<p>Android源码/external/libselinux/src/callback.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* callback setting function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">selinux_set_callback</span><span class="params">(<span class="keyword">int</span> type, <span class="keyword">union</span> selinux_callback cb)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">    <span class="keyword">case</span> SELINUX_CB_LOG:</span><br><span class="line">        selinux_log = cb.func_log;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SELINUX_CB_AUDIT:</span><br><span class="line">        selinux_audit = cb.func_audit;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SELINUX_CB_VALIDATE:</span><br><span class="line">        selinux_validate = cb.func_validate;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SELINUX_CB_SETENFORCE:</span><br><span class="line">        selinux_netlink_setenforce = cb.func_setenforce;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SELINUX_CB_POLICYLOAD:</span><br><span class="line">        selinux_netlink_policyload = cb.func_policyload;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>利用selinux_set_callback函数设置了两个回调函数而已,这两个回调函数没有太大的实际作用.</p>
+<p>重点是下面这个SEAndroid初始化函数</p>
+<p>init.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">selinux_initialize</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">/*检查SEAndroid是否开启*/</span></span><br><span class="line">    <span class="keyword">if</span> (selinux_is_disabled()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*向内核装载策略文件*/</span></span><br><span class="line">    INFO(<span class="string">"loading selinux policy\n"</span>);</span><br><span class="line">    <span class="keyword">if</span> (selinux_android_load_policy() &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        ERROR(<span class="string">"SELinux: Failed to load policy; rebooting into recovery mode\n"</span>);</span><br><span class="line">        android_reboot(ANDROID_RB_RESTART2, <span class="number">0</span>, <span class="string">"recovery"</span>);</span><br><span class="line">        <span class="keyword">while</span> (<span class="number">1</span>) &#123; pause(); &#125;  <span class="comment">// never reached</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*装载文件和属性的安全上下文*/</span></span><br><span class="line">    selinux_init_all_handles();</span><br><span class="line">    <span class="keyword">bool</span> is_enforcing = selinux_is_enforcing();</span><br><span class="line">    INFO(<span class="string">"SELinux: security_setenforce(%d)\n"</span>, is_enforcing);</span><br><span class="line">    security_setenforce(is_enforcing);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先检查SEAndroid是否开启:</p>
+<p>init.c<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">bool</span> <span class="title">selinux_is_disabled</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> ALLOW_DISABLE_SELINUX</span></span><br><span class="line">    <span class="keyword">char</span> tmp[PROP_VALUE_MAX];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (access(<span class="string">"/sys/fs/selinux"</span>, F_OK) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">/* SELinux is not compiled into the kernel, or has been disabled</span><br><span class="line">         * via the kernel command line "selinux=0".</span><br><span class="line">         */</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((property_get(<span class="string">"ro.boot.selinux"</span>, tmp) != <span class="number">0</span>) &amp;&amp; (<span class="built_in">strcmp</span>(tmp, <span class="string">"disabled"</span>) == <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="comment">/* SELinux is compiled into the kernel, but we've been told to disable it. */</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>先检查下面的文件夹是否存在,不存的话,表示内核不支持SELinux或者SELinux处于禁止模式.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/sys/fs/selinux</span><br></pre></td></tr></table></figure></p>
+<p>如果文件夹存在,再检查ro.boot.selinux这个属性值是否被设置,如果被设置了,且值为disabled,那也说明SElinux处于禁止模式.</p>
+<p>接着要向内核LSM模块装载编译好的策略文件.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">selinux_android_load_policy</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *mnt = SELINUXMNT;</span><br><span class="line">    <span class="keyword">int</span> rc;</span><br><span class="line">    rc = mount(SELINUXFS, mnt, SELINUXFS, <span class="number">0</span>, <span class="literal">NULL</span>);<span class="comment">//挂载文件系统selinuxfs到/sys/fs/selinux</span></span><br><span class="line">    <span class="keyword">if</span> (rc &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (errno == ENODEV) &#123;</span><br><span class="line">            <span class="comment">/* SELinux not enabled in kernel */</span></span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (errno == ENOENT) &#123;</span><br><span class="line">            <span class="comment">/* Fall back to legacy mountpoint. */</span></span><br><span class="line">            mnt = OLDSELINUXMNT;<span class="comment">//挂载到/sys/fs/selinux不成功的话的话,将selinuxfs挂载到/selinux中</span></span><br><span class="line">            rc = mkdir(mnt, <span class="number">0755</span>);</span><br><span class="line">            <span class="keyword">if</span> (rc == -<span class="number">1</span> &amp;&amp; errno != EEXIST) &#123;</span><br><span class="line">                selinux_log(SELINUX_ERROR,<span class="string">"SELinux:  Could not mkdir:  %s\n"</span>,</span><br><span class="line">                    strerror(errno));</span><br><span class="line">                <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            rc = mount(SELINUXFS, mnt, SELINUXFS, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rc &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        selinux_log(SELINUX_ERROR,<span class="string">"SELinux:  Could not mount selinuxfs:  %s\n"</span>,</span><br><span class="line">                strerror(errno));</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    set_selinuxmnt(mnt);<span class="comment">//将mnt的值也就是selinuxfs的挂载点赋值给selinux_mnt</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> selinux_android_load_policy_helper(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>向内核装载策略文件实际上是下面这个函数<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">selinux_android_load_policy_helper</span><span class="params">(<span class="keyword">bool</span> reload)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fd = -<span class="number">1</span>, rc;</span><br><span class="line">    <span class="keyword">struct</span> stat sb;</span><br><span class="line">    <span class="keyword">void</span> *<span class="built_in">map</span> = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * If reloading policy and there is no /data policy or</span><br><span class="line">     * that /data policy has the wrong version or the /data</span><br><span class="line">     * policy is disabled via safe mode, then just return.</span><br><span class="line">     * There is no point in reloading policy from / a second time.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">if</span> (reload &amp;&amp; !selinux_android_use_data_policy())<span class="comment">//init初始化SEAndroid的时候,传递的参数是false,因为是第一次装载</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">/*policy_index初始值是0,也就是第一次装载的时候,会装载sepolicy_file[0],它的值是/sepolicy*/</span></span><br><span class="line">    fd = open(sepolicy_file[policy_index], O_RDONLY | O_NOFOLLOW);</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        selinux_log(SELINUX_ERROR, <span class="string">"SELinux:  Could not open sepolicy:  %s\n"</span>,</span><br><span class="line">                strerror(errno));</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (fstat(fd, &amp;sb) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        selinux_log(SELINUX_ERROR, <span class="string">"SELinux:  Could not stat %s:  %s\n"</span>,</span><br><span class="line">                sepolicy_file[policy_index], strerror(errno));</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*利用mmap将策略文件映射到内存*/</span></span><br><span class="line">    <span class="built_in">map</span> = mmap(<span class="literal">NULL</span>, sb.st_size, PROT_READ, MAP_PRIVATE, fd, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">map</span> == MAP_FAILED) &#123;</span><br><span class="line">        selinux_log(SELINUX_ERROR, <span class="string">"SELinux:  Could not map %s:  %s\n"</span>,</span><br><span class="line">            sepolicy_file[policy_index], strerror(errno));</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/*将策略文件装载到内核中去*/</span></span><br><span class="line">    rc = security_load_policy(<span class="built_in">map</span>, sb.st_size);</span><br><span class="line">    <span class="keyword">if</span> (rc &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        selinux_log(SELINUX_ERROR, <span class="string">"SELinux:  Could not load policy:  %s\n"</span>,</span><br><span class="line">            strerror(errno));</span><br><span class="line">        munmap(<span class="built_in">map</span>, sb.st_size);</span><br><span class="line">        close(fd);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    munmap(<span class="built_in">map</span>, sb.st_size);</span><br><span class="line">    close(fd);</span><br><span class="line">    selinux_log(SELINUX_INFO, <span class="string">"SELinux: Loaded policy from %s\n"</span>, sepolicy_file[policy_index]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译好的策略文件位置存储在sepolicy_file数组中,如下所示.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">const</span> sepolicy_file[] = &#123;</span><br><span class="line">    <span class="string">"/sepolicy"</span>,</span><br><span class="line">    <span class="string">"/data/security/current/sepolicy"</span>,</span><br><span class="line">    <span class="literal">NULL</span> &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>policy_index是当前策略文件索引值,其初始值为0,也就是Android系统启动的时候首先加载根目录下的sepolicy这个策略文件.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">security_load_policy</span><span class="params">(<span class="keyword">void</span> *data, size_t len)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> path[PATH_MAX];</span><br><span class="line">    <span class="keyword">int</span> fd, ret;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!selinux_mnt) &#123;</span><br><span class="line">        errno = ENOENT;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">snprintf</span>(path, <span class="keyword">sizeof</span> path, <span class="string">"%s/load"</span>, selinux_mnt);</span><br><span class="line">    fd = open(path, O_RDWR);</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    ret = write(fd, data, len);</span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面已经将selinuxfs挂载到selinux_mnt中了,上述函数就是将mmap映射的策略文件,通过load,装载到了内核中去.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-4-1.png" alt=""></p>
+<font color="#ff5588">注意事项:</font>
+
+<p>在Android5.0(包括5.0)之前是首先尝试加载/data/security/current/sepolicy,加载不成功才会,才会尝试加载/sepolicy.</p>
+<p>而Android5.1中初始化的时候是只加载/sepolicy这个策略文件.但是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">selinux_android_use_data_policy</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    set_policy_index();</span><br><span class="line">    <span class="keyword">return</span> (policy_index == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><a href="http://blog.csdn.net/modianwutong/article/details/43114883" target="_blank" rel="external">http://blog.csdn.net/modianwutong/article/details/43114883</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/30/Android_SEAndroid_3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 SEAndroid分析之type转换篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_SEAndroid_4" data-title="Android 5.1 SEAndroid分析之打标签" data-url="http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_4/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

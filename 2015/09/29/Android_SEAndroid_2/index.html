@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-1-7.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-2-2.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android_SEandroid-2-3.PNG">
-<meta property="og:updated_time" content="2015-09-30T06:55:45.000Z">
+<meta property="og:updated_time" content="2015-10-01T01:10:16.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android 5.1 SEAndroid分析之安全上下文语法篇">
 <meta name="twitter:description" content="前面文章最后介绍了如何查看安全上下文.现在介绍下安全上下文的含义和规则.
@@ -250,12 +250,20 @@
 <p>提到type,就不得不提属性了:</p>
 <p>Android源码/external/sepolicy/attributes</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">######################################</span></span><br><span class="line"><span class="comment"># Attribute declarations</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for devices.</span></span><br><span class="line">attribute dev_<span class="built_in">type</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for processes.</span></span><br><span class="line">attribute domain;</span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for filesystems.</span></span><br><span class="line">attribute fs_<span class="built_in">type</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># All types used for context= mounts.</span></span><br><span class="line">attribute contextmount_<span class="built_in">type</span>;</span><br><span class="line"></span><br><span class="line">. . . . .</span><br></pre></td></tr></table></figure>
-<p>上述文件中定义了SEAndroid中用到的所有属性,看到了吧,domain也是在这里定义的,而且注释也说的很清楚了,是用于进程的.fs_type表示文件,通常用于表示客体的类型,</p>
+<p>上述文件中定义了SEAndroid中用到的所有属性,属性由attribute关键字声明，属性其实是一个特殊的type，可以把属性看成是type的集合，为属性设置的策略，适用于所有与该属性相关联的type.看到了吧,domain也是在这里定义的,而且注释也说的很清楚了,是用于进程的.fs_type表示文件,通常用于表示客体的类型,</p>
 <p>例如</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> adbd, domain;</span><br></pre></td></tr></table></figure>
 <p>定义了adbd类型,隶属于domain.</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> rootfs, fs_<span class="built_in">type</span>;</span><br></pre></td></tr></table></figure>
 <p>定义rootfs类型,隶属于fs_type.</p>
+<p>注意：一个type可以关联多个attribute；</p>
+<font color="#ff5588">attribute和type的关系</font>
+
+<p>a）实际上，type和attribute位于同一个命名空间，即不能用type命令和attribute命令定义相同名字的东西；</p>
+<p>b）其实，attribute真正的意思应该是类似typegroup这样的概念。比如将type A和attributeB关联起来，就是说type A属于attributeB中的一员；</p>
+<p>使用attribute有什么好处呢？一般而言，系统会定义数十或数百个type，每个type都需要通过allow语句来设置相应的权限，这样我们的安全策略文件编写起来就会非常麻烦。有了attribute之后呢，我们可以将这些type与某个attribute关联起来，把这些type共有的权限，通过一条allow语句来设置.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义两个type，分别是t_a和t_b，它们都需要设置对t_c类型文件的读操作；</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># 首先，把t_a和t_b关联到attr_test</span></span><br><span class="line"></span><br><span class="line"> <span class="built_in">type</span> t_a, attr_<span class="built_in">test</span>;</span><br><span class="line"></span><br><span class="line"> <span class="built_in">type</span> t_b, attr_<span class="built_in">test</span>;</span><br><span class="line"></span><br><span class="line"> <span class="comment"># 通过一条allow语句为attr_test设置对t_c类型文件的读权限</span></span><br><span class="line"></span><br><span class="line"> allow attr_<span class="built_in">test</span> t_c:file <span class="built_in">read</span>;</span><br></pre></td></tr></table></figure>
+<p>现在t_a和t_b域的进程拥有了对t_c类型文件的读权限.</p>
 <h3 id="Object_Class_和_permissive">Object Class 和 permissive</h3><h4 id="permissive">permissive</h4><p>在早起Android版本源码中你可能会看到某些类型定义的时候,下面紧跟着permissive:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> adbd, domain;</span><br><span class="line">permissive adbd;</span><br></pre></td></tr></table></figure></p>
 <p>意味着此时adbd运行在 permissive状态.就算是Android系统本身工作在enforcing状态,adbd违反了策略文件中定义的访问规则,照样可以执行.</p>
 <h4 id="object_class">object class</h4><p>客体分了很多种类,比如文件,文件夹,连接文件,驱动设备文件等等.</p>

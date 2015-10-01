@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_4/</loc>
+    <lastmod>2015-10-01T10:07:21.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/09/29/Android_SEAndroid_2/</loc>
+    <lastmod>2015-10-01T01:10:16.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_3/</loc>
     <lastmod>2015-09-30T11:29:36.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/09/29/Android_SEAndroid_2/</loc>
-    <lastmod>2015-09-30T06:55:45.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.iloveandroid.net/2015/09/28/Android_SEAndroid_1/</loc>
     <lastmod>2015-09-29T07:19:28.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
-    <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
   <url>
@@ -28,6 +28,11 @@
   
   <url>
     <loc>http://www.iloveandroid.net/2015/09/26/Android_property_2/</loc>
+    <lastmod>2015-09-28T05:53:55.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
