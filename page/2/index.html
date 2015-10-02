@@ -171,6 +171,70 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/21/Zygote_2/" class="article-date">
+  	<time datetime="2015-09-21T15:44:39.000Z" itemprop="datePublished">2015-09-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/21/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
+<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
+<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/21/Zygote_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Zygote_1" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -727,69 +791,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/17/GradleProject/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-GradleImportantSyntax" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/17/GradleImportantSyntax/" class="article-date">
-  	<time datetime="2015-09-17T07:39:11.000Z" itemprop="datePublished">2015-09-17</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/17/GradleImportantSyntax/">Gradle构建中的重要语法</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇博客中，我们简单的利用Gradle从零开始构建了一个简单的Android app项目，对build.gradle中的有些语法，可能不是很熟悉，所以很有必要理解Gradle的重要语法。通过这边文章，希望能读懂简单build,gradle，最重要的是如何查阅文档。</p>
-<h2 id="‘’，“”，’‘’_‘’‘">‘’，“”，’‘’ ‘’‘</h2><p>看gradle脚本的时候，发现有的字符串是’’,有的是“”,还有的是’’’ ‘’’ 他们都用在什么地方呢？</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/17/GradleImportantSyntax/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

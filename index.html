@@ -171,6 +171,69 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Android_SEAndroid_5" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/01/Android_SEAndroid_5/" class="article-date">
+  	<time datetime="2015-10-01T15:21:29.000Z" itemprop="datePublished">2015-10-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/01/Android_SEAndroid_5/">Android 5.1 SEAndroid分析之打标签</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
+<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/01/Android_SEAndroid_5/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Android_SEAndroid_4" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -188,7 +251,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/30/Android_SEAndroid_4/">Android 5.1 SEAndroid分析之打标签</a>
+      <a class="article-title" href="/2015/09/30/Android_SEAndroid_4/">Android 5.1 SEAndroid分析之加载策略文件</a>
     </h1>
   
 
@@ -197,8 +260,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
-<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
+        <p>SEAndroid的初始化,自然是在init进程中完成的了,主要是想内核模块加载策略文件和给主体客体打标签.这篇文章主要介绍策略加载相关的部分.<br>
       
     </div>
     
@@ -727,70 +789,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/24/Android_init_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_2/" class="article-date">
-  	<time datetime="2015-09-21T15:44:39.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
-<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
-<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_2/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

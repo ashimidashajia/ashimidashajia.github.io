@@ -3,22 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Android 5.1 SEAndroid分析之打标签 | 码农故事</title>
+  <title>Android 5.1 SEAndroid分析之加载策略文件 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
-给主体客体绑定SEAndroid上下文,可以称为打标签.">
+  <meta name="description" content="SEAndroid的初始化,自然是在init进程中完成的了,主要是想内核模块加载策略文件和给主体客体打标签.这篇文章主要介绍策略加载相关的部分.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 5.1 SEAndroid分析之打标签">
+<meta property="og:title" content="Android 5.1 SEAndroid分析之加载策略文件">
 <meta property="og:url" content="http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_4/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
-给主体客体绑定SEAndroid上下文,可以称为打标签.">
+<meta property="og:description" content="SEAndroid的初始化,自然是在init进程中完成的了,主要是想内核模块加载策略文件和给主体客体打标签.这篇文章主要介绍策略加载相关的部分.">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/Android-seandroid-4-1.png">
-<meta property="og:updated_time" content="2015-10-01T10:07:21.000Z">
+<meta property="og:updated_time" content="2015-10-02T01:11:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 5.1 SEAndroid分析之打标签">
-<meta name="twitter:description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
-给主体客体绑定SEAndroid上下文,可以称为打标签.">
+<meta name="twitter:title" content="Android 5.1 SEAndroid分析之加载策略文件">
+<meta name="twitter:description" content="SEAndroid的初始化,自然是在init进程中完成的了,主要是想内核模块加载策略文件和给主体客体打标签.这篇文章主要介绍策略加载相关的部分.">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -191,7 +188,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Android 5.1 SEAndroid分析之打标签
+      Android 5.1 SEAndroid分析之加载策略文件
     </h1>
   
 
@@ -215,9 +212,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,但是这些上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
-<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
-<a id="more"></a>
+        <p>SEAndroid的初始化,自然是在init进程中完成的了,主要是想内核模块加载策略文件和给主体客体打标签.这篇文章主要介绍策略加载相关的部分.<br><a id="more"></a></p>
 <h3 id="SEAndroid_初始化">SEAndroid 初始化</h3><p>SEAndroid的初始化,肯定是在init进程中完成的了.</p>
 <p>init.c main函数中的代码片段:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">union</span> selinux_callback cb;<span class="comment">//设置SEAndroid回调函数</span></span><br><span class="line">cb.func_log = log_callback;</span><br><span class="line">selinux_set_callback(SELINUX_CB_LOG, cb);</span><br><span class="line"></span><br><span class="line">cb.func_audit = audit_callback;</span><br><span class="line">selinux_set_callback(SELINUX_CB_AUDIT, cb);</span><br><span class="line"></span><br><span class="line">selinux_initialize();<span class="comment">//初始化SEAndroid</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* These directories were necessarily created before initial policy load;</span><br><span class="line"> * and therefore need their security context restored to the proper value.</span><br><span class="line"> * This must happen before /dev is populated by ueventd.</span><br><span class="line"> */</span></span><br><span class="line"><span class="comment">/*将下面的目录的安全上下文恢复到系统原始设置*/</span></span><br><span class="line">restorecon(<span class="string">"/dev"</span>);</span><br><span class="line">restorecon(<span class="string">"/dev/socket"</span>);</span><br><span class="line">restorecon(<span class="string">"/dev/__properties__"</span>);</span><br><span class="line">restorecon_recursive(<span class="string">"/sys"</span>);</span><br></pre></td></tr></table></figure>
@@ -240,10 +235,20 @@
 <font color="#ff5588">注意事项:</font>
 
 <p>在Android5.0(包括5.0)之前是首先尝试加载/data/security/current/sepolicy,加载不成功才会,才会尝试加载/sepolicy.</p>
-<p>而Android5.1中初始化的时候是只加载/sepolicy这个策略文件.但是</p>
+<p>而Android5.1中初始化的时候是只加载/sepolicy这个策略文件.但是提供了如下函数:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">selinux_android_use_data_policy</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    set_policy_index();</span><br><span class="line">    <span class="keyword">return</span> (policy_index == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><a href="http://blog.csdn.net/modianwutong/article/details/43114883" target="_blank" rel="external">http://blog.csdn.net/modianwutong/article/details/43114883</a></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#define POLICY_OVERRIDE_VERSION    "/data/security/current/selinux_version"/data/security/current/selinux_version"</span><br><span class="line">#define POLICY_BASE_VERSION        "/selinux_version"</span><br><span class="line">static int policy_index = 0;</span><br><span class="line"></span><br><span class="line">static void set_policy_index(void)</span><br><span class="line">&#123;</span><br><span class="line">    . . . </span><br><span class="line">    /*打开/data/security/current/selinux_version"*/</span><br><span class="line">    fd_base = open(POLICY_BASE_VERSION, O_RDONLY | O_NOFOLLOW);</span><br><span class="line">    . . .</span><br><span class="line">    /*打开/selinux_version*/</span><br><span class="line">    fd_override = open(POLICY_OVERRIDE_VERSION, O_RDONLY | O_NOFOLLOW);</span><br><span class="line">    . . .</span><br><span class="line">    map_base = mmap(NULL, sb_base.st_size, PROT_READ, MAP_PRIVATE, fd_base, 0);</span><br><span class="line">    . . .</span><br><span class="line">    map_override = mmap(NULL, sb_override.st_size, PROT_READ, MAP_PRIVATE, fd_override, 0);</span><br><span class="line">    . . .</span><br><span class="line">    /*就是比较selinux版本是否一致,一致的话,就将policy_index设置为1*/</span><br><span class="line">    if (memcmp(map_base, map_override, sb_base.st_size) == 0)</span><br><span class="line">        policy_index = 1;</span><br><span class="line">    . . . </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>利用上述函数可以将策略文件由根目录下的/sepolicy切换到/data/security/current/sepolicy.</p>
+<p>利用下面的函数可可以装载data下的策略文件到内核中去:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">selinux_android_reload_policy</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> selinux_android_load_policy_helper(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数被init.c中的下列函数调用:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">selinux_reload_policy</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (selinux_is_disabled()) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    INFO(<span class="string">"SELinux: Attempting to reload policy files\n"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (selinux_android_reload_policy() == -<span class="number">1</span>) &#123;<span class="comment">//装载data下的策略文件到内核</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (sehandle)</span><br><span class="line">        selabel_close(sehandle);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (sehandle_prop)</span><br><span class="line">        selabel_close(sehandle_prop);</span><br><span class="line"></span><br><span class="line">    selinux_init_all_handles();<span class="comment">//重新装载文件和属性的安全上下文</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当设置selinux.reload_policy属性值为1的时候,就会触发selinux_reload_policy函数执行:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">property_set</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> <span class="keyword">char</span> *value)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">   . . . .. .</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strcmp</span>(<span class="string">"selinux.reload_policy"</span>, name) == <span class="number">0</span> &amp;&amp;</span><br><span class="line">               <span class="built_in">strcmp</span>(<span class="string">"1"</span>, value) == <span class="number">0</span>) &#123;</span><br><span class="line">        selinux_reload_policy();</span><br><span class="line">    &#125;</span><br><span class="line">    property_changed(name, value);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<font color="#ff5588">可以得出结论:Android5.1中init进程最先开始加载的是根目录下的策略文件,当设置selinux.reload_policy属性值为1的时候,会加载/data/security/current/下的策略文件替换之前的策略.我们自定义的策略就是在/data/security/current/中.</font>
+
+
+
+
 
       
     </div>
@@ -252,6 +257,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2015/10/01/Android_SEAndroid_5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android 5.1 SEAndroid分析之打标签
+        
+      </div>
+    </a>
   
   
     <a href="/2015/09/30/Android_SEAndroid_3/" id="article-nav-older" class="article-nav-link-wrap">
@@ -284,7 +298,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android_SEAndroid_4" data-title="Android 5.1 SEAndroid分析之打标签" data-url="http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_4/"></div>
+	<div class="ds-thread" data-thread-key="Android_SEAndroid_4" data-title="Android 5.1 SEAndroid分析之加载策略文件" data-url="http://www.iloveandroid.net/2015/09/30/Android_SEAndroid_4/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

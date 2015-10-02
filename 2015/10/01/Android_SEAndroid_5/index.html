@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android 5.1 SEAndroid分析之打标签 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
+给主体客体绑定SEAndroid上下文,可以称为打标签.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.1 SEAndroid分析之打标签">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/01/Android_SEAndroid_5/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
+给主体客体绑定SEAndroid上下文,可以称为打标签.">
+<meta property="og:updated_time" content="2015-10-02T09:21:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.1 SEAndroid分析之打标签">
+<meta name="twitter:description" content="现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.
+给主体客体绑定SEAndroid上下文,可以称为打标签.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_SEAndroid_5" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/01/Android_SEAndroid_5/" class="article-date">
+  	<time datetime="2015-10-01T15:21:29.000Z" itemprop="datePublished">2015-10-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android 5.1 SEAndroid分析之打标签
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
+<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
+<a id="more"></a>
+<h3 id="SEAndroid_对rc文件的扩展">SEAndroid 对rc文件的扩展</h3><p>SEAndroid对rc文件的影响,主要体现在增加了五个关键字:</p>
+<h4 id="seclable">seclable</h4><p>用来设置service的安全上下文<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">service ueventd /sbin/ueventd</span><br><span class="line">    class core</span><br><span class="line">    critical</span><br><span class="line">    seclabel u:r:ueventd:s0</span><br></pre></td></tr></table></figure></p>
+<h4 id="restorecon">restorecon</h4><p>恢复某个文件和文件夹安全上下文到最初设置的状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">on post-fs-data</span><br><span class="line">    <span class="comment"># We chown/chmod /data again so because mount is run as root + defaults</span></span><br><span class="line">    chown system system /data</span><br><span class="line">    chmod <span class="number">0771</span> /data</span><br><span class="line">    <span class="comment"># We restorecon /data in case the userdata partition has been reset.</span></span><br><span class="line">    restorecon /data</span><br></pre></td></tr></table></figure>
+<h4 id="setcon">setcon</h4><p>只用来设置init进程的安全上下文<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">on early-init</span><br><span class="line">. . . . </span><br><span class="line">setcon u:r:init:s0</span><br><span class="line">. . . .</span><br></pre></td></tr></table></figure></p>
+<h4 id="setenforce">setenforce</h4><p>设置为enforcing模式</p>
+<h4 id="setsebool">setsebool</h4><p>设置一个policy boolean类型的值</p>
+<p>后面连个在rc文件中不多见.</p>
+<h3 id="init进程初始化安全上下文">init进程初始化安全上下文</h3><p>init.c中main函数中的selinux_initialize函数调用selinux_init_all_handles()函数来装载文件和属性的安全上下文.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> selabel_handle *sehandle;</span><br><span class="line"><span class="keyword">struct</span> selabel_handle *sehandle_prop;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">selinux_init_all_handles</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    sehandle = selinux_android_file_context_handle();<span class="comment">//装载所有文件的安全上下文</span></span><br><span class="line">    selinux_android_set_sehandle(sehandle);<span class="comment">//libselinux中也有一个sehandle,此函数就是给这个全局变量赋值</span></span><br><span class="line">    sehandle_prop = selinux_android_prop_context_handle();<span class="comment">//装载所有属性文件的安全上下文</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Android源码/external/libselinux/src/label_internal.h<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> selabel_handle &#123;</span><br><span class="line">    <span class="comment">/* arguments that were passed to selabel_open */</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> backend;</span><br><span class="line">    <span class="keyword">int</span> validating;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* labeling operations */</span></span><br><span class="line">    <span class="keyword">struct</span> selabel_lookup_rec *(*func_lookup) (<span class="keyword">struct</span> selabel_handle *h,</span><br><span class="line">                           <span class="keyword">const</span> <span class="keyword">char</span> *key, <span class="keyword">int</span> type);</span><br><span class="line">    <span class="keyword">void</span> (*func_close) (<span class="keyword">struct</span> selabel_handle *h);</span><br><span class="line">    <span class="keyword">void</span> (*func_stats) (<span class="keyword">struct</span> selabel_handle *h);</span><br><span class="line">    <span class="keyword">bool</span> (*func_partial_match) (<span class="keyword">struct</span> selabel_handle *h, <span class="keyword">const</span> <span class="keyword">char</span> *key);</span><br><span class="line">    <span class="keyword">struct</span> selabel_lookup_rec *(*func_lookup_best_match) (<span class="keyword">struct</span> selabel_handle *h,</span><br><span class="line">                             <span class="keyword">const</span> <span class="keyword">char</span> *key,</span><br><span class="line">                             <span class="keyword">const</span> <span class="keyword">char</span> **aliases,</span><br><span class="line">                             <span class="keyword">int</span> type);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* supports backend-specific state information */</span></span><br><span class="line">    <span class="keyword">void</span> *data;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* substitution support */</span></span><br><span class="line">    <span class="keyword">struct</span> selabel_sub *subs;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="文件打标签">文件打标签</h4><p>与文件打标签相关的函数如下所示:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">struct</span> selabel_handle* <span class="title">selinux_android_file_context_handle</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> file_context_open();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>文件的安全上下文记录在file_contexts中,该文件在手机中有以下两个位置:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">struct</span> selinux_opt seopts[] = &#123;</span><br><span class="line">    &#123; SELABEL_OPT_PATH, <span class="string">"/file_contexts"</span> &#125;,</span><br><span class="line">    &#123; SELABEL_OPT_PATH, <span class="string">"/data/security/current/file_contexts"</span> &#125;,</span><br><span class="line">    &#123; <span class="number">0</span>, <span class="literal">NULL</span> &#125; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">struct</span> selabel_handle *<span class="title">file_context_open</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> selabel_handle *h;</span><br><span class="line"></span><br><span class="line">    h = get_selabel_handle(seopts);<span class="comment">//sepots是一个全局变量,定义如上所示</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!h)</span><br><span class="line">        selinux_log(SELINUX_ERROR, <span class="string">"%s: Error getting file context handle (%s)\n"</span>,</span><br><span class="line">                __FUNCTION__, strerror(errno));</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过下面的函数,选择一个file_contexts文件,并加载,这样就初始化好了文件的安全上下文.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">struct</span> selabel_handle *<span class="title">get_selabel_handle</span><span class="params">(<span class="keyword">const</span> <span class="keyword">struct</span> selinux_opt opts[])</span></span><br><span class="line"></span>&#123;</span><br><span class="line">   . . .  </span><br><span class="line">    set_policy_index();<span class="comment">//该函数上一篇文章已经介绍了,用来设置数组索引的,即选择seopts[]数组中的哪一个元素</span></span><br><span class="line">   . . .</span><br><span class="line">    h = selabel_open(SELABEL_CTX_FILE, &amp;opts[policy_index], <span class="number">1</span>);</span><br><span class="line">    . . .</span><br><span class="line">    fd = open(opts[policy_index].value, O_RDONLY | O_NOFOLLOW);</span><br><span class="line">  . . . </span><br><span class="line">    <span class="built_in">map</span> = mmap(<span class="literal">NULL</span>, sb.st_size, PROT_READ, MAP_PRIVATE, fd, <span class="number">0</span>);</span><br><span class="line">   . . .  </span><br><span class="line">    SHA_hash(<span class="built_in">map</span>, sb.st_size, fc_digest);</span><br><span class="line">    . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Android源码/external/sepolicy/file_contexts:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">/           u:object_r:rootfs:s0</span><br><span class="line"></span><br><span class="line"><span class="comment"># Data files</span></span><br><span class="line">/adb_keys       u:object_r:adb_keys_file:s0</span><br><span class="line">/default\.prop      u:object_r:rootfs:s0</span><br><span class="line">/fstab\..*      u:object_r:rootfs:s0</span><br><span class="line">/init\..*       u:object_r:rootfs:s0</span><br><span class="line">/res(/.*)?      u:object_r:rootfs:s0</span><br><span class="line">/ueventd\..*        u:object_r:rootfs:s0</span><br><span class="line"></span><br><span class="line"><span class="comment"># Executables</span></span><br><span class="line">/charger        u:object_r:rootfs:s0</span><br><span class="line">/init           u:object_r:rootfs:s0</span><br><span class="line">/sbin(/.*)?     u:object_r:rootfs:s0</span><br><span class="line"></span><br><span class="line"><span class="comment"># Empty directories</span></span><br><span class="line">/lost\+found        u:object_r:rootfs:s0</span><br><span class="line">/proc           u:object_r:rootfs:s0</span><br><span class="line"></span><br><span class="line"><span class="comment"># SELinux policy files</span></span><br><span class="line">/file_contexts      u:object_r:rootfs:s0</span><br><span class="line">/property_contexts  u:object_r:rootfs:s0</span><br><span class="line">/seapp_contexts     u:object_r:rootfs:s0</span><br><span class="line">/sepolicy       u:object_r:rootfs:s0</span><br><span class="line"></span><br><span class="line">. . .</span><br><span class="line"><span class="comment">##########################</span></span><br><span class="line"><span class="comment"># Devices</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/dev(/.*)?      u:object_r:device:s0</span><br><span class="line">/dev/akm8973.*      u:object_r:sensors_device:s0</span><br><span class="line"></span><br><span class="line">. . .</span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># System files</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/system(/.*)?       u:object_r:system_file:s0</span><br><span class="line">/system/bin/sh      --  u:object_r:shell_<span class="built_in">exec</span>:s0</span><br><span class="line"></span><br><span class="line">. . .</span><br><span class="line"></span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># Vendor files</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/vendor(/.*)?       u:object_r:system_file:s0</span><br><span class="line">/vendor/bin/gpsd    u:object_r:gpsd_<span class="built_in">exec</span>:s0</span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># Data files</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/data(/.*)?     u:object_r:system_data_file:s0</span><br><span class="line">/data/.layout_version       u:object_r:install_data_file:s0</span><br><span class="line"></span><br><span class="line">. . . </span><br><span class="line"></span><br><span class="line"><span class="comment"># coredump directory for userdebug/eng devices</span></span><br><span class="line">/cores(/.*)?                    u:object_r:coredump_file:s0</span><br><span class="line"></span><br><span class="line"><span class="comment"># Wallpaper file for other users</span></span><br><span class="line">/data/system/users/[<span class="number">0</span>-<span class="number">9</span>]+/wallpaper     u:object_r:wallpaper_file:s0</span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># efs files</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/efs(/.*)?      u:object_r:efs_file:s0</span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># Cache files</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/cache(/.*)?        u:object_r:cache_file:s0</span><br><span class="line"></span><br><span class="line">. . .</span><br><span class="line"></span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># sysfs files</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">/sys/devices/platform/nfc-power/nfc_power -- u:object_r:sysfs_nfc_power_writable:s0</span><br><span class="line">/sys/devices/system/cpu(/.*)?    u:object_r:sysfs_devices_system_cpu:s0</span><br><span class="line"></span><br><span class="line">. . . </span><br><span class="line"></span><br><span class="line"><span class="comment">#############################</span></span><br><span class="line"><span class="comment"># asec containers</span></span><br><span class="line">/mnt/asec(/.*)?             u:object_r:asec_apk_file:s0</span><br><span class="line">/mnt/asec/[^/]+/[^/]+\.zip  u:object_r:asec_public_file:s0</span><br><span class="line">/mnt/asec/[^/]+/lib(/.*)?   u:object_r:asec_public_file:s0</span><br><span class="line">/data/app-asec(/.*)?        u:object_r:asec_image_file:s0</span><br></pre></td></tr></table></figure>
+<p>可以看到file_contexts中记录的就是android 系统中各个目录以及文件的安全上下文.</p>
+<p>现在有个问题,就是加载file_contexts的时候,可能一些文件系统还没挂载呢,这时候需要利用restorecon函数将这些文件夹恢复到file_contexts中标记的安全上下文.</p>
+<p>init.c中main函数:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">selinux_initialize();</span><br><span class="line">   <span class="comment">/* These directories were necessarily created before initial policy load</span><br><span class="line">    * and therefore need their security context restored to the proper value.</span><br><span class="line">    * This must happen before /dev is populated by ueventd.</span><br><span class="line">    */</span></span><br><span class="line">   restorecon(<span class="string">"/dev"</span>);</span><br><span class="line">   restorecon(<span class="string">"/dev/socket"</span>);</span><br><span class="line">   restorecon(<span class="string">"/dev/__properties__"</span>);</span><br><span class="line">   restorecon_recursive(<span class="string">"/sys"</span>);</span><br></pre></td></tr></table></figure>
+<p>上述是针对文件和文件夹设置安全上下文,还有一种情况就是针对文件系统设置标签,也就是设置安全上下文.</p>
+<p>Android源码/external/sepolicy/中有两个文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">genfs_contexts</span><br><span class="line">fs_use</span><br></pre></td></tr></table></figure></p>
+<p>是用来给文件系统设置安全上下文的,设置之后文件系统内的所有文件没有重新指定的话,都是这个安全上下文.</p>
+<p>genfs_contexts主要是针对基于内存的文件系统打标签:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Label inodes with the fs label.</span></span><br><span class="line">genfscon rootfs / u:object_r:rootfs:s0</span><br><span class="line"><span class="comment"># proc labeling can be further refined (longest matching prefix).</span></span><br><span class="line">genfscon proc / u:object_r:proc:s0</span><br><span class="line">genfscon proc /net u:object_r:proc_net:s0</span><br><span class="line"></span><br><span class="line">. . .</span><br></pre></td></tr></table></figure></p>
+<p>fs_use是对实实在在的文件系统打标签</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Label inodes via getxattr.</span></span><br><span class="line">fs_use_xattr yaffs2 u:object_r:labeledfs:s0;</span><br><span class="line">fs_use_xattr jffs2 u:object_r:labeledfs:s0;</span><br><span class="line">fs_use_xattr ext2 u:object_r:labeledfs:s0;</span><br><span class="line">fs_use_xattr ext3 u:object_r:labeledfs:s0;</span><br><span class="line">fs_use_xattr ext4 u:object_r:labeledfs:s0;</span><br><span class="line"></span><br><span class="line">. . .</span><br></pre></td></tr></table></figure>
+<p>对于这些问价系统,安全上下文是作为扩展属性存在的,可以通过getattr函数从inode中读取到文件的安全属性.</p>
+<p>还有一点要注意,就是Android4.4之后make_ext4fs在制作system.img和userdata.img的时候也要指定file_contexts文件,用来初始化system和userdata分区下的文件的安全上下文.这在重打ROM包的时候要注意.</p>
+<h4 id="属性打标签">属性打标签</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">struct</span> selinux_opt seopts_prop[] = &#123;</span><br><span class="line">        &#123; SELABEL_OPT_PATH, <span class="string">"/property_contexts"</span> &#125;,</span><br><span class="line">        &#123; SELABEL_OPT_PATH, <span class="string">"/data/security/current/property_contexts"</span> &#125;,</span><br><span class="line">        &#123; <span class="number">0</span>, <span class="literal">NULL</span> &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">struct</span> selabel_handle* <span class="title">selinux_android_prop_context_handle</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> policy_index = selinux_android_use_data_policy() ? <span class="number">1</span> : <span class="number">0</span>;<span class="comment">//判断选择利用哪一个属性策略文件,给属性打标签</span></span><br><span class="line">    <span class="keyword">struct</span> selabel_handle* sehandle = selabel_open(SELABEL_CTX_ANDROID_PROP,</span><br><span class="line">                                                   &amp;seopts_prop[policy_index], <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (!sehandle) &#123;</span><br><span class="line">        ERROR(<span class="string">"SELinux:  Could not load property_contexts:  %s\n"</span>,</span><br><span class="line">              strerror(errno));</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    INFO(<span class="string">"SELinux: Loaded property contexts from %s\n"</span>, seopts_prop[policy_index].value);</span><br><span class="line">    <span class="keyword">return</span> sehandle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Android源码/external/sepolicy/property_contexts</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##########################</span></span><br><span class="line"><span class="comment"># property service keys</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">net.rmnet               u:object_r:net_radio_prop:s0</span><br><span class="line">net.gprs                u:object_r:net_radio_prop:s0</span><br><span class="line">net.ppp                 u:object_r:net_radio_prop:s0</span><br><span class="line">net.qmi                 u:object_r:net_radio_prop:s0</span><br><span class="line"></span><br><span class="line">. . . . .</span><br></pre></td></tr></table></figure>
+<p>因为ro.开头的属性是只读属性,不管谁都可以访问,因为无法修改其值,也就不会对系统造成影响.所以上述文件中没有对ro.的属性设定安全上下文.</p>
+<p>对于那些非只读属性,那么就必须要设置安全上下文了,因为修改这些属性的值,一般情况下都会对系统造成一定的影响.</p>
+<h3 id="设置进程主体的安全上下文">设置进程主体的安全上下文</h3><p>Android系统中启动进程常用的两种方式:</p>
+<ol>
+<li><p>一种是通过init进程来启动,这些进程一般都是Android系统native层的核心服务,通常以守护进程的方式启动;</p>
+</li>
+<li><p>另一种当然就是zygote来启动的应用App进程了.</p>
+</li>
+</ol>
+<h4 id="设置守护进程的安全上下文">设置守护进程的安全上下文</h4><p>这些守护进程通常都是指init进程中启动的rc文件中的service.前面文章也有介绍,service是如何启动的.service的安全上下文,肯定也是在它启动的时候设置的了.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">service_start</span><span class="params">(<span class="keyword">struct</span> service *svc, <span class="keyword">const</span> <span class="keyword">char</span> *dynamic_args)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    . . . .</span><br><span class="line">      <span class="keyword">if</span> (is_selinux_enabled() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (svc-&gt;seclabel) &#123;</span><br><span class="line">            scon = strdup(svc-&gt;seclabel);<span class="comment">//rc文件中利用seclable指定关键字的话,复制一份</span></span><br><span class="line">            <span class="keyword">if</span> (!scon) &#123;</span><br><span class="line">                ERROR(<span class="string">"Out of memory while starting '%s'\n"</span>, svc-&gt;name);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">char</span> *mycon = <span class="literal">NULL</span>, *fcon = <span class="literal">NULL</span>;</span><br><span class="line">            . . . </span><br><span class="line">            rc = getcon(&amp;mycon);<span class="comment">//如果rc文件中没有为service设置安全上下文,就先获得当前进程,也就是init进程的安全上下文</span></span><br><span class="line">            . . . </span><br><span class="line">            rc = getfilecon(svc-&gt;args[<span class="number">0</span>], &amp;fcon);<span class="comment">//获得service对应的可执行程序文件的安全上下文</span></span><br><span class="line">            . . . .</span><br><span class="line">            <span class="comment">/*传递给内核,有内核计算新的安全上下文*/</span></span><br><span class="line">            rc = security_compute_create(mycon, fcon, string_to_security_class(<span class="string">"process"</span>), &amp;scon);</span><br><span class="line">            . . . .</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果rc文件中为service指定了安全上下文,那么就用指定的安全上下给service打标签.如果没有指定,那么就利用init进程的安全上下文和service对应的可执行程序文件的安全上下文,通过/sys/fs/selinux/create传递给内核.内核计算得到安全上下文之后,在通过create返回给用户空间.</p>
+<p>其中getfilecon函数获取service可执行程序文件的安全上下文,就是利用前面说getxattr的获取扩展属性的方式得到的.</p>
+<p>然后service_start函数中要利用setexeccon函数设置安全上下文,即给service打标签.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (svc-&gt;seclabel) &#123;</span><br><span class="line">         <span class="keyword">if</span> (is_selinux_enabled() &gt; <span class="number">0</span> &amp;&amp; setexeccon(svc-&gt;seclabel) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">             ERROR(<span class="string">"cannot setexeccon('%s'): %s\n"</span>, svc-&gt;seclabel, strerror(errno));</span><br><span class="line">             _exit(<span class="number">127</span>);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+<font color="#ff5588">这里有个疑问,就是只有rc文件中service设置了安全上下文的话,才会调用上面的函数,而我们通过计算得到的安全上下文,似乎没有被设置啊!!!!!</font>
+
+
+<h4 id="设置应用App的安全上下文">设置应用App的安全上下文</h4><p>App进程打标签,就比较复杂了.app进程是zygote进程fork出来的,但是没有调用exec.</p>
+<p>Android源码/frameworks/base/core/jni/com_android_internal_os_Zygote.cpp</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> jint <span class="title">com_android_internal_os_Zygote_nativeForkSystemServer</span><span class="params">(</span><br><span class="line">        JNIEnv* env, jclass, uid_t uid, gid_t gid, jintArray gids,</span><br><span class="line">        jint debug_flags, jobjectArray rlimits, jlong permittedCapabilities,</span><br><span class="line">        jlong effectiveCapabilities)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">. . . . .</span><br><span class="line">  <span class="keyword">pid_t</span> pid = ForkAndSpecializeCommon(env, uid, gid, gids,</span><br><span class="line">                                      debug_flags, rlimits,</span><br><span class="line">                                      permittedCapabilities, effectiveCapabilities,</span><br><span class="line">                                      MOUNT_EXTERNAL_NONE, <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">true</span>, <span class="literal">NULL</span>,</span><br><span class="line">                                      <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">. . . . .</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>zygote进程必须以root身份运行,负责设置由他创建的子进程的DAC凭证,也就是UID,GID,GIDS,以及Capabilities.为了支持SEAndroid,还要设置其创建的子进程的安全上下文.</p>
+<p>forkAndSpecializeCommon()内部其实会调用fork()，而后设置gid、uid等信息.还会设置子进程的Capabilities,以及安全上下文.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> pid_t <span class="title">ForkAndSpecializeCommon</span><span class="params">(JNIEnv* env, uid_t uid, gid_t gid, jintArray javaGids,</span><br><span class="line">                                     jint debug_flags, jobjectArray javaRlimits,</span><br><span class="line">                                     jlong permittedCapabilities, jlong effectiveCapabilities,</span><br><span class="line">                                     jint mount_external,</span><br><span class="line">                                     jstring java_se_info, jstring java_se_name,</span><br><span class="line">                                     <span class="keyword">bool</span> is_system_server, jintArray fdsToClose,</span><br><span class="line">                                     jstring instructionSet, jstring dataDir)</span> </span>&#123;</span><br><span class="line">                . . . . .</span><br><span class="line"></span><br><span class="line">                 SetCapabilities(env, permittedCapabilities, effectiveCapabilities);</span><br><span class="line"></span><br><span class="line">                 SetSchedulerPolicy(env);  </span><br><span class="line">                . . . . .</span><br><span class="line">                  rc = selinux_android_setcontext(uid, is_system_server, se_info_c_str, se_name_c_str);</span><br><span class="line">                . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>是通过selinux_android_setcontext函数来设置安全上下文的.</p>
+<p>注意该函数的参数含义.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">selinux_android_setcontext</span><span class="params">(uid_t uid,</span><br><span class="line">                   <span class="keyword">int</span> isSystemServer,</span><br><span class="line">                   <span class="keyword">const</span> <span class="keyword">char</span> *seinfo,</span><br><span class="line">                   <span class="keyword">const</span> <span class="keyword">char</span> *pkgname)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *orig_ctx_str = <span class="literal">NULL</span>, *ctx_str;</span><br><span class="line">    <span class="keyword">context_t</span> ctx = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> rc = -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (is_selinux_enabled() &lt;= <span class="number">0</span>)<span class="comment">//检查是否开启SEAndroid</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    rc = getcon(&amp;ctx_str);<span class="comment">//获取当前进程安全上下文,也就是继承自zygote进程的安全是上下文</span></span><br><span class="line">    <span class="keyword">if</span> (rc)</span><br><span class="line">        <span class="keyword">goto</span> err;</span><br><span class="line"></span><br><span class="line">    ctx = context_new(ctx_str);<span class="comment">//以ctx_str为模板创建一个新的安全上下文</span></span><br><span class="line">    orig_ctx_str = ctx_str;</span><br><span class="line">    <span class="keyword">if</span> (!ctx)</span><br><span class="line">        <span class="keyword">goto</span> oom;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*在seapp_contexts[]中查找新的安全上下文*/</span></span><br><span class="line">    rc = seapp_context_lookup(SEAPP_DOMAIN, uid, isSystemServer, seinfo, pkgname, <span class="literal">NULL</span>, ctx);</span><br><span class="line">    <span class="keyword">if</span> (rc == -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">goto</span> err;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (rc == -<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">goto</span> oom;</span><br><span class="line"></span><br><span class="line">    ctx_str = context_str(ctx);<span class="comment">//将上下文转换为字符串</span></span><br><span class="line">    <span class="keyword">if</span> (!ctx_str)</span><br><span class="line">        <span class="keyword">goto</span> oom;</span><br><span class="line"></span><br><span class="line">    rc = security_check_context(ctx_str);<span class="comment">//验证上下文的正确性.</span></span><br><span class="line">    <span class="keyword">if</span> (rc &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">goto</span> err;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">strcmp</span>(ctx_str, orig_ctx_str)) &#123;</span><br><span class="line">        rc = setcon(ctx_str);<span class="comment">//如果查询得到的安全上下文和之前创建的上下文不一致,那么就将查询得到的上下文给新创建的进程打标签</span></span><br><span class="line">        <span class="keyword">if</span> (rc &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">goto</span> err;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    rc = <span class="number">0</span>;</span><br><span class="line">. . . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>seapp_context_lookup函数中首先调用下面的函数初始化seapp_context_init:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__selinux_once(once, seapp_context_init);</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">seapp_context_init</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">        selinux_android_seapp_context_reload();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> <span class="keyword">const</span> * <span class="keyword">const</span> seapp_contexts_file[] = &#123;</span><br><span class="line">    <span class="string">"/seapp_contexts"</span>,</span><br><span class="line">    <span class="string">"/data/security/current/seapp_contexts"</span>,</span><br><span class="line">    <span class="literal">NULL</span> &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">selinux_android_seapp_context_reload</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    . . . . </span><br><span class="line">    set_policy_index();<span class="comment">//确定索引</span></span><br><span class="line"></span><br><span class="line">    fp = fopen(seapp_contexts_file[policy_index], <span class="string">"r"</span>);</span><br><span class="line"></span><br><span class="line">    . . . .</span><br><span class="line">    余下的代码就是解析seapp_contexts文件内容,将其存在全局数组seapp_contexts[]中</span><br><span class="line">    seapp_contexts = (<span class="keyword">struct</span> seapp_context **) <span class="built_in">calloc</span>(nspec, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> seapp_context *));</span><br><span class="line">    . . . .</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>seapp_contexts文件内容:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">isSystemServer=<span class="literal">true</span> domain=system_server</span><br><span class="line">user=system domain=system_app <span class="built_in">type</span>=system_app_data_file</span><br><span class="line">user=bluetooth domain=bluetooth <span class="built_in">type</span>=bluetooth_data_file</span><br><span class="line">user=nfc domain=nfc <span class="built_in">type</span>=nfc_data_file</span><br><span class="line">user=radio domain=radio <span class="built_in">type</span>=radio_data_file</span><br><span class="line">user=shared_relro domain=shared_relro</span><br><span class="line">user=shell domain=shell <span class="built_in">type</span>=shell_data_file</span><br><span class="line">user=_isolated domain=isolated_app</span><br><span class="line">user=_app seinfo=platform domain=platform_app <span class="built_in">type</span>=app_data_file</span><br><span class="line">user=_app domain=untrusted_app <span class="built_in">type</span>=app_data_file</span><br></pre></td></tr></table></figure></p>
+<p>seapp_contexts文件的作用是定义用户名和domain之间的关系.文件中的注释也大概说了他的一些使用规则.</p>
+<p>该文件会根据输入的内容,找到匹配项,输出type.也就是进程domain和文件type.</p>
+<p>其中systemserver很特殊,不是根据用户名,而是isSystemServer布尔值来判断的,systemserver有固定的上下文:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">u:r:system:s0</span><br></pre></td></tr></table></figure>
+<p>第2,3,4,5,6行中的user都在</p>
+<p>Android源码/system/core/include/private/android_filesystem_config.h 中android_ids数组中定义了.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> android_id_info &#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name;</span><br><span class="line">    <span class="keyword">unsigned</span> aid;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">struct</span> android_id_info android_ids[] = &#123;</span><br><span class="line">    &#123; <span class="string">"root"</span>,          AID_ROOT, &#125;,</span><br><span class="line"></span><br><span class="line">    &#123; <span class="string">"system"</span>,        AID_SYSTEM, &#125;,</span><br><span class="line"></span><br><span class="line">    &#123; <span class="string">"radio"</span>,         AID_RADIO, &#125;,</span><br><span class="line">    &#123; <span class="string">"bluetooth"</span>,     AID_BLUETOOTH, &#125;,</span><br><span class="line">    &#123; <span class="string">"graphics"</span>,      AID_GRAPHICS, &#125;,</span><br><span class="line">    &#123; <span class="string">"input"</span>,         AID_INPUT, &#125;,</span><br><span class="line">    &#123; <span class="string">"audio"</span>,         AID_AUDIO, &#125;,</span><br><span class="line">    &#123; <span class="string">"camera"</span>,        AID_CAMERA, &#125;,</span><br><span class="line">    &#123; <span class="string">"log"</span>,           AID_LOG, &#125;,</span><br><span class="line">    &#123; <span class="string">"compass"</span>,       AID_COMPASS, &#125;,</span><br><span class="line"></span><br><span class="line">. . . . . . .</span><br></pre></td></tr></table></figure></p>
+<p>可以根据aid得到name ,在由name查询seapp_contexts得到domain和文件type.</p>
+<p>针对第6行user=_isolated:</p>
+<p>同样在Android源码/system/core/include/private/android_filesystem_config.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_ISOLATED_START <span class="number">99000</span> <span class="comment">/* start of uids for fully isolated sandboxed processes */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> AID_ISOLATED_END   <span class="number">99999</span> <span class="comment">/* end of uids for fully isolated sandboxed processes */</span></span></span><br></pre></td></tr></table></figure>
+<p>因此可以根据useid,就能判断其name是否是_isolated,然后就可以得到domain和文件type.</p>
+<p>第7,8行因为user都为_app,所以就不能仅仅通过user查询了.所以又加了一个seinfo.</p>
+<p>因为Android系统自身包含的用户userid都是小于10000.所以大于10000的都是App用户.</p>
+<p>这个seinfo怎么来的呢?</p>
+<p>Andorid源码/external/sepolicy/mac_permission.xml:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">policy</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Platform dev key in AOSP --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">signer</span> <span class="attribute">signature</span>=<span class="value">"@PLATFORM"</span> &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">seinfo</span> <span class="attribute">value</span>=<span class="value">"platform"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">signer</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- All other keys --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">default</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">seinfo</span> <span class="attribute">value</span>=<span class="value">"default"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">default</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">policy</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如果App是在Android源码编译环境下,Android.mk中指定了LOCAL_CERTIFICATE : = platform的话 seinfo为platform.系统自带核心应用都是这个值了.</p>
+<p>LOCAL_CERTIFICATE可以取值:platform,shared,media.seinfo的值与其相同.不设置的话,为默认值default.</p>
+<p>第三方APK的话,通常seinfo值为default.</p>
+<p>在Android系统:/data/system/packages.list</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">com<span class="class">.android</span><span class="class">.providers</span><span class="class">.telephony</span> <span class="number">1001</span> <span class="number">0</span> /data/data/com<span class="class">.android</span><span class="class">.providers</span><span class="class">.telephony</span> platform <span class="number">1028</span>,<span class="number">1015</span>,<span class="number">3002</span>,<span class="number">3001</span>,<span class="number">3003</span></span><br><span class="line">com<span class="class">.android</span><span class="class">.providers</span><span class="class">.calendar</span> <span class="number">10002</span> <span class="number">0</span> /data/data/com<span class="class">.android</span><span class="class">.providers</span><span class="class">.calendar</span> default <span class="number">3003</span>,<span class="number">1028</span>,<span class="number">1015</span></span><br><span class="line">com<span class="class">.android</span><span class="class">.providers</span><span class="class">.media</span> <span class="number">10006</span> <span class="number">0</span> /data/data/com<span class="class">.android</span><span class="class">.providers</span><span class="class">.media</span> default <span class="number">1028</span>,<span class="number">1015</span>,<span class="number">1023</span>,<span class="number">1024</span>,<span class="number">2001</span>,<span class="number">3003</span>,<span class="number">3007</span></span><br><span class="line">com<span class="class">.android</span><span class="class">.wallpapercropper</span> <span class="number">10018</span> <span class="number">0</span> /data/data/com<span class="class">.android</span><span class="class">.wallpapercropper</span> platform <span class="attribute">none</span></span><br><span class="line"></span><br><span class="line"> . . . . . .</span><br></pre></td></tr></table></figure>
+<p>其中每一行中的第6个字段就为这个App的seinfo值.</p>
+<p>现在已经直到如何根据seapp_contexts文件中的内容为App打标签了.</p>
+<p>继续前面代码的分析.</p>
+<p>seapp_context_lookup中的seapp_context_init函数就是加载seapp_contexts文件内容到一个全局的seapp_contexts[]数组中,方便查询.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">seapp_context_lookup</span><span class="params">(<span class="keyword">enum</span> seapp_kind kind,</span><br><span class="line">                uid_t uid,</span><br><span class="line">                <span class="keyword">int</span> isSystemServer,</span><br><span class="line">                <span class="keyword">const</span> <span class="keyword">char</span> *seinfo,</span><br><span class="line">                <span class="keyword">const</span> <span class="keyword">char</span> *pkgname,</span><br><span class="line">                <span class="keyword">const</span> <span class="keyword">char</span> *path,</span><br><span class="line">                context_t ctx)</span></span><br><span class="line"></span>&#123;</span><br><span class="line"></span><br><span class="line">. . . .</span><br><span class="line">__selinux_once(once, seapp_context_init);</span><br><span class="line"></span><br><span class="line">userid = uid / AID_USER;</span><br><span class="line">    appid = uid % AID_USER;</span><br><span class="line">    <span class="keyword">if</span> (appid &lt; AID_APP) &#123;<span class="comment">//AID=10000,小于10000的话,前面说了都是Android系统定义的用户</span></span><br><span class="line">        <span class="keyword">for</span> (n = <span class="number">0</span>; n &lt; android_id_count; n++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (android_ids[n].aid == appid) &#123;</span><br><span class="line">                username = android_ids[n].name;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!username)</span><br><span class="line">            <span class="keyword">goto</span> err;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (appid &lt; AID_ISOLATED_START) &#123;<span class="comment">//大于10000小于99000都是普通App用户</span></span><br><span class="line">        username = <span class="string">"_app"</span>;</span><br><span class="line">        appid -= AID_APP;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;<span class="comment">//99000和99999之间的的都是isolated</span></span><br><span class="line">        username = <span class="string">"_isolated"</span>;</span><br><span class="line">        appid -= AID_ISOLATED_START;</span><br><span class="line">    &#125;</span><br><span class="line">. . . . .. . </span><br><span class="line">接下来就是以上面得到的username和以参数形式传递的进来的seinfo在seapp_contexts数组中查找其合适的进程domain和其文件type了.</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nspec; i++) &#123;</span><br><span class="line">        cur = seapp_contexts[i];</span><br><span class="line">. . . . . </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总的来说zygote给子进程设置安全上下文是先根据子进程的userid得到其username.然后利用MMAC机制得到seinfo.通过username和seinfo就可以查询seapp_contexts得出该给子进程设置什么安全上下文了.</p>
+<h3 id="策略文件">策略文件</h3><p>Android系统中策略文件分散的位置:根目录下和/data/security/current.</p>
+<p>sepolicy是二进制文件,是给linux内核使用的.</p>
+<p>file_contexts 是用来给文件和文件夹打标签的.</p>
+<p>property_contexts是用来给属性打标签的.</p>
+<p>seapp_contexts和/system/etc/security/mac_permissions.xml是给app打标签的.</p>
+<p>至于选择策略文件来自这两个目录中的哪一个,是根据这两个目录下的selinux_version文件的内容决定的,如果内容一致,那么选择data下的策略文件,否则选择根目录下的策略文件.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/09/30/Android_SEAndroid_4/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 SEAndroid分析之加载策略文件</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_SEAndroid_5" data-title="Android 5.1 SEAndroid分析之打标签" data-url="http://www.iloveandroid.net/2015/10/01/Android_SEAndroid_5/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
