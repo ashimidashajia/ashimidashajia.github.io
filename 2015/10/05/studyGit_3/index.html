@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>版本控制系统Git的分支管理策略 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="git的分支管理策略,最流行的莫过于大神nvie提出的策略.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="版本控制系统Git的分支管理策略">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/05/studyGit_3/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="git的分支管理策略,最流行的莫过于大神nvie提出的策略.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-3.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-4.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-5.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-6.png">
+<meta property="og:updated_time" content="2015-10-05T09:42:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="版本控制系统Git的分支管理策略">
+<meta name="twitter:description" content="git的分支管理策略,最流行的莫过于大神nvie提出的策略.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 13.33px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 13.33px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-studyGit_3" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/05/studyGit_3/" class="article-date">
+  	<time datetime="2015-10-05T07:53:26.000Z" itemprop="datePublished">2015-10-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      版本控制系统Git的分支管理策略
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>git的分支管理策略,最流行的莫过于大神<a href="http://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="external">nvie</a>提出的策略.</p>
+<a id="more"></a>
+<p>一个中心版本库(我们叫它origin)至少包括两个分支，即“主分支(master)”和“开发分支(develop)”.</p>
+<p>要确保：团队成员从主分支(master)获得的都是处于可发布状态的代码，而从开发分支(develop)应该总能够获得最新开发进展的代码</p>
+<p>master分支:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-1.png" alt=""></p>
+<p>develop分支:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-2.png" alt=""></p>
+<p>团队开发,其中浅蓝色代表master分支,黄色代表develop分支,其他代表团队成员研发需要创建的分支.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-3.png" alt=""></p>
+<h3 id="临时分支">临时分支</h3><p>Master和Develop。前者用于正式发布，后者用于日常开发。为了满足开发需要.还要有一些临时性分支，用于应对一些特定目的的版本开发。</p>
+<p>临时性分支主要有三种：</p>
+<ol>
+<li><p>功能（feature）分支</p>
+</li>
+<li><p>预发布（release）分支</p>
+</li>
+<li><p>修补bug（hotfixs）分支</p>
+</li>
+</ol>
+<p>这三种分支都属于临时性需要，使用完以后，应该删除，使得代码库的常设分支始终只有Master和Develop。</p>
+<p>公司项目代码服务器中通常保存项目的Master和Develop,其他分支都在开发成员本地或者其私有远程仓库.</p>
+<h4 id="创建一个功能分支">创建一个功能分支</h4><p>当要开发一个新功能时，从开发分支分出一个功能分支:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b myfeature develop <span class="comment">#创建并切换到myfeature分支</span></span><br></pre></td></tr></table></figure>
+<p>将完成的功能分支合并回开发分支.完成功能可能被合并到开发分支，一定会添加它们至即将发布版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git checkout develop <span class="comment">#切换到develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff myfeature <span class="comment">#以非快进方式将其合并到develop分支</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> myfeature <span class="comment">#删除临时分支</span></span><br><span class="line"></span><br><span class="line">git push origin develop <span class="comment">#将本地develop分支推送到远程develop分支中</span></span><br></pre></td></tr></table></figure>
+<p>–no-ff标签会使合并时总会创建一个新的提交对象(前面文章已经介绍了)，即使这个合并本来可以使用快速合并。这避免了丢失功能分支的历史信息和团队共同添加到功能分支的所有提交。对比一下</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-4.png" alt=""></p>
+<p>在第二种情况下，你不可能从Git提交对象历史中看到实现的功能，你不得不手动地读取所有的日志消息。并且还原所有功能（即一组提交）是非常头疼大；如果使用了–no-ff标记那会变的很容易。</p>
+<p>它会创建更大的提交对象，不过受益会更大！</p>
+<h4 id="预发布分支">预发布分支</h4><p>预发布分支，它是指发布正式版本之前（即合并到Master分支之前），我们可能需要有一个预发布的版本进行测试。</p>
+<p>预发布分支是从Develop分支上面分出来的，预发布结束以后，必须合并进Develop和Master分支。它的命名，可以采用release-xxx的形式。</p>
+<p>流程:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b release-<span class="number">1.2</span> develop <span class="comment">#以develop为基础,创建一个预发布分支</span></span><br><span class="line"></span><br><span class="line">git checkout master <span class="comment">#切回master分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff release-<span class="number">1.2</span> <span class="comment">#以非快进方式合并到master</span></span><br><span class="line"></span><br><span class="line">git tag <span class="operator">-a</span> <span class="number">1.2</span> <span class="comment"># 对合并生成的新节点，做一个标签</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git checkout develop <span class="comment">#切换到develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff release-<span class="number">1.2</span> <span class="comment">#合并到develop分支中</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> release-<span class="number">1.2</span> <span class="comment">#删除预发布分支</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="修补bug分支">修补bug分支</h4><p>最后一种是修补bug分支。软件正式发布以后，难免会出现bug。这时就需要创建一个分支，进行bug修补。</p>
+<p>修补bug分支是从Master分支上面分出来的。修补结束以后，再合并进Master和Develop分支。它的命名，可以采用hotfix-xxx的形式。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-5.png" alt=""></p>
+<p>流程:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b hotfix-<span class="number">0.1</span> master <span class="comment">#以master分支为基础创建hotfix-0.1分支</span></span><br><span class="line"></span><br><span class="line">git checkout master <span class="comment">#切回master分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff hotfix-<span class="number">0.1</span> <span class="comment">#将其合并到master</span></span><br><span class="line"></span><br><span class="line">git tag <span class="operator">-a</span> <span class="number">0.1</span>.<span class="number">1</span> <span class="comment">#为master分支打标签</span></span><br><span class="line"></span><br><span class="line">git checkout develop <span class="comment">#切回develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff hotfix-<span class="number">0.1</span><span class="comment"># 将其合并到develop</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> hotfix-<span class="number">0.1</span> <span class="comment">#删除临时分支</span></span><br></pre></td></tr></table></figure>
+<p>最终一个开发流程如下所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-6.png" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/10/05/studyGit_2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">版本控制系统Git的分支管理</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="studyGit_3" data-title="版本控制系统Git的分支管理策略" data-url="http://www.iloveandroid.net/2015/10/05/studyGit_3/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

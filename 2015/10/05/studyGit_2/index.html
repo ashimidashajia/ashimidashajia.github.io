@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-2-14.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-2-15.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-2-16.png">
-<meta property="og:updated_time" content="2015-10-05T07:24:38.000Z">
+<meta property="og:updated_time" content="2015-10-05T08:08:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="版本控制系统Git的分支管理">
 <meta name="twitter:description" content="前面一篇文章主要介绍了Git的简单原理和基本操作.现在介绍Git中最具特性的branch管理与使用模型.">
@@ -348,6 +348,7 @@
 <h4 id="向远程仓库推送代码">向远程仓库推送代码</h4><p>利用git push命令会把当前工作分支,推送到远端同名的远程分支.</p>
 <p>也可以<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git push 本地分支名字 远程仓库/分支名字</span><br></pre></td></tr></table></figure></p>
 <p>远程仓库以快进合并的方式合并推送的新代码.一旦发生冲突,需要先git pull拉取最新的远程仓库代码,合并完成后,再次推送.</p>
+<p>另外拉取和推送代码时,请确保有对远程服务器操作的权限,需要设置ssh的,请设置SSH key.</p>
 
       
     </div>
@@ -356,6 +357,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2015/10/05/studyGit_3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          版本控制系统Git的分支管理策略
+        
+      </div>
+    </a>
   
   
     <a href="/2015/10/04/studyGit/" id="article-nav-older" class="article-nav-link-wrap">
