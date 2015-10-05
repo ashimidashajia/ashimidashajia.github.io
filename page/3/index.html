@@ -107,7 +107,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 15px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 13.33px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 13.33px;">构建</a>
 					</div>
 				</section>
 				
@@ -170,6 +170,133 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-GradleNdkSupport" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/18/GradleNdkSupport/" class="article-date">
+  	<time datetime="2015-09-18T07:40:13.000Z" itemprop="datePublished">2015-09-18</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/18/GradleNdkSupport/">让Gradle构建支持NDK</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原本google公司承诺Android studio 1.3开始支持NDK,但是现在已经到Android studio 1.4 beat 3了，对NDK的支持还是实验性的。那么既然已经对Gradle的有了了解了，那索性就学着添加相关的task让利用$NDK/ndk-build命令编译。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/18/GradleNdkSupport/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-GradleProject" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/17/GradleProject/" class="article-date">
+  	<time datetime="2015-09-17T11:39:35.000Z" itemprop="datePublished">2015-09-17</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/17/GradleProject/">Gradle中的对象与工作流程</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简述">简述</h3><p>引用官方文档中的原话：</p>
+<p>First, Gradle scripts are configuration scripts. As the script executes, it configures an object of a particular type. For example, as a build script executes, it configures an object of type Project. This object is called the delegate object of the script. The following table shows the delegate for each type of Gradle script. </p>
+<p>大意就是说Gradle中的脚本最终都会转换为某个特定类型的对象。如下图所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/gradle-porject-1.png" alt="Gradle 对象"></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/17/GradleProject/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-GradleImportantSyntax" class="article article-type-post" itemscope itemprop="blogPost">
   

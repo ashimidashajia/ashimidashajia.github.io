@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>版本控制系统Git的介绍与简单使用 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="简介Git作者——Linux教父Linus Torvalds。Git有以下特点：
+1. git是一个分布式的版本控制系统a. 客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来，相当于备份了一份。
+b. 任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复">
+<meta property="og:type" content="article">
+<meta property="og:title" content="版本控制系统Git的介绍与简单使用">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/04/studyGit/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="简介Git作者——Linux教父Linus Torvalds。Git有以下特点：
+1. git是一个分布式的版本控制系统a. 客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来，相当于备份了一份。
+b. 任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-1.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-2.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-3.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-4.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-5.jpg">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-6.PNG">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-7.PNG">
+<meta property="og:updated_time" content="2015-10-05T07:40:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="版本控制系统Git的介绍与简单使用">
+<meta name="twitter:description" content="简介Git作者——Linux教父Linus Torvalds。Git有以下特点：
+1. git是一个分布式的版本控制系统a. 客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来，相当于备份了一份。
+b. 任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 13.33px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 13.33px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-studyGit" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/04/studyGit/" class="article-date">
+  	<time datetime="2015-10-04T10:29:54.000Z" itemprop="datePublished">2015-10-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      版本控制系统Git的介绍与简单使用
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介">简介</h3><p>Git作者——Linux教父Linus Torvalds。Git有以下特点：</p>
+<h4 id="1-_git是一个分布式的版本控制系统">1. git是一个分布式的版本控制系统</h4><p>a. 客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来，相当于备份了一份。</p>
+<p>b. 任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复</p>
+<a id="more"></a>
+<h4 id="2-_直接记录快照，而非差异比较">2. 直接记录快照，而非差异比较</h4><p>a. 每一个git仓库可以理解为一个小型文件系统，包含四种对象：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blob</td>
+<td style="text-align:center">每个blob代表一个（版本的）文件，blob只包含文件的数据，而忽略文件的其他元数据，如名字、路径、格式等</td>
+</tr>
+<tr>
+<td>tree</td>
+<td style="text-align:center">每个tree代表了一个目录的信息，包含了此目录下的blobs，子目录（对应于子trees），文件名、路径等元数据。因此，对于有子目录的目录，git相当于存储了嵌套的trees。</td>
+</tr>
+<tr>
+<td>commit</td>
+<td style="text-align:center">每个commit记录了提交一个更新的所有元数据，如指向的tree，父commit，作者、提交者、提交日期、提交日志等。每次提交都指向一个tree对象，记录了当次提交时的目录信息。一个commit可以有多个（至少一个）父commits。</td>
+</tr>
+<tr>
+<td>tag</td>
+<td style="text-align:center">tag用于给某个上述类型的对象指配一个便于开发者记忆的名字, 通常用于某次commit。</td>
+</tr>
+</tbody>
+</table>
+<p>b. Git 只关心文件数据的整体是否发生变化，不关心文件内容的具体差异</p>
+<p>其他版本控制系统，例如SVN等，是以增量的方式来记录某个文件的变化的。比如某文件发生变化，SVN会记录差异部分。而git呢，不关心内容的差异，只要文件内容发生变化，那么就拷贝一份新的，即创建一个新的blob对象。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-1.PNG" alt=""></p>
+<p>这样的好处是处理速度会快，相当于以空间换时间。</p>
+<p>c. 每次提交都产生一个快照</p>
+<p>如何理解快照？</p>
+<p>通俗的说就是记录提交时，仓库中所有文件对应的此时的blob和文件夹对应的此时tree的状态。新产生的快照是在上一个快照基础上生成的.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-2.PNG" alt=""></p>
+<p>git会把出现变更的文件直接拷贝，形成新的blob，而非与上一个版本的差异增量</p>
+<p>所以一旦需要查看某版本直接load即可，而其他差异版本控制需要做合并</p>
+<p>并非每个当前版本都需要做备份，如果没有改变，那么快照其实是链接上一个版本</p>
+<p>git会在隐藏目录.git里存在object里，定期会优化，保证快照空间，和读取时间的平衡</p>
+<h4 id="3-几乎所有的操作都可以在本地完成">3.几乎所有的操作都可以在本地完成</h4><p>只有涉及和远程服务器上的仓库操作，才需要网络支持。</p>
+<h3 id="使用Git的前期准备">使用Git的前期准备</h3><h4 id="安装git">安装git</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git-core</span><br></pre></td></tr></table></figure>
+<p>此种方法安装最简单，虽然版本可能稍低一些，但基本够用。想安装最新版本的话，可以下载源码编译安装。</p>
+<h4 id="Git的配置文件">Git的配置文件</h4><p>查看当前配置<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config <span class="comment">--list</span></span><br></pre></td></tr></table></figure></p>
+<p>git的配置文件根据作用范围的不同，分三种：</p>
+<ol>
+<li><p>系统全局配置，影响到系统上的所有用户，位于 /etc/gitconfig，修改全局配置，git config –system</p>
+</li>
+<li><p>用户配置，影响到单个用户，位于 ~/.gitconfig，修改用户配置: git config –global</p>
+</li>
+<li><p>仓库配置，影响到当前的仓库，位于git仓库根目录下.gitconfig ， 修改仓库配置：git config</p>
+</li>
+</ol>
+<h5 id="必须的配置项">必须的配置项</h5><p>其中username和email是必须要设置的，因为提交的时候会用到。如下是配置对当前系统用户有效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name XXX</span><br><span class="line">git config --global user.email XXX</span><br></pre></td></tr></table></figure>
+<h5 id="指定外部的合并与比较工具">指定外部的合并与比较工具</h5><p>推荐使用meld,首先安装<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install meld</span><br></pre></td></tr></table></figure></p>
+<p>增加meld对git比较工具的调用支持：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /usr/bin/git-meld.sh</span><br></pre></td></tr></table></figure>
+<p>内容如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#!/bin/sh</span></span><br><span class="line">meld <span class="variable">$2</span> <span class="variable">$5</span></span><br></pre></td></tr></table></figure>
+<p>添加可执行权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +x /usr/bin/git-meld.sh</span><br></pre></td></tr></table></figure></p>
+<p>配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global merge.tool meld</span><br><span class="line">git config --global diff.external /usr/bin/git-meld.sh</span><br></pre></td></tr></table></figure>
+<h4 id="格式化">格式化</h4><p>此设置可以忽略，设置的话，在windows平台对中文支持可能有影响，未测试。</p>
+<p>CRLF 是 Carriage-Return Line-Feed 回车换行</p>
+<p>LF 是 line feed 的缩写，中文意思是换行。</p>
+<p>linux用户：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.autocrlf input</span><br></pre></td></tr></table></figure></p>
+<p>设置为input时，添加文件git仓库时，git把crlf变为lf。当有人拉取代码时，还是lf 方式。因此在 window操 作系统下，不要使用这个设置.</p>
+<p>windows用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.autocrlf <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>设置为 true，添加文件到git仓库时，gi 将其视为文本文件。他将把crlf变成lf，拉取代码时，进行反操作。</p>
+<h4 id="设置别名">设置别名</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.st status</span><br></pre></td></tr></table></figure>
+<p>即设置st为status的别名。</p>
+<p>通常都给log设置一个别名，配上其他选项，实现颜色丰富的log输出：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --<span class="keyword">global</span> alias.lg <span class="keyword">log</span> --color --<span class="keyword">graph</span> --pretty=<span class="keyword">format</span>:'%Cred%<span class="keyword">h</span>%Creset -%C(yellow)%<span class="keyword">d</span>%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%<span class="keyword">an</span>&gt;%Creset' --abbrev-commit</span><br></pre></td></tr></table></figure>
+<p>查看log的时候，输入 git lg可以看到如下效果：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-3.PNG" alt=""></p>
+<h3 id="Git的文件状态与工作区域">Git的文件状态与工作区域</h3><h4 id="Git文件状态">Git文件状态</h4><p>已修改：已修改表示修改了某个文件，但还没有提交保存。</p>
+<p>已暂存：已暂存表示把已修改的文件放在下次提交时要保存的清单中</p>
+<p>已提交：已提交表示该文件已经被安全地保存在本地数据库中了</p>
+<h4 id="Git有三个工作区域：">Git有三个工作区域：</h4><h4 id="1-_版本库">1. 版本库</h4><p>.git目录就是本地仓库，用来保存元数据和对象数据库的地方。该目录非常重要，每次克隆镜像仓库的时候，实际拷贝的就是这个目录里面的数据</p>
+<h4 id="2-_工作区域">2. 工作区域</h4><p>从项目中取出某个版本的所有文件和文件夹，用以开始后续工作的叫做工作目录。</p>
+<p>这些文件实际上都是从 Git仓库中的压缩对象数据库中提取出来的，接下来就可以在工作目录中对这些文件进行编辑。</p>
+<h4 id="3-_暂存区域">3. 暂存区域</h4><p>指的是.git/index文件，记录了文件名、文件的状态信息（时间戳、文件长度等）等的文件索引的目录树。</p>
+<p>Git对象库（.git/objects）中保存的是文件索引中所指定的文件实体。</p>
+<p>index的内容是“包含文件索引”的目录树。但是文件的内容并没有在其中，而是在.git/objects中，文件索引建立了文件和对象库中对象实体之间的对应。</p>
+<p>下图所示工作区、版本库、暂存区原理图</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-4.PNG" alt=""></p>
+<p>图中左侧为工作区，右侧为版本库。在版本库中标记为 “index” 的区域是暂存区（stage, index），标记为 “master” 的是 master 分支所代表的目录树。</p>
+<p>图中的 objects 标识的区域为 Git 的对象库，实际位于 “.git/objects” 目录下.</p>
+<p>当对工作区修改（或新增）的文件执行 “git add” 命令时，暂存区的目录树被更新，同时工作区修改（或新增）的文件内容被写入到对象库中的一个新的对象中，而该对象的ID 被记录在暂存区的文件索引中。</p>
+<p>当执行提交操作（git commit）时，暂存区的目录树写到版本库（对象库）中，master 分支会做相应的更新。即 master 指向的目录树就是提交时暂存区的目录树。</p>
+<p>当执行 “git reset HEAD” 命令时，暂存区的目录树会被重写，被 master 分支指向的目录树所替换，但是工作区不受影响。</p>
+<p>当执行 “git rm –cached <file>“ 命令时，会直接从暂存区删除文件，工作区则不做出改变</file></p>
+<p>当执行 “git checkout .” 或者 “git checkout – <file>“ 命令时，会用暂存区全部或指定的文件替换工作区的文件。这个操作很危险，会清除工作区中未添加到暂存区的改动。</file></p>
+<p>当执行 “git checkout HEAD .” 或者 “git checkout HEAD <file>“ 命令时，会用 HEAD 指向的 master 分支中的全部或者部分文件替换暂存区和以及工作区中的文件。这个命令也是极具危险性的，因为不但会清除工作区中未提交的改动，也会清除暂存区中未提交的改动。</file></p>
+<h3 id="Git的常用命令">Git的常用命令</h3><h4 id="初始化本地仓库">初始化本地仓库</h4><p>两种方法 git init或者git clone url [name],可以指定clone之后文件夹的名字。</p>
+<p>.git目录：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">├── branches        <span class="comment">#分支信息</span></span><br><span class="line">├── config          <span class="comment">#项目配置信息</span></span><br><span class="line">├── description     <span class="comment">#项目描述信息</span></span><br><span class="line">├── HEAD            <span class="comment">#当前所处分支</span></span><br><span class="line">├── hooks           <span class="comment">#系统默认钩子脚本目录</span></span><br><span class="line">├── index           <span class="comment">#索引文件# 获取 tagxx 的源码, 加了 --prefix 的作用是在最终的 tagxx.tar 中加了一层文件夹 tagxx</span></span><br><span class="line">├── objects         <span class="comment">#仓库所有对象</span></span><br><span class="line">└── refs            <span class="comment">#标示项目里的每个分支指向了哪个提交</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="常用操作">常用操作</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add files 把当前文件放入暂存区域。</span><br><span class="line">git reset -- files 用来撤销最后一次git add files，你也可以用git reset 撤销所有暂存区域文件。</span><br><span class="line">git checkout -- files 把文件从暂存区域复制到工作目录，用来丢弃本地修改。</span><br><span class="line">git commit 给暂存区域生成快照并提交。</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-5.jpg" alt=""></p>
+<h4 id="查看文件的差异：">查看文件的差异：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git diff filename-- 比较工作区和暂存区之间不同</span><br><span class="line"></span><br><span class="line">git diff HEAD filename --  比较工作区和HEAD之间差异,也可以是其他分支</span><br><span class="line"></span><br><span class="line">git diff --cached filename -- 比较暂存区和HEAD之间的差异，也可以是其他分支</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-6.PNG" alt=""></p>
+<h4 id="忽略跟踪某些文件">忽略跟踪某些文件</h4><p>源码根目录添加.gitignore文件，可以过滤某些文件不被git所管理。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以'#' 开始的行，被视为注释.</span></span><br><span class="line"><span class="comment"># 忽略掉所有文件名是 foo.txt 的文件.</span></span><br><span class="line">foo.txt</span><br><span class="line"><span class="comment"># 忽略所有生成的 html 文件,</span></span><br><span class="line">*.html</span><br><span class="line"><span class="comment"># foo.html是手工维护的，所以例外.</span></span><br><span class="line">!foo.html</span><br><span class="line"><span class="comment">#  忽略所有.o 和 .a文件.</span></span><br><span class="line">*.[oa]</span><br></pre></td></tr></table></figure></p>
+<p>github上有一个开源项目：<a href="https://github.com/github/gitignore" target="_blank" rel="external">https://github.com/github/gitignore</a></p>
+<p>是专门针对各种语言开发时，推荐的.gitignore文件。</p>
+<h4 id="详解git_commit相关命令">详解git commit相关命令</h4><p>有时候我们提交完了才发现漏掉了几个文件没有加，或者提交信息写错了。想要撤消刚才的提交操作，可以使用 –amend 选项重新提交：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
+<p>此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命令的话，相当于有机会重新编辑提交说明，但将要提交的文件快照和之前的一样.启动文本编辑器后，会看到上次提交时的说明，编辑它确认没问题后保存退出，就会使用新的提交说明覆盖刚才失误的提交。</p>
+<p>如果刚才提交时忘了暂存某些修改，可以先补上暂存操作，然后再运行 –amend 提交：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git commit -m <span class="string">'initial commit'</span></span><br><span class="line">$ git add forgotten_file</span><br><span class="line">$ git commit --amend</span><br></pre></td></tr></table></figure>
+<p>上面的三条命令最终只是产生一个提交，第二个提交命令修正了第一个的提交内容。</p>
+<p>当执行git commit命令时，暂存区的目录树会写入到版本库中，master分支会作相应更新。（暂存区-&gt;版本库）</p>
+<p>git reset HEAD，暂存区的目录树被替换为HEAD指向的分支目录树，工作区不受影响。（版本库-&gt;暂存区）</p>
+<p>git checkout . . 暂存区-&gt;工作区，工作区中未添加到暂存区的修改会丢失。</p>
+<p>git checkout HEAD . 版本库-&gt;暂存区-&gt;工作区，工作区和暂存区中未提交的改动会丢失。</p>
+<h4 id="详解git_reset_命令">详解git reset 命令</h4><p>用法1：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset -- files</span><br></pre></td></tr></table></figure>
+<p>用来撤销最后一次的git add files（因为每git add file一次，暂存区的文件都会被更改一次），你也可以用git reset 撤销所有暂存区域文件。 </p>
+<p>用法2：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard &lt;commit&gt; --- 执行<span class="number">123</span>，即将master、暂存区、工作区全部重置</span><br><span class="line">git reset --soft &lt;commit&gt; --- 只执行<span class="number">1</span>，也就是指修改引用的指向，不修改暂存区、工作区</span><br><span class="line">git reset --mixsd &lt;commit&gt;(git reset &lt;commit&gt;) --- 执行<span class="number">12</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/GitStudy-7.PNG" alt=""></p>
+<h4 id="详解删除命令">详解删除命令</h4><p>删除所有未跟踪的文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clean -nd <span class="comment">#查看可以删除的文件</span></span><br><span class="line">git clean <span class="operator">-f</span> <span class="comment">#执行删除命令</span></span><br></pre></td></tr></table></figure>
+<p>git rm 与rm的区别：</p>
+<p>git rm file 将工作区和暂存区的file删除，而rm至删除工作区中的文件，可以用checkout从暂存区恢复。</p>
+<h4 id="详解_git_stash">详解 git stash</h4><p>使用git的时候，我们往往使用branch解决任务切换问题，例如，我们往往会建一个自己的分支去修改和调试代码, 如果别人或者自己发现原有的分支上有个不得不修改的bug，我们往往会把完成一半的代码 commit提交到本地仓库，然后切换分支去修改bug，改好之后再切换回来。这样的话往往log上会有大量不必要的记录。其实如果我们不想提交完成一半或者不完善的代码，但是却不得不去修改一个紧急Bug，那么使用’git stash’就可以将你当前未提交到本地（和服务器）的代码推入到Git的栈中，这时候你的工作区间和上一次提交的内容是完全一样的，所以你可以放心的修 Bug，等到修完Bug，提交到服务器上后，再使用’git stash apply’将以前一半的工作应用回来。也许有的人会说，那我可不可以多次将未提交的代码压入到栈中？答案是可以的。当你多次使用’git stash’命令后，你的栈里将充满了未提交的代码，这时候你会对将哪个版本应用回来有些困惑，’git stash list’命令可以将当前的Git栈信息打印出来，你只需要将找到对应的版本号，例如使用’git stash apply stash@{1}’就可以将你指定版本号为stash@{1}的工作取出来，当你将所有的栈都应用回来的时候，可以使用’git stash clear’来将栈清空。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git stash save XXXX(info)</span><br><span class="line">git stash list</span><br><span class="line">git stash pop 弹出最近一次</span><br><span class="line">git stash apply stash@&#123;N&#125; 弹出任一次</span><br><span class="line">git stash clean</span><br></pre></td></tr></table></figure>
+<h4 id="详解status命令">详解status命令</h4><ol>
+<li><p>git status -s 参数，等同于–short，对git status的简化输出。</p>
+</li>
+<li><p>查看工作区、暂存区和版本库的目录树的方式。</p>
+</li>
+</ol>
+<p>工作区：正常的ls命令即可。<br>暂存区：git ls-files -s<br>版本库：git ls-tree HEAD</p>
+<h4 id="详解tag命令">详解tag命令</h4><p>Git 使用的标签有两种类型：轻量级的（lightweight）和含附注的（annotated）。</p>
+<p>轻量级标签就像是个不会变化的分支，实际上它就是个指向特定提交对象的引用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag v0.<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>含附注标签，实际上是存储在仓库中的一个独立对象，它有自身的校验和信息，包含着标签的名字，电子邮件地址和日期，以及标签说明。一般我们都建议使用含附注型的标签，以便保留相关信息；当然，如果只是临时性加注标签，或者不需要旁注额外信息，用轻量级标签也没问题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git tag <span class="operator">-a</span> v0.<span class="number">2</span> -m <span class="string">'my version 0.2'</span></span><br></pre></td></tr></table></figure>
+<p>查看与删除标签：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git show tagname</span><br><span class="line">git tag <span class="operator">-d</span> tagname</span><br></pre></td></tr></table></figure>
+<h4 id="打包">打包</h4><p>打包源码:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git archive --format zip  --prefix=<span class="string">"tt/"</span> --output tt.zip v0.<span class="number">1</span><span class="comment"># 获取v0.1 的源码, 加了 --prefix 的作用是在最终的 tt.zip 中加了一层文件夹tt</span></span><br></pre></td></tr></table></figure></p>
+<p>tag还可以是哈希值.  分支名.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/10/05/studyGit_2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          版本控制系统Git的分支管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/10/01/Android_SEAndroid_5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 SEAndroid分析之打标签</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="studyGit" data-title="版本控制系统Git的介绍与简单使用" data-url="http://www.iloveandroid.net/2015/10/04/studyGit/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
