@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>版本控制系统Git的git flow分支模型 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="上一篇介绍了大神nvie的git分支策略，那么现在就来介绍以下大神nvie针对其分支策略，所提供的git flow脚本工具吧。
+利用这个套工具，可以方便快捷的按照上一篇介绍的分支策略进行项目开发。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="版本控制系统Git的git flow分支模型">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/05/studyGit_4/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="上一篇介绍了大神nvie的git分支策略，那么现在就来介绍以下大神nvie针对其分支策略，所提供的git flow脚本工具吧。
+利用这个套工具，可以方便快捷的按照上一篇介绍的分支策略进行项目开发。">
+<meta property="og:updated_time" content="2015-10-06T01:50:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="版本控制系统Git的git flow分支模型">
+<meta name="twitter:description" content="上一篇介绍了大神nvie的git分支策略，那么现在就来介绍以下大神nvie针对其分支策略，所提供的git flow脚本工具吧。
+利用这个套工具，可以方便快捷的按照上一篇介绍的分支策略进行项目开发。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 13.33px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 13.33px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-studyGit_4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/05/studyGit_4/" class="article-date">
+  	<time datetime="2015-10-05T12:24:47.000Z" itemprop="datePublished">2015-10-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      版本控制系统Git的git flow分支模型
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇介绍了大神nvie的git分支策略，那么现在就来介绍以下大神nvie针对其分支策略，所提供的git flow脚本工具吧。</p>
+<p>利用这个套工具，可以方便快捷的按照上一篇介绍的分支策略进行项目开发。</p>
+<a id="more"></a>
+<h3 id="git_flow简介">git flow简介</h3><p>简单来说，git-flow 就是在 git branch git tag基础上封装出来的代码分支管理模型，把实际开发模拟成 master develop feature release hotfix support 几种场景，其中 master 对应发布上线，develop 对应开发，其他几个在不同的情况下出现。通过封装，git-flow 屏蔽了 git branch 等相对来说比较复杂生硬的命令(git branch 还是比较复杂的，尤其是在多分支情况下)，简单而且规范的解决了代码分支管理问题。</p>
+<p><a href="https://github.com/nvie/gitflow" target="_blank" rel="external">git flow</a>在github上的仓库地址。</p>
+<h3 id="git_flow的安装">git flow的安装</h3><p>ubuntu 下一键式安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git-flow</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/nvie/gitflow/wiki/Linux" target="_blank" rel="external">通用linux安装git flow教程</a></p>
+<p><a href="https://github.com/nvie/gitflow/wiki/Windows" target="_blank" rel="external">windows上git flow安装教程</a></p>
+<h4 id="安装git_flow_tab键补全插件">安装git flow tab键补全插件</h4><p><a href="https://github.com/bobthecow/git-flow-completion" target="_blank" rel="external">插件githun仓库地址</a></p>
+<p>ubuntu安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/bobthecow/git-flow-completion.git</span><br></pre></td></tr></table></figure>
+<p>然后修改～/.bashrc,添加如下片段：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> /path/to/git-flow-completion.bash</span><br></pre></td></tr></table></figure>
+<p>然后新打开一个终端,输入git flow，然后按tab键，会看到有下面所示的信息，说明插件安装成功。 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~ $ git flow  tab键</span><br><span class="line">feature   <span class="built_in">help</span>      hotfix    init      release   support   version</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/bobthecow/git-flow-completion/wiki/Install-Bash-git-completion" target="_blank" rel="external">windows安装该插件教程</a></p>
+<h3 id="git_flow_的使用">git flow 的使用</h3><h4 id="团队流程">团队流程</h4><p>Git Flow流程的开发应当是这样的：</p>
+<ol>
+<li><p>团队负责人，当新建一个Git项目后，master自动生成；</p>
+</li>
+<li><p>团队负责人创建生成develop分支；</p>
+</li>
+<li><p>团队成员当需要新功能时，创建生成该功能feature分支并开发；</p>
+</li>
+<li><p>团队成员每日任务完成并推送到线上对应分支上去；</p>
+</li>
+<li><p>当开发完成无误，团队负责人确认后将分支合并入develop中并更新线上develop;</p>
+</li>
+<li><p>在develop阶段性完成后，团队负责人创建预发布分支，并写上发布信息，测试通过后，后并入master中，创建新的tag；</p>
+</li>
+<li><p>如果发布分支遇到小的bug修复后，由团队负责人并入develop和master中；</p>
+</li>
+<li><p>如果遇到产品BUG，团队成员创建修复分支，成功修复后由团队负责人合并入develop和master中。</p>
+</li>
+</ol>
+<p>需要经过不断的实践，研究gitlab与git flow的更优结合使用，以便充分发挥gtilab的功能，例如代码审查。这里并没有过多考虑gitlab。</p>
+<h4 id="创建项目">创建项目</h4><p>项目负责人在gitlab服务创建一个项目testGitflow,添加README.md,除了默认的master分支外，在创建一个develop分支。</p>
+<h4 id="git_flow_初始化">git flow 初始化</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@www.mygithub.com:<span class="built_in">test</span>/<span class="built_in">test</span>Gitflow.git</span><br></pre></td></tr></table></figure>
+<p>进入testGitflow：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git branch <span class="operator">-a</span></span><br><span class="line">* master</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/master</span><br><span class="line">  remotes/origin/develop</span><br><span class="line">  remotes/origin/master</span><br></pre></td></tr></table></figure>
+<font color="#ff5588">clone的仓库，默认本地分支为master,并且跟踪origin/master分支，通常在gitlab中将master设置为保护分支，除了项目负责人外，其他人无权向其推送代码。所以在本地要先创建develop分支。</font>
+
+<p>检出服务器中develop分支到本地develop分支：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b develop origin/develop  <span class="comment">#检出origin/develop代码到本地develop分支，并切换到develop分支</span></span><br></pre></td></tr></table></figure></p>
+<p>初始化git flow仓库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow init <span class="comment">#初始化git flow</span></span><br></pre></td></tr></table></figure>
+<p>一路回车即可:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Which branch should be used <span class="keyword">for</span> bringing forth production releases?</span><br><span class="line">   - develop</span><br><span class="line">   - master</span><br><span class="line">Branch name <span class="keyword">for</span> production releases: [master] </span><br><span class="line"></span><br><span class="line">Which branch should be used <span class="keyword">for</span> integration of the <span class="string">"next release"</span>?</span><br><span class="line">   - develop</span><br><span class="line">Branch name <span class="keyword">for</span> <span class="string">"next release"</span> development: [develop] </span><br><span class="line"></span><br><span class="line">How to name your supporting branch prefixes?</span><br><span class="line">Feature branches? [feature/] </span><br><span class="line">Release branches? [release/] </span><br><span class="line">Hotfix branches? [hotfix/] </span><br><span class="line">Support branches? [support/] </span><br><span class="line">Version tag prefix? []</span><br></pre></td></tr></table></figure></p>
+<p>实质上这一步只是为git flow中的几个特性分支命名，但是并没有创建这些分支。</p>
+<p>初始化后，查看当前所有分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git branch <span class="operator">-a</span></span><br><span class="line">* develop</span><br><span class="line">  master</span><br><span class="line">  remotes/origin/HEAD -&gt; origin/master</span><br><span class="line">  remotes/origin/develop</span><br><span class="line">  remotes/origin/master</span><br></pre></td></tr></table></figure>
+<h4 id="建立开发新功能的分支">建立开发新功能的分支</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature start 功能名字</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow featurestart WebCatLocalEncryption</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">切换到一个新分支 <span class="string">'feature/WebCatLocalEncryption'</span></span><br><span class="line"></span><br><span class="line">Summary of actions:</span><br><span class="line">- A new branch <span class="string">'feature/WebCatLocalEncryption'</span> was created, based on <span class="string">'develop'</span></span><br><span class="line">- You are now on branch <span class="string">'feature/WebCatLocalEncryption'</span></span><br><span class="line"></span><br><span class="line">Now, start committing on your feature. When <span class="keyword">done</span>, use:</span><br><span class="line"></span><br><span class="line">     git flow feature finish WebCatLocalEncryption</span><br></pre></td></tr></table></figure>
+<p>查看现在本地有哪些分支:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git branch </span><br><span class="line">  develop</span><br><span class="line">* feature/WebCatLocalEncryption</span><br><span class="line">  master</span><br></pre></td></tr></table></figure>
+<p>可以看到当前已经处于feature/WebCatLocalEncryption分支了。</p>
+<p>现在可以进行此功能的开发了，经过若干次commit：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">. . . .</span><br><span class="line">. . . . </span><br><span class="line">git commit -am <span class="string">"初步完成wencat本地加密</span></span><br></pre></td></tr></table></figure>
+<h4 id="功能开发完毕">功能开发完毕</h4><p>使用git flow feature finish完成此次功能的开发。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git flow feature finish</span><br><span class="line">切换到分支 <span class="string">'develop'</span></span><br><span class="line">您的分支与上游分支 <span class="string">'origin/develop'</span> 一致。</span><br><span class="line">更新 <span class="number">8</span>f0ac0a..<span class="number">21</span>c9b9d</span><br><span class="line">Fast-forward</span><br><span class="line"> WebCatLocalEncryption.c | <span class="number">19</span> +++++++++++++++++++</span><br><span class="line"> <span class="number">1</span> file changed, <span class="number">19</span> insertions(+)</span><br><span class="line"> create mode <span class="number">100644</span> WebCatLocalEncryption.c</span><br><span class="line">已删除分支 feature/WebCatLocalEncryption（曾为 <span class="number">21</span>c9b9d）。</span><br><span class="line"></span><br><span class="line">Summary of actions:</span><br><span class="line">- The feature branch <span class="string">'feature/WebCatLocalEncryption'</span> was merged into <span class="string">'develop'</span></span><br><span class="line">- Feature branch <span class="string">'feature/WebCatLocalEncryption'</span> has been removed</span><br><span class="line">- You are now on branch <span class="string">'develop'</span></span><br></pre></td></tr></table></figure>
+<p>可以看到已经自动合并到develop分支了，而且当前分支自动切换到develop分支。然后开发人员可以将develop同步到线上：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">push</span> <span class="preprocessor">#当前所处develop更新到线上develop分支</span></span><br></pre></td></tr></table></figure>
+<font color="#ff5588">此处有个问题：没有代码审查，开发者就把代码推送到线上develop分支了。有一个办法是，当项目负责人在gitlab上创建项目后，团队成员fork一份，然后clone自己fork的代码到本地，进行开发。功能开发完成后，在gitlab上向源项目发起pull request请求，这样会邮件通知相关人员审查代码，通过后，才能合并到线上develop分支。</font>
+
+<p>当执行完git flow feature finish命令后，在观察当前所有本地分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git branch </span><br><span class="line">* develop</span><br><span class="line">  master</span><br></pre></td></tr></table></figure>
+<p>可以看到，已经自动删除feature/WebCatLocalEncryption。</p>
+<h5 id="在结束分支前自己Review自己的改动">在结束分支前自己Review自己的改动</h5><p>在执行git flow feature finish之前，可以利用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature diff</span><br></pre></td></tr></table></figure>
+<p>这时便会弹出meld图形化工具，展示我们修改的代码前后的变化。</p>
+<h4 id="如果多人共同开发新功能，或者短时间内没有完成该功能，可以将该分支publish到中心仓库上">如果多人共同开发新功能，或者短时间内没有完成该功能，可以将该分支publish到中心仓库上</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature publish WebCatLocalEncryption</span><br></pre></td></tr></table></figure>
+<p>这时候，便可以把feature/WebCatLocalEncryption推送到远程分支。</p>
+<p>取得其它用户发布的新特性分支:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature pull origin WebCatLocalEncryption</span><br></pre></td></tr></table></figure>
+<p>通过下面命令将远端对应的分支代码clone下来：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow feature track  WebCatLocalEncryption</span><br></pre></td></tr></table></figure>
+<h3 id="预发布分支开发">预发布分支开发</h3><p>执行git flow release start 1.0</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git flow release start <span class="number">1.0</span></span><br><span class="line">Branches <span class="string">'develop'</span> and <span class="string">'origin/develop'</span> have diverged.</span><br><span class="line">And <span class="built_in">local</span> branch <span class="string">'develop'</span> is ahead of <span class="string">'origin/develop'</span>.</span><br><span class="line">切换到一个新分支 <span class="string">'release/1.0'</span></span><br><span class="line"></span><br><span class="line">Summary of actions:</span><br><span class="line">- A new branch <span class="string">'release/1.0'</span> was created, based on <span class="string">'develop'</span></span><br><span class="line">- You are now on branch <span class="string">'release/1.0'</span></span><br><span class="line"></span><br><span class="line">Follow-up actions:</span><br><span class="line">- Bump the version number now!</span><br><span class="line">- Start committing last-minute fixes <span class="keyword">in</span> preparing your release</span><br><span class="line">- When <span class="keyword">done</span>, run:</span><br></pre></td></tr></table></figure>
+<p>在develop分支基础上创建release/1.0分支，并切换到release/1.0分支。之后便可以向新功能开发那样，进行开发了。操作都类似。</p>
+<p>完成release版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git flow release finish <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+<p>不要忘记使用git push –tags将tags推送到远端.</p>
+<font color="#ff5588">千万要注意的是，新功能开发分支和预发布分支都是基于develop分支的，所以创建前，先从服务器拉取最新的develop代码：</font>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin develop</span><br></pre></td></tr></table></figure>
+<h4 id="修复bug分支">修复bug分支</h4><p>执行：git flow hotfix start bug1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">shajia@shajia ~/git/<span class="built_in">test</span>Gitflow $ git flow hotfix start bug1</span><br><span class="line">切换到一个新分支 <span class="string">'hotfix/bug1'</span></span><br><span class="line"></span><br><span class="line">Summary of actions:</span><br><span class="line">- A new branch <span class="string">'hotfix/bug1'</span> was created, based on <span class="string">'master'</span></span><br><span class="line">- You are now on branch <span class="string">'hotfix/bug1'</span></span><br><span class="line"></span><br><span class="line">Follow-up actions:</span><br><span class="line">- Bump the version number now!</span><br><span class="line">- Start committing your hot fixes</span><br><span class="line">- When <span class="keyword">done</span>, run:</span><br><span class="line"></span><br><span class="line">     git flow hotfix finish <span class="string">'bug1'</span></span><br></pre></td></tr></table></figure>
+<p>基于master创建并切换到hotfix/bug1。</p>
+<p>同样的，在创建之前要先更新master代码到最新：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure></p>
+<p>其余操作也都类似了。</p>
+<h3 id="总结">总结</h3><p>git flow只是对一些git命令的封装而已，如果很熟练的话，也可以不使用git flow脚本。而且怎么和gitlab结合实现代码审查也需要大家一起不断的摸索，我个人经验很不足。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/10/05/studyGit_3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">版本控制系统Git的分支管理策略</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="studyGit_4" data-title="版本控制系统Git的git flow分支模型" data-url="http://www.iloveandroid.net/2015/10/05/studyGit_4/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

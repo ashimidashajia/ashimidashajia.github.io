@@ -17,7 +17,7 @@
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-4.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-5.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-6.png">
-<meta property="og:updated_time" content="2015-10-05T09:42:16.000Z">
+<meta property="og:updated_time" content="2015-10-06T01:53:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="版本控制系统Git的分支管理策略">
 <meta name="twitter:description" content="git的分支管理策略,最流行的莫过于大神nvie提出的策略.">
@@ -242,14 +242,14 @@
 <h4 id="创建一个功能分支">创建一个功能分支</h4><p>当要开发一个新功能时，从开发分支分出一个功能分支:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b myfeature develop <span class="comment">#创建并切换到myfeature分支</span></span><br></pre></td></tr></table></figure>
 <p>将完成的功能分支合并回开发分支.完成功能可能被合并到开发分支，一定会添加它们至即将发布版本：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git checkout develop <span class="comment">#切换到develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff myfeature <span class="comment">#以非快进方式将其合并到develop分支</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> myfeature <span class="comment">#删除临时分支</span></span><br><span class="line"></span><br><span class="line">git push origin develop <span class="comment">#将本地develop分支推送到远程develop分支中</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git checkout develop <span class="comment">#切换到develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff myfeature <span class="comment">#以no-ff方式将其合并到develop分支</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> myfeature <span class="comment">#删除临时分支</span></span><br><span class="line"></span><br><span class="line">git push origin develop <span class="comment">#将本地develop分支推送到远程develop分支中</span></span><br></pre></td></tr></table></figure>
 <p>–no-ff标签会使合并时总会创建一个新的提交对象(前面文章已经介绍了)，即使这个合并本来可以使用快速合并。这避免了丢失功能分支的历史信息和团队共同添加到功能分支的所有提交。对比一下</p>
 <p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-4.png" alt=""></p>
 <p>在第二种情况下，你不可能从Git提交对象历史中看到实现的功能，你不得不手动地读取所有的日志消息。并且还原所有功能（即一组提交）是非常头疼大；如果使用了–no-ff标记那会变的很容易。</p>
 <p>它会创建更大的提交对象，不过受益会更大！</p>
 <h4 id="预发布分支">预发布分支</h4><p>预发布分支，它是指发布正式版本之前（即合并到Master分支之前），我们可能需要有一个预发布的版本进行测试。</p>
 <p>预发布分支是从Develop分支上面分出来的，预发布结束以后，必须合并进Develop和Master分支。它的命名，可以采用release-xxx的形式。</p>
-<p>流程:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b release-<span class="number">1.2</span> develop <span class="comment">#以develop为基础,创建一个预发布分支</span></span><br><span class="line"></span><br><span class="line">git checkout master <span class="comment">#切回master分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff release-<span class="number">1.2</span> <span class="comment">#以非快进方式合并到master</span></span><br><span class="line"></span><br><span class="line">git tag <span class="operator">-a</span> <span class="number">1.2</span> <span class="comment"># 对合并生成的新节点，做一个标签</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git checkout develop <span class="comment">#切换到develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff release-<span class="number">1.2</span> <span class="comment">#合并到develop分支中</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> release-<span class="number">1.2</span> <span class="comment">#删除预发布分支</span></span><br></pre></td></tr></table></figure></p>
+<p>流程:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b release-<span class="number">1.2</span> develop <span class="comment">#以develop为基础,创建一个预发布分支</span></span><br><span class="line"></span><br><span class="line">git checkout master <span class="comment">#切回master分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff release-<span class="number">1.2</span> <span class="comment">#以no-ff方式合并到master</span></span><br><span class="line"></span><br><span class="line">git tag <span class="operator">-a</span> <span class="number">1.2</span> <span class="comment"># 对合并生成的新节点，做一个标签</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">git checkout develop <span class="comment">#切换到develop分支</span></span><br><span class="line"></span><br><span class="line">git merge --no-ff release-<span class="number">1.2</span> <span class="comment">#合并到develop分支中</span></span><br><span class="line"></span><br><span class="line">git branch <span class="operator">-d</span> release-<span class="number">1.2</span> <span class="comment">#删除预发布分支</span></span><br></pre></td></tr></table></figure></p>
 <h4 id="修补bug分支">修补bug分支</h4><p>最后一种是修补bug分支。软件正式发布以后，难免会出现bug。这时就需要创建一个分支，进行bug修补。</p>
 <p>修补bug分支是从Master分支上面分出来的。修补结束以后，再合并进Master和Develop分支。它的命名，可以采用hotfix-xxx的形式。</p>
 <p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-git-3-5.png" alt=""></p>
@@ -265,6 +265,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2015/10/05/studyGit_4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          版本控制系统Git的git flow分支模型
+        
+      </div>
+    </a>
   
   
     <a href="/2015/10/05/studyGit_2/" id="article-nav-older" class="article-nav-link-wrap">
