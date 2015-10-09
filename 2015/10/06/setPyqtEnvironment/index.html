@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="安装QT5.5去QT官网或者qtcn论坛下载最新的QT版本,然后安装.此步骤忽略.
+ubuntu系统自带了qmke，但是版本较低，要使用前面安装的最新版本QT中的qmake。1sudo ln -s /usr/local/QT5.5/5.5/gcc_64/bin/qmake /usr/bin/qmake">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/06/setPyqtEnvironment/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="安装QT5.5去QT官网或者qtcn论坛下载最新的QT版本,然后安装.此步骤忽略.
+ubuntu系统自带了qmke，但是版本较低，要使用前面安装的最新版本QT中的qmake。1sudo ln -s /usr/local/QT5.5/5.5/gcc_64/bin/qmake /usr/bin/qmake">
+<meta property="og:updated_time" content="2015-10-09T01:40:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建">
+<meta name="twitter:description" content="安装QT5.5去QT官网或者qtcn论坛下载最新的QT版本,然后安装.此步骤忽略.
+ubuntu系统自带了qmke，但是版本较低，要使用前面安装的最新版本QT中的qmake。1sudo ln -s /usr/local/QT5.5/5.5/gcc_64/bin/qmake /usr/bin/qmake">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 13.33px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 13.33px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-setPyqtEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/06/setPyqtEnvironment/" class="article-date">
+  	<time datetime="2015-10-06T06:58:40.000Z" itemprop="datePublished">2015-10-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Python/">Python</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="安装QT5-5">安装QT5.5</h3><p>去QT官网或者qtcn论坛下载最新的QT版本,然后安装.此步骤忽略.</p>
+<p>ubuntu系统自带了qmke，但是版本较低，要使用前面安装的最新版本QT中的qmake。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln <span class="operator">-s</span> /usr/<span class="built_in">local</span>/QT5.<span class="number">5</span>/<span class="number">5.5</span>/gcc_64/bin/qmake /usr/bin/qmake</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>很坑啊，因为如果只是修改了bashrc，你编译的时候如果加了sudo,那就悲剧了。我就是犯了这个错误，导致后面编译的时候，有的版本不对，很难察觉。</p>
+<p>新开终端:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ qmake -v</span><br><span class="line">QMake version <span class="number">3.0</span></span><br><span class="line">Using Qt version <span class="number">5.5</span>.<span class="number">0</span> <span class="keyword">in</span> /usr/<span class="built_in">local</span>/Qt5.<span class="number">5</span>/<span class="number">5.5</span>/gcc_64/lib</span><br></pre></td></tr></table></figure>
+<p>说明QT5.5环境已经配置OK.</p>
+<h3 id="安装SIP">安装SIP</h3><p>SIP是python调用C/C++库的必备模块。因此SIP是PyQt的依赖工具，安装PyQt之前必须先安装对应版本的SIP。PyQt编译时使用的SIP版本必须与python默认调用的SIP保持一致！否则python中是无法调用PyQt的.</p>
+<p>最新版本的PyQt5.5需要的SIP版本:sip 4.16.6 or later.ubuntu自带或者从仓库中安装的sip版本是4.15.5不能满足,所以要手动下载安装.我下载的版本是4.16.9.</p>
+<p>先删除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rm  /usr/lib/python3/dist-packages/sip*</span><br></pre></td></tr></table></figure>
+<p>然后下载编译源码安装:</p>
+<p><a href="https://riverbankcomputing.com/software/sip/download" target="_blank" rel="external">sip官网下载</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> sip-<span class="number">4.16</span>.<span class="number">9</span></span><br><span class="line"></span><br><span class="line">python3 configure.py </span><br><span class="line"></span><br><span class="line">make</span><br><span class="line"></span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>make出错:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">siplib.c:<span class="number">20</span>:<span class="number">20</span>: fatal error: Python.h: 没有那个文件或目录</span><br></pre></td></tr></table></figure></p>
+<p>解决办法:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python3.<span class="number">4</span>-dev</span><br></pre></td></tr></table></figure>
+<p>重新make install.</p>
+<p>查看sip版本:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sip -V</span><br></pre></td></tr></table></figure></p>
+<p>python3中查看sip版本:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;import sip  </span><br><span class="line">&gt;&gt;&gt;<span class="built_in">print</span>(sip.SIP_VERSION_STR)</span><br></pre></td></tr></table></figure>
+<p>两者版本要一致.我的均显示4.16.9.</p>
+<h3 id="安装PyQt5">安装PyQt5</h3><p>需要下载源码,编译后,在使用.</p>
+<p><a href="https://www.riverbankcomputing.com/software/pyqt/download5" target="_blank" rel="external">PyQt5官网下载</a></p>
+<p>下载解压之后,进入源码目录:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 configure.py</span><br></pre></td></tr></table></figure>
+<p>发现错误:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">~/PyQt-gpl-<span class="number">5.5</span> $ python3 configure.py Querying qmake about your Qt installation...</span><br><span class="line">Determining the details of your Qt installation...</span><br><span class="line">This is the GPL version of PyQt <span class="number">5.5</span> (licensed under the GNU General Public</span><br><span class="line">License) <span class="keyword">for</span> Python <span class="number">3.4</span>.<span class="number">3</span> on linux.</span><br><span class="line">Error: This version of PyQt5 and the commercial version of Qt have incompatible</span><br><span class="line">licenses.</span><br></pre></td></tr></table></figure>
+<p>大意是协议冲突,无所谓了,修改configure.py,注释掉检测协议的代码:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Common checks.</span></span><br><span class="line"><span class="comment">#if introspecting and target_config.qt_licensee != 'Open Source' and ltype == 'GPL':</span></span><br><span class="line"> <span class="comment">#      error(</span></span><br><span class="line">  <span class="comment">#             "This version of PyQt5 and the commercial version of Qt have "</span></span><br><span class="line">   <span class="comment">#            "incompatible licenses.")</span></span><br></pre></td></tr></table></figure>
+<p>重新执行:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 configure.py -j8</span><br></pre></td></tr></table></figure>
+<p>等待一分钟左右,然后执行下述命令:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">make</span> -j16</span><br></pre></td></tr></table></figure>
+<p>等待约两分钟后,执行:<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make <span class="keyword">install</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="验证是否安装成功">验证是否安装成功</h3><p>安装完成后进入Python3环境验证是否安装成功：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;import PyQt5</span><br></pre></td></tr></table></figure>
+<p>如果什么也没提示,说明安装成功.</p>
+<h3 id="安装QScintilla2">安装QScintilla2</h3><p>QScintilla2是连接编译器和Python的接口，因此是Eric的必需前置组件。QScintilla2 中需要单独安装3个模块：本体，Designer和python bingdings。</p>
+<p><a href="http://www.riverbankcomputing.com/software/qscintilla/download" target="_blank" rel="external">QScintilla2官网下载</a></p>
+<p>我下载的是QScintilla-gpl-2.9版本.</p>
+<p>解压后进入源码目录:</p>
+<p>安装本体:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> Qt4Qt5  </span><br><span class="line">qmake qscintilla.pro  </span><br><span class="line">make  </span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure></p>
+<p>安装Designer:<br>PyQt5<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> designer-Qt4Qt5  </span><br><span class="line">qmake designer.   </span><br><span class="line">make  </span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure></p>
+<p>安装Python bingdings:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> Python  </span><br><span class="line">python3 configure.py --pyqt=PyQt5  </span><br><span class="line">make  -j16</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>提示出错:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error: Qsci/qsciglobal.h could not be found <span class="keyword">in</span></span><br><span class="line">/usr/<span class="built_in">local</span>/Qt5.<span class="number">5</span>/<span class="number">5.5</span>/gcc_64/include. If QScintilla is installed <span class="keyword">then</span> use the</span><br><span class="line">--qsci-incdir argument to explicitly specify the correct directory.</span><br></pre></td></tr></table></figure></p>
+<p>根据提示指定头文件路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 configure.py --pyqt=PyQt5 --qsci-incdir=../Qt4Qt5</span><br></pre></td></tr></table></figure>
+<p>以上步骤即可正确安装QScintilla2。需要注意的是Python bingdings安装时需要指定 –pyqt=PyQt5参数，否则默认是为PyQt4安装。或者直接修改其configure.py，将pyqt5_is_default = False改为pyqt5_is_default = True也可</p>
+<h3 id="安装Eric6">安装Eric6</h3><p>我下载的是eric6-6.0.9版本,和其对应的中文包eric6-i18n-zh_CN.GB2312-6.0.9.tar.gz</p>
+<p><a href="http://sourceforge.net/projects/eric-ide/files/eric6/stable/" target="_blank" rel="external">Eric6官方下载</a></p>
+<p>这两个文件夹解压后,会合并到一个文件夹中,没有的话,请手动完成.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo python3 install.py           //安装主程序  </span><br><span class="line">sudo python3 install-i18n.py   //安装中文语言包</span><br></pre></td></tr></table></figure>
+<p>安装成功。</p>
+<p>最后修改家目录中的.eric6文件夹：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown username:username  .eric6 -R</span><br></pre></td></tr></table></figure></p>
+<p>否则你无法正常启动！！！</p>
+<p>记住啊，千万别在bashrc里面去添加什么环境变量，直接修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln <span class="operator">-s</span> /usr/<span class="built_in">local</span>/QT5.<span class="number">5</span>/<span class="number">5.5</span>/gcc_64/bin/qmake /usr/bin/qmake</span><br></pre></td></tr></table></figure>
+<p>否则各种奇葩问题，什么段错误了，版本不对了等等。</p>
+<p>如果遇到莫名其妙的问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo rm  /usr/lib/python3/dist-packages/sip*</span><br><span class="line">sudo rm  /usr/lib/python3/dist-packages/PyQt5</span><br></pre></td></tr></table></figure>
+<p>然后严格按照上述操作步骤做吧。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/10/08/studyPtorobuf/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Protobuf简单使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/10/06/studyGit_5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">版本控制系统Git的数据恢复与浏览commit的GUI工具</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="setPyqtEnvironment" data-title="ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建" data-url="http://www.iloveandroid.net/2015/10/06/setPyqtEnvironment/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

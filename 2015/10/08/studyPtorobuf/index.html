@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Protobuf简单使用 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Protobuf是Google开发一种数据描述语言,能够将结构化数据序列化,可用于数据存储、通信协议等方面。据Google官方文档介绍,现在Google内部已经有48,162个消息类型定义在12,183个proto文件中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Protobuf简单使用">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/08/studyPtorobuf/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Protobuf是Google开发一种数据描述语言,能够将结构化数据序列化,可用于数据存储、通信协议等方面。据Google官方文档介绍,现在Google内部已经有48,162个消息类型定义在12,183个proto文件中。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-3.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-4.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-5.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-6.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-7.png">
+<meta property="og:updated_time" content="2015-10-09T03:16:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Protobuf简单使用">
+<meta name="twitter:description" content="Protobuf是Google开发一种数据描述语言,能够将结构化数据序列化,可用于数据存储、通信协议等方面。据Google官方文档介绍,现在Google内部已经有48,162个消息类型定义在12,183个proto文件中。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 13.33px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 16.67px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 13.33px;">构建</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-studyPtorobuf" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/08/studyPtorobuf/" class="article-date">
+  	<time datetime="2015-10-08T14:32:37.000Z" itemprop="datePublished">2015-10-08</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Protobuf简单使用
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用开发/">应用开发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/开源框架/">开源框架</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Protobuf是Google开发一种数据描述语言,能够将结构化数据序列化,可用于数据存储、通信协议等方面。据Google官方文档介绍,现在Google内部已经有48,162个消息类型定义在12,183个proto文件中。</p>
+<a id="more"></a>
+<h3 id="简介">简介</h3><p>protobuf是Google开发的一种数据描述语言语言，能够将结构化的数据序列化，可用于数据存储，通信协议等方面,官方版本支持C++,Java,Python，社区版本支持更多语言。</p>
+<p>比如说程序中生成了一个链表，但是程序退出重启后，还要重新生成链表，有时候，我们很需要上次程序中该链表中记录的数据。这些数据或许是经过很多大量运算生成的，每次都重新生成这些数据的话，需要消耗大量时间。这时候就可以考虑使用protobuf，将其序列化后保存在文件中，下次使用的时候，加载文件，反序列化后就可以直接使用了。</p>
+<p>该项目在<a href="https://github.com/google/protobuf" target="_blank" rel="external">github的官方地址</a></p>
+<p>值得注意的是，protobuf是以二进制来存储数据的。相对于JSON和XML具有以下优点：</p>
+<ol>
+<li><p>简洁</p>
+</li>
+<li><p>体积小:消息大小只需要XML的1/10 ~ 1/3</p>
+</li>
+<li><p>速度快:解析速度比XML快20 ~ 100倍</p>
+</li>
+<li><p>使用Protobuf的编译器,可以生成更容易在编程中使用的数据访问代码</p>
+</li>
+<li><p>更好的兼容性,Protobuf设计的一个原则就是要能够很好的支持向下或向上兼容</p>
+</li>
+</ol>
+<h3 id="protobuf开发环境">protobuf开发环境</h3><p>主要介绍c++，Java开发环境,使用的版本protobuf 2.3.0。因为Android5.1.1源码中使用的就是该版本，为了能快速编译出Android能使用的so库，所以选择这个版本。如果喜欢最新版，可以从上面的github官网下载。</p>
+<p><a href="http://download.csdn.net/detail/ashimidashajia/9164623" target="_blank" rel="external">点此下载protobuf 2.3.0版本源码</a></p>
+<h5 id="ubuntu_:">ubuntu :</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">./configuer --prefix=指定安装路径（可以不指定）</span><br><span class="line"></span><br><span class="line">make </span><br><span class="line"></span><br><span class="line">make install (可能需要sudo权限)</span><br></pre></td></tr></table></figure>
+<p>会编译出一个protoc的可执行程序，以及开发所需的头文件和库。这个可执行程序，要经常使用，用来将proto协议文件，转换为头文件和对应的代码。</p>
+<h5 id="java:">java:</h5><p><a href="https://cn.jarfire.org/protobuf.html" target="_blank" rel="external">点此进入jar包下载页面</a>，选择2.3.0版本。供java程序调用。</p>
+<h5 id="Android_native：">Android native：</h5><p>Android 源码/external/protobuf</p>
+<p>直接：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mmm external/protobuf</span><br></pre></td></tr></table></figure></p>
+<p>会编译出j出很多jar,和c++静态库。jar，推荐还是选择从上面下载的，静态库使用不是很方便。这里修改Android.mk编译so库版本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># C++ full library - libcxx version</span></span><br><span class="line"><span class="comment"># =======================================================</span></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE := libprotobuf-cpp-<span class="number">2.3</span>.<span class="number">0</span>-full-libcxx-rtti</span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_CPP_EXTENSION := .cc</span><br><span class="line">LOCAL_SRC_FILES := $(protobuf_cc_full_src_files)</span><br><span class="line">LOCAL_C_INCLUDES := \</span><br><span class="line">    $(LOCAL_PATH)/android \</span><br><span class="line">    external/zlib \</span><br><span class="line">    $(LOCAL_PATH)/src</span><br><span class="line"></span><br><span class="line">LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)</span><br><span class="line"></span><br><span class="line">LOCAL_CFLAGS := -frtti $(IGNORED_WARNINGS)</span><br><span class="line">LOCAL_CPPFLAGS := -w</span><br><span class="line"></span><br><span class="line">LOCAL_SHARED_LIBRARIES := libz</span><br><span class="line"></span><br><span class="line">include external/libcxx/libcxx.mk</span><br><span class="line"></span><br><span class="line">include $(BUILD_SHARED_LIBRARY)</span><br><span class="line"><span class="comment">#include $(BUILD_STATIC_JAVA_LIBRARY)</span></span><br><span class="line"><span class="comment"># Clean temp vars</span></span><br><span class="line">protobuf_cc_full_src_files :=</span><br></pre></td></tr></table></figure>
+<p>这里还用到了libcxx库，该库实现了c++11很多特性，开发Android Native程序时，我经常使用到这个库，所以这里也用该库来编译protobuf了。</p>
+<p>成功后，如下所示：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Install: out/target/product/shamu/system/lib/libprotobuf-cpp-<span class="number">2.3</span>.<span class="number">0</span>-full-libcxx-rtti.so</span><br></pre></td></tr></table></figure></p>
+<h5 id="快速使用">快速使用</h5><p>主要是介绍如何使用，前面在PC主机中编译出来的protoc可执行程序，将proto协议文件转换为对应的代码，也顺便看下proto协议文件长什么样子。</p>
+<p>如下片段，摘自protobuf源码中的example中的addressbook.proto<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">message Person &#123;</span><br><span class="line">  required <span class="built_in">string</span> name = <span class="number">1</span>;</span><br><span class="line">  required int32 id = <span class="number">2</span>;        <span class="comment">// Unique ID number for this person.</span></span><br><span class="line">  optional <span class="built_in">string</span> email = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">enum</span> PhoneType &#123;</span><br><span class="line">    MOBILE = <span class="number">0</span>;</span><br><span class="line">    HOME = <span class="number">1</span>;</span><br><span class="line">    WORK = <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  message PhoneNumber &#123;</span><br><span class="line">    required <span class="built_in">string</span> number = <span class="number">1</span>;</span><br><span class="line">    optional PhoneType type = <span class="number">2</span> [<span class="keyword">default</span> = HOME];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  repeated PhoneNumber phone = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用protoc命令生成代码,使用­­cpp_out、­­java_out、­­python_out命令选项可以生成C++、Java、Python代码。例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc addressbook.proto -I. --cpp_out=.</span><br></pre></td></tr></table></figure>
+<p>上述命令执行后，产生两个用于c++新文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">addressbook.pb.cc</span><br><span class="line">addressbook.pb.h</span><br></pre></td></tr></table></figure></p>
+<p>可以将cc改为cpp.之后在自己的工程中包含这两个文件就可以按照下面所示使用proto中定义的数据协议了：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-1.png" alt=""></p>
+<p>这两个文件可以大致粗略的看看，因为可以从中知道定义哪些可用的调用方法等，一看便知怎么用。</p>
+<h3 id="proto文件的语法">proto文件的语法</h3><p>在消息定义中,需要明确以下三点:</p>
+<ol>
+<li><p>确定消息命名,给消息取一个有意义的名字。</p>
+</li>
+<li><p>指定字段的类型</p>
+</li>
+<li><p>定义字段的编号,在Protocol Buffers中,字段的编号非常重要,字段名仅仅是作为参考和生成代码用。需要注意的是字段的编号区间范围,其中19000 ~ 19999被Protocol Buffers作为保留字段。</p>
+</li>
+</ol>
+<p>先来看一个非常简单的例子。假设你想定义一个“搜索请求”的消息格式，每一个请求含有一个查询字符串、你感兴趣的查询结果所在的页数，以及每一页多少条查询结果。可以采用如下的方式来定义消息类型的.proto文件了：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">message SearchRequest &#123;</span><br><span class="line">  required <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">  optional int32 page_number = <span class="number">2</span>;</span><br><span class="line">  optional int32 result_per_page = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SearchRequest就是消息的名字，该消息有3个字段，在消息中承载的数据分别对应于每一个字段。其中每个字段都有一个修饰符，一种类型，一个名字和一个编号。</p>
+<p>所指定的字段类型修饰符必须是如下之一：</p>
+<p>required：一个格式良好的消息一定要含有1个这种字段。表示该值是必须要设置的；</p>
+<p>optional：消息格式中该字段可以有0个或1个值（不超过1个），也就是可有可无；</p>
+<p>repeated：在一个格式良好的消息中，这种字段可以重复任意多次（包括0次）。重复的值的顺序会被保留。表示该值可以重复，相当于java中的List。</p>
+<p>其中数据类型和c++,java的对应如下：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-2.png" alt=""></p>
+<p><font color="#ff5588">分配编号：</font><br>正如上述文件格式，在消息定义中，每个字段都有唯一的一个数字标识符。这些标识符是用来在消息的二进制格式中识别各个字段的，一旦开始使用就不能够再改变。注：[1,15]之内的标识号在编码的时候会占用一个字节。[16,2047]之内的标识号则占用2个字节。所以应该为那些频繁出现的消息元素保留 [1,15]之内的标识号。切记：要为将来有可能添加的、频繁出现的标识号预留一些标识号。</p>
+<p>消息也是可以嵌套的，即message套message，还可以使用枚举。还可以使用import导入其他proto文件。</p>
+<h6 id="包（Package）">包（Package）</h6><p>通常都要为.proto文件增加一个package声明符，用来防止不同的消息类型有命名冲突。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">package foo.bar;</span><br><span class="line">message Open &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<p>在其他的消息格式定义中可以使用包名+消息名的方式来定义域的类型，如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">message Foo &#123;</span><br><span class="line">  ...</span><br><span class="line">  required foo.bar.Open open = <span class="number">1</span>;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>包的声明符会根据使用语言的不同影响生成的代码。</p>
+<p>对于C++，产生的类会被包装在C++的命名空间中，如上例中的Open会被封装在 foo::bar空间中；</p>
+<p>对于Java，包声明符会变为java的一个包，除非在.proto文件中提供了一个明确有java_package；</p>
+<p>对于 Python，这个包声明符是被忽略的，因为Python模块是按照其在文件系统中的位置进行组织的。</p>
+<h3 id="protobuf使用流程">protobuf使用流程</h3><ol>
+<li><p>编写协议文件,也就是.proto文件</p>
+</li>
+<li><p>利用protoc命令将协议文件转换为我们需要的开发语言接口.该接口中包含了对协议中定义数据的操作方法.可以从生成的.h文件中查看有哪些接口,常用的就是设置字段数据,获取字段数据,序列化,反序列化等;</p>
+<p> 列举一些公用方法:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">isInitialized(): 检查是否所有的required字段是否被赋值</span><br><span class="line">toString(): 返回一个便于阅读的message表示(本来是二进制的，不可读)</span><br><span class="line">byte[] toByteArray();: 序列化message并且返回一个原始字节类型的字节数组</span><br><span class="line">static XXX parseFrom(byte[] data);: 将给定的字节数组解析为message</span><br><span class="line">void writeTo(OutputStream output);: 将序列化后的message写入到输出流</span><br><span class="line">static Person parseFrom(InputStream input);: 读入并且将输入流解析为一个message</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li><p>在项目中使用生成的接口操作协议数据;</p>
+<p> 协议中每个message都会转换为一个类,使用的时候创建一个消息对象,初始化里面的属性值并且序列化,然后可以存储到文件,可以socket发送等等.</p>
+<p> 使用数据的时候,先反序列化,然后就可以正常使用了.</p>
+</li>
+</ol>
+<ol>
+<li>c++编译如下,注意加pthread库,否则出错.</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++  xx.cpp xx.pb.cc  -I /usr/<span class="built_in">local</span>/protobuf/include -L /usr/<span class="built_in">local</span>/protobuf/lib -lprotobuf -pthread</span><br></pre></td></tr></table></figure>
+<h3 id="protobuf编码协议">protobuf编码协议</h3><p>搞清楚编码协议,是为了能清楚数据大小,这样才调试socket程序的时候,能看懂数据长度的含义.</p>
+<p>在Protobuf中采用Base­128变长编码,所谓变长编码是和定长编码相对的,定长编码使用固定字节数来表示,如int32类型的数字固定使用4 bytes表示,而变长编码是需要几个字节就使用几个字节,如对于int32类型的数字1来说,只需要1 bytes足够。Base­128变长编码的原则就两条</p>
+<ol>
+<li><p>每个字节使用低7位表示数字,除了最后一个字节,其他字节的最高位都设置为1。</p>
+</li>
+<li><p>采用Little­Endian字节序</p>
+</li>
+</ol>
+<p>test.proto<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message Book&#123;</span><br><span class="line">    required uint32 money = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译proto文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc test.proto -I. --cpp_out=.</span><br></pre></td></tr></table></figure>
+<p>main.cpp<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"test.pb.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    Book book;</span><br><span class="line">    book.set_money(<span class="number">150</span>);</span><br><span class="line">    <span class="keyword">int</span> size = book.ByteSize();</span><br><span class="line">    <span class="keyword">unsigned</span>  <span class="keyword">char</span> bts[size];</span><br><span class="line">    book.SerializeToArray(bts, size);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;size;i++)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"0x%x \n"</span>,bts[i]);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g++ main.cpp test.pb.cpp -I ~/mylib/protobuf/include -L ~/mylib/protobuf/lib -lprotobuf -o <span class="built_in">test</span> -lpthread</span><br></pre></td></tr></table></figure>
+<p>运行test:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>x8 </span><br><span class="line"><span class="number">0</span>x96 </span><br><span class="line"><span class="number">0</span>x1</span><br></pre></td></tr></table></figure>
+<p>一个Protobuf的消息包含一系列字段key/value,每个字段由一个变长32位整数作为字段头,后面跟随字段体。字段头,也就是key的格式如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(field_number &lt;&lt; <span class="number">3</span>) | wire_<span class="built_in">type</span></span><br><span class="line">­field_number:   字段序号 </span><br><span class="line">­wire_<span class="built_in">type</span>:  字段编码类型</span><br></pre></td></tr></table></figure></p>
+<p>字段编码类型如下:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-3.png" alt=""></p>
+<p>字段序号,就是在定义message中的字段的时候添加的标号.</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-4.png" alt=""></p>
+<p>再看一个例子:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-5.png" alt=""></p>
+<p>看嵌套:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">message Test1&#123;&#10;requaried int32 a = 1;&#10;&#125;&#10;message Test3&#123;&#10;requaried Test1 c = 3;&#10;&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-6.png" alt=""></p>
+<p>负数编码:</p>
+<p>采用ZigZag Encoding</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/studyProtobuf-7.png" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/10/06/setPyqtEnvironment/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="studyPtorobuf" data-title="Protobuf简单使用" data-url="http://www.iloveandroid.net/2015/10/08/studyPtorobuf/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
