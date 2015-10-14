@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>jks与pem的转换 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="android 一般除了使用jarsigner签名 还有使用signapk 后者位于android源码 前者位于jdk中。两者使用的文件格式不同前者使用JKS 后者使用公钥+私钥 是分开的.
+现提供了一个JKS证书文件和证书的密码，需要转成x509.pem文件给SEAndroid的配置,也可用signapk给apk签名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jks与pem的转换">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/14/jksTopm/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="android 一般除了使用jarsigner签名 还有使用signapk 后者位于android源码 前者位于jdk中。两者使用的文件格式不同前者使用JKS 后者使用公钥+私钥 是分开的.
+现提供了一个JKS证书文件和证书的密码，需要转成x509.pem文件给SEAndroid的配置,也可用signapk给apk签名">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jksToPem-1.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/jksToPem-2.png">
+<meta property="og:updated_time" content="2015-10-14T03:52:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jks与pem的转换">
+<meta name="twitter:description" content="android 一般除了使用jarsigner签名 还有使用signapk 后者位于android源码 前者位于jdk中。两者使用的文件格式不同前者使用JKS 后者使用公钥+私钥 是分开的.
+现提供了一个JKS证书文件和证书的密码，需要转成x509.pem文件给SEAndroid的配置,也可用signapk给apk签名">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 15px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/代码管理/" style="font-size: 17.5px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12.5px;">签名认证</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-jksTopm" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/14/jksTopm/" class="article-date">
+  	<time datetime="2015-10-13T16:40:45.000Z" itemprop="datePublished">2015-10-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      jks与pem的转换
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/签名认证/">签名认证</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>android 一般除了使用jarsigner签名 还有使用signapk 后者位于android源码 前者位于jdk中。两者使用的文件格式不同前者使用JKS 后者使用公钥+私钥 是分开的.</p>
+<p>现提供了一个JKS证书文件和证书的密码，需要转成x509.pem文件给SEAndroid的配置,也可用signapk给apk签名</p>
+<a id="more"></a>
+<h3 id="jks转pem">jks转pem</h3><p>从一个JKS的keystore中导出public key (certificate)</p>
+<p>先通过keytool导出成PKCS12格式(.p12后缀):</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool -importkeystore -srckeystore test.jks -destkeystore test.p12 -srcstoretype jks -deststoretype pkcs12</span><br></pre></td></tr></table></figure>
+<p>结果;</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">oretype jks -deststoretype pkcs12</span><br><span class="line">输入目标密钥库口令:  </span><br><span class="line">再次输入新口令: </span><br><span class="line">输入源密钥库口令:  </span><br><span class="line">已成功导入别名 <span class="built_in">test</span> 的条目。</span><br><span class="line">已完成导入命令: <span class="number">1</span> 个条目成功导入, <span class="number">0</span> 个条目失败或取消</span><br></pre></td></tr></table></figure>
+<p>指定源(jks)文件和目标(pkcs)文件的文件名和类型.执行时输入设置给pkcs12证书的密码, 以及jks证书的密码.</p>
+<p>再通过openssl将pkcs12文件导出成pem格式文件.</p>
+<p>生成key 加密的pem证书:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -in test.p12 -out test.pem</span><br></pre></td></tr></table></figure>
+<p>双击生成的pem证书,如图所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jksToPem-1.png" alt=""></p>
+<p>生成key 非加密的pem证书:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs12 -nodes -in test.p12 -out <span class="built_in">test</span>-<span class="number">2</span>.pem</span><br></pre></td></tr></table></figure>
+<p>双击生成的pem证书,如图所示：<br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/jksToPem-2.png" alt=""></p>
+<p>通常使用非加密的pen证书.</p>
+<p>接下来利用vi打开生成的非加密的.pem文件.</p>
+<p>复制“BEGIN CERTIFICATE”  “END CERTIFICATE” 到（新建个文件） cert.x509.pem</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">[</span></span><br><span class="line">----<span class="attribute">-BEGIN</span> CERTIFICATE-----</span><br><span class="line"><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="attribute">...</span><span class="built_in">..</span><br><span class="line"></span>----<span class="attribute">-END</span> CERTIFICATE-----</span><br><span class="line"><span class="preprocessor">]</span><span class="markup"></span></span><br></pre></td></tr></table></figure>
+<p>复制 “BEGIN RSA PRIVATE KEY”   “END RSA PRIVATE KEY” 到（同上） private.rsa.pem</p>
+<font color="#ff5588">生成pk8格式的私钥</font>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl pkcs8 -topk8 -outform DER -in     private.rsa.pem -inform PEM -out private.pk8 -nocrypt</span><br></pre></td></tr></table></figure>
+<p>除了 cert.x509.pem private.pk8 ,其余的中间文件删除即可.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-nocrypt 这个参数设定key不加密.</span><br><span class="line"></span><br><span class="line">如果设置了这个参数 下面签名 只要证书+key 不需要密码了 </span><br><span class="line">如果加密 应该</span><br><span class="line">openssl pkcs8 -topk8 -outform DER -in private.rsa.pem -inform PEM -out private.pk8 接下来输入密码</span><br></pre></td></tr></table></figure>
+<font color="#ff5588">利用signapk.jar给apk签名</font>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar signapk.jar cert.x509.pem private.pk8 unsigned.apk signed.apk</span><br></pre></td></tr></table></figure>
+<h3 id="pem转jks">pem转jks</h3><p><a href="https://github.com/getfatday/keytool-importkeypair" target="_blank" rel="external">在github上下载工具</a></p>
+<p>将工具在Linux环境下解压或者解压后Copy到Linux下，运行如下命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">keytool-importkeypair -k ~/android/debug.keystore(或者debug.jks) -p android -pk8 ~/android/platform.pk8 -cert ~/android/platform.x509.pem -alias anyname</span><br></pre></td></tr></table></figure></p>
+<p>其中 -k:表示要生成的签名的keystore的名字，包括路径名，这里存到主目录的android目录下，名字为debug.keystore。你可以随便取名</p>
+<p>-p 表示新生成的keystore的密码是什么，这里为androidi</p>
+<p>-pk8 表示要导入的pk8文件的名称，可以包括路径，这里是主目录的Android目录下，我们的pk8文件和pem文件都在这个目录下</p>
+<p>-cert 表示要导入的证书文件,和pk8文件在同一个目录</p>
+<p>-alias 表示给生成的debug.keystore取一个别名，这个名字只有我们在签名的时候才用的到，生成在文件名是debug.keystore,这个名字，随便取.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/10/14/studyKeytool/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android开发中keytool的使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/10/13/Android_SEAndroid_6/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 5.1 SEAndroid实践之策略规则编写篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="jksTopm" data-title="jks与pem的转换" data-url="http://www.iloveandroid.net/2015/10/14/jksTopm/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
