@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度 | 码农故事</title>
+  <title>Android 5.1 SEAndroid实践之文件特定许可篇 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。
-1.先检查cpu是否支持ardware virtualization,返回0表示不支持1egrep -c &apos;(vmx|svm)&apos; /proc/cpuinfo">
+  <meta name="description" content="对于文件而言,有五种SELinux特定许可:relabelfrom，relabelto，execute_no_trans，enTRypoint和execmod。
+理解他们,对于阅读SEAndroid的策略文件也很有帮助.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度">
-<meta property="og:url" content="http://www.iloveandroid.net/2015/09/18/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/index.html">
+<meta property="og:title" content="Android 5.1 SEAndroid实践之文件特定许可篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/10/14/Android_SEAndroid_7/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。
-1.先检查cpu是否支持ardware virtualization,返回0表示不支持1egrep -c &apos;(vmx|svm)&apos; /proc/cpuinfo">
-<meta property="og:updated_time" content="2015-09-25T07:47:24.000Z">
+<meta property="og:description" content="对于文件而言,有五种SELinux特定许可:relabelfrom，relabelto，execute_no_trans，enTRypoint和execmod。
+理解他们,对于阅读SEAndroid的策略文件也很有帮助.">
+<meta property="og:updated_time" content="2015-10-14T07:18:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度">
-<meta name="twitter:description" content="前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。
-1.先检查cpu是否支持ardware virtualization,返回0表示不支持1egrep -c &apos;(vmx|svm)&apos; /proc/cpuinfo">
+<meta name="twitter:title" content="Android 5.1 SEAndroid实践之文件特定许可篇">
+<meta name="twitter:description" content="对于文件而言,有五种SELinux特定许可:relabelfrom，relabelto，execute_no_trans，enTRypoint和execmod。
+理解他们,对于阅读SEAndroid的策略文件也很有帮助.">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -181,11 +181,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Android_SEAndroid_7" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/18/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/" class="article-date">
-  	<time datetime="2015-09-18T10:47:13.000Z" itemprop="datePublished">2015-09-18</time>
+      <a href="/2015/10/14/Android_SEAndroid_7/" class="article-date">
+  	<time datetime="2015-10-14T06:35:06.000Z" itemprop="datePublished">2015-10-14</time>
 </a>
     </div>
   
@@ -198,7 +198,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度
+      Android 5.1 SEAndroid实践之文件特定许可篇
     </h1>
   
 
@@ -207,7 +207,7 @@
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/提高效率/">提高效率</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
 	</div>
 
         
@@ -222,23 +222,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前面的例子中，我们使用了模拟器来，今天介绍一种让你模拟器快如飞的办法。其实从Android 5.0开始都谷歌已经开始提供X86的模拟器镜像了，速度已经很快。</p>
-<p>1.先检查cpu是否支持ardware virtualization,返回0表示不支持<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">egrep -c '(vmx|svm)' /<span class="keyword">proc</span>/cpuinfo</span><br></pre></td></tr></table></figure></p>
+        <p>对于文件而言,有五种SELinux特定许可:relabelfrom，relabelto，execute_no_trans，enTRypoint和execmod。</p>
+<p>理解他们,对于阅读SEAndroid的策略文件也很有帮助.</p>
 <a id="more"></a>
-<p>2.检查是否支持upports kvm,需要安装工具pu-checker<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install cpu-checker</span><br></pre></td></tr></table></figure></p>
-<p>3.执行检测命令<br><figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function_or_atom">kvm</span>-<span class="ok">ok</span></span><br></pre></td></tr></table></figure></p>
-<p>返回</p>
-<p>cpu支持<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"INFO: Your CPU supports KVM extensions</span></span><br><span class="line">INFO: /dev/kvm exists</span><br><span class="line">KVM acceleration can be used<span class="string">"</span></span><br></pre></td></tr></table></figure></p>
-<p>cpu不支持<br><figure class="highlight mizar"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">需要到bios中设置VT开启状态</span><br><span class="line">"INFO: KVM <span class="keyword">is</span> disabled <span class="keyword">by</span> your BIOS</span><br><span class="line">HINT: Enter your BIOS setup <span class="keyword">and</span> enable Virtualization Technology (VT),</span><br><span class="line"><span class="keyword">and</span> <span class="keyword">then</span> hard poweroff/poweron your system</span><br><span class="line">KVM acceleration can NOT <span class="keyword">be</span> used"</span><br></pre></td></tr></table></figure></p>
-<p>开始安装kvm<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> apt-<span class="preprocessor">get</span> install qemu-kvm libvirt-<span class="keyword">bin </span>ubuntu-vm-<span class="keyword">builder </span><span class="keyword">bridge-utils</span></span><br></pre></td></tr></table></figure></p>
-<p>安装成功之后重启.</p>
-<p>添加用户到kvm,libvirtd组<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">sudo</span> <span class="keyword">adduser </span>your_user_name kvm</span><br><span class="line"><span class="label">sudo</span> <span class="keyword">adduser </span>your_user_name libvirtd</span><br></pre></td></tr></table></figure></p>
-<p>安装验证:<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo virsh -c <span class="string">qemu:</span><span class="comment">///system list</span></span><br></pre></td></tr></table></figure></p>
-<p>安装成功出现如下命令<br><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Id <span class="keyword">Name</span>                 State</span><br></pre></td></tr></table></figure></p>
-<p>通过命令启动虚拟机</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">SDK</span> <span class="attribute">directory</span>&gt;</span>/tools/emulator-x86 -avd Your_AVD_Name -qemu -m 2047 -enable-kvm</span><br></pre></td></tr></table></figure>
-<p>通过avd manager启动<br><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Run</span> &gt; <span class="keyword">Run</span> Configurations&gt;Target&gt;Additional Emulator Command <span class="keyword">Line</span> <span class="keyword">Options</span></span><br></pre></td></tr></table></figure></p>
-<p>添加启动参数<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-qemu -m <span class="number">2047</span> -enable-kvm</span><br></pre></td></tr></table></figure></p>
+<p>labelfrom和relabelto许可控制域类型将文件从一个类型改为另一个类型的能力，为了使重新标记文件成功，域类型必须要有该文件客体当前类型的relabelfrom许可，并且还要有新类型的relabelto许可，注意这些许可不允许控制确切的许可对，域可以将它有relabelfrom许可的任何类型改为它有relabelto许可的任何类型，在重新标记时可以增加约束。</p>
+<p>execute_no_trans许可允许域执行一个无域转换的文件，这个许可还不够执行一个文件，还需要execute许可，没有execute_no_trans许可，进程可能只能在一个域内执行，如果我们想要确保一个执行过程总是会引发一个域转换（或失败）时，此时就会想要排除execute_no_trans许可，例如：当登陆进程为一个用户登陆执行一个shell时，我们总是想要shell进程从有特权的登陆域类型转移出来。</p>
+<p>entrypoint许可控制使用可执行文件允许域转换的能力，execute，execute_no_trans和entrypoint许可允许精确控制什么代码可以执行什么域类型，SELinux控制各个程序域类型的能力是它能够提供强壮灵活的安全的主要原因。</p>
+<font color="#ff5588">注意这里在详细说一下,在主体域转换中的作用:</font>
+
+<pre><code>• execute：源类型（<span class="keyword">init_t</span>）对目标类型（<span class="keyword">apache_exec_t</span>,也就是主体对应的可执行程序）文件有execute许可
+
+• transition：源域（<span class="keyword">init_t</span>）对默认类型（<span class="keyword">apache_t</span>,主体的域）必须要有transition许可
+
+• entrypoint： 主体域（<span class="keyword">apache_t</span>）对目标类型（<span class="keyword">apache_exec_t</span>）文件必须要有entryponit许可
+</code></pre><p>execmod许可控制执行在进程内存中已经被修改了的内存映像文件的能力，这在防止共享库被另一个进程修改时非常有用，没有这个许可时，如果一个内存映像文件在内存中已经被修改了，进程就不能再执行这个文件了。说白了就是使被修改过的文件可执行（含有写时复制的意思）</p>
 
       
     </div>
@@ -248,18 +245,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/09/19/setupGitlabEnvironment/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          持续集成系统搭建之Gitlab篇
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/09/18/GradleNdkSupport/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">让Gradle构建支持NDK</div>
+    <a href="/2015/10/14/studyKeytool/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android开发中keytool的使用</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -288,7 +276,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" data-title="ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度" data-url="http://www.iloveandroid.net/2015/09/18/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/"></div>
+	<div class="ds-thread" data-thread-key="Android_SEAndroid_7" data-title="Android 5.1 SEAndroid实践之文件特定许可篇" data-url="http://www.iloveandroid.net/2015/10/14/Android_SEAndroid_7/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
