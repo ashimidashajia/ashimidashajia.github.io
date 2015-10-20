@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/10/19/stydyUml_1/</loc>
+    <loc>http://www.iloveandroid.net/2015/10/20/studyCTS_1/</loc>
+    <lastmod>2015-10-20T03:21:34.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/10/19/studyUml_1/</loc>
     <lastmod>2015-10-19T07:59:21.000Z</lastmod>
   </url>
   
@@ -87,17 +92,17 @@
   </url>
   
   <url>
+    <loc>http://www.iloveandroid.net/2015/09/26/Android_property_2/</loc>
+    <lastmod>2015-09-28T05:53:55.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://www.iloveandroid.net/2015/09/26/Android_property_1/</loc>
-    <lastmod>2015-09-28T05:53:55.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/09/26/Android_property_2/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
