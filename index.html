@@ -206,132 +206,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>总结一下CTS中常用的命令:</p>
-<p>进入cts tools目录:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> android-cts/tools</span><br></pre></td></tr></table></figure>
-<p>进入交互模式:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./cts-tradefed</span><br></pre></td></tr></table></figure>
-<p>如下所示:(我事先已经连接了设备,所以他探测到了Android设备)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Android CTS <span class="number">5.1</span>_r3</span><br><span class="line">cts-tf &gt; </span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">11</span>:<span class="number">51</span>:<span class="number">09</span> I/DeviceManager: Detected new device V06001220</span><br></pre></td></tr></table></figure>
-<h3 id="获取帮助">获取帮助</h3><ol>
-<li>显示常用命令</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; <span class="built_in">help</span></span><br></pre></td></tr></table></figure>
-<ol>
-<li>显示所有命令</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; <span class="built_in">help</span> all</span><br></pre></td></tr></table></figure>
-<h3 id="显示相关信息">显示相关信息</h3><ol>
-<li>显示当前连接的设备</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list devices</span><br></pre></td></tr></table></figure>
-<p>结果<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; list devices</span><br><span class="line">Serial     State      Product  Variant  Build              Battery  </span><br><span class="line">V06001220  Available  qcom     titan    <span class="number">5.1</span>.<span class="number">1</span>_0.<span class="number">570.0</span>.<span class="number">033</span>  <span class="number">100</span></span><br></pre></td></tr></table></figure></p>
-<p>此命令可以简写为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">l d</span><br></pre></td></tr></table></figure>
-<ol>
-<li>显示所有的测试包</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list packages</span><br></pre></td></tr></table></figure>
-<p>结果<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; list packages</span><br><span class="line">android.JobScheduler</span><br><span class="line">android.aadb</span><br><span class="line">android.acceleration</span><br><span class="line">android.accessibility</span><br><span class="line">android.accessibilityservice</span><br><span class="line">android.accounts</span><br><span class="line">android.admin</span><br></pre></td></tr></table></figure></p>
-<p>命令简写: l packages</p>
-<ol>
-<li>显示当前所有的测试计划</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list plans</span><br></pre></td></tr></table></figure>
-<p>结果<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CTS</span><br><span class="line">VM-TF</span><br><span class="line">CTS-media</span><br><span class="line">godin</span><br><span class="line">PDK</span><br><span class="line">CTS-mediastress</span><br><span class="line">Harmony</span><br><span class="line">CTS-kitkat-medium</span><br><span class="line">CTS-No-Media-Stream</span><br></pre></td></tr></table></figure></p>
-<p>测试的时候可以选择执行哪个计划,每个计划中实际上就是指定若干包,每个包里面有包含若干case用例.</p>
-<p>指定计划可以选择包含若干包,还可以指定包里面的若干用例,或者排除某些用例,默认包含包里面所有的case用例.</p>
-<ol>
-<li>显示目前正在设备上执行的命令</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list invocations</span><br></pre></td></tr></table></figure>
-<ol>
-<li>显示所有即将要在设备上执行的命令:</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list commands</span><br></pre></td></tr></table></figure>
-<ol>
-<li>查看测试结果</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">list results</span><br></pre></td></tr></table></figure>
-<p>结果:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; list results</span><br><span class="line">Session  Pass   Fail  Not Executed  Start time           Plan name  Device serial(s)  </span><br><span class="line"><span class="number">0</span>        <span class="number">159</span>    <span class="number">45</span>    <span class="number">199965</span>        <span class="number">2015.10</span>.<span class="number">16</span>_17.<span class="number">59.33</span>  CTS        V06001486         </span><br><span class="line"><span class="number">1</span>        <span class="number">38524</span>  <span class="number">129</span>   <span class="number">161516</span>        <span class="number">2015.10</span>.<span class="number">17</span>_09.<span class="number">34.10</span>  CTS        V06001486         </span><br><span class="line"><span class="number">2</span>        <span class="number">26</span>     <span class="number">0</span>     <span class="number">0</span>             <span class="number">2015.10</span>.<span class="number">17</span>_15.<span class="number">21.04</span>  NA         V06001220         </span><br><span class="line"><span class="number">3</span>        <span class="number">2</span>      <span class="number">0</span>     <span class="number">0</span>             <span class="number">2015.10</span>.<span class="number">17</span>_15.<span class="number">23.24</span>  NA         V06001220</span><br></pre></td></tr></table></figure></p>
-<p>可以显示每个已经测试的计划中通过了多少case,失败了多少case,以及有多少case没有执行,计划开始时间,以及测试的设备等等信息.</p>
-<p>命令简写: l r</p>
-<h3 id="CTS测试">CTS测试</h3><p>测试可以如下几种情况:</p>
-<ol>
-<li>测试某个包</li>
-</ol>
-<p>当前CTS版本包含哪些包,可以通过前面介绍的 list packages命令获取.</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --package/-p packagesName</span><br></pre></td></tr></table></figure>
-<p>比如现在要测试:android.accounts这个包中的所有case用例</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --packages android.accounts</span><br></pre></td></tr></table></figure>
-<p>或者<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts -p android.accounts</span><br></pre></td></tr></table></figure></p>
-<p>之后会显示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; run cts -p android.accounts</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">44</span>:<span class="number">53</span> I/TestInvocation: Starting invocation <span class="keyword">for</span> <span class="string">'cts'</span> on build <span class="string">'5.1_r3'</span> on device V06001220</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">44</span>:<span class="number">53</span> I/V06001220: Created result dir <span class="number">2015.10</span>.<span class="number">20</span>_13.<span class="number">44.53</span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">44</span>:<span class="number">53</span> I/CtsTest: ABIs: [armeabi-v7a, arm64-v8a]</span><br></pre></td></tr></table></figure></p>
-<p>然后显示各个case和整个包的检测的结果<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">27</span> I/V06001220: android.accounts.cts.AccountManagerTest<span class="comment">#testUpdateCredentials PASS </span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">28</span> I/V06001220: android.accounts.cts.AccountManagerTest<span class="comment">#testUpdateCredentialsWithCallbackAndHandler PASS </span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">29</span> I/V06001220: Saved <span class="built_in">log</span> device_logcat_4413255561244897446.zip</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">29</span> I/V06001220: Saved <span class="built_in">log</span> host_<span class="built_in">log</span>_6673843073308870420.zip</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">29</span> I/V06001220: armeabi-v7a android.accounts package complete: Passed <span class="number">31</span>, Failed <span class="number">0</span>, Not Executed <span class="number">0</span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">29</span> I/V06001220: Created xml report file at file:///home/genglei-cuan/work/cts/android-cts/tools/./../../android-cts/repository/results/<span class="number">2015.10</span>.<span class="number">20</span>_13.<span class="number">44.53</span>/<span class="built_in">test</span>Result.xml</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">30</span> I/V06001220: XML <span class="built_in">test</span> result file generated at <span class="number">2015.10</span>.<span class="number">20</span>_13.<span class="number">44.53</span>. Passed <span class="number">62</span>, Failed <span class="number">0</span>, Not Executed <span class="number">0</span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">45</span>:<span class="number">30</span> I/V06001220: Time: <span class="number">36</span>s</span><br></pre></td></tr></table></figure></p>
-<font color="#ff5588">通常每个包,会有多个平台的版本,比如arm64-v8a和armeabi-v7a等,所以在测试的时候会看到同样的case跑了两遍的假象.</font>
-
-
-<ol>
-<li>测试某个包中的某个class中的case</li>
-</ol>
-<p>每个包中可能包含有若干class,每个class中有可能包含若干case.(至于如何查看case的名称,后面在讲)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --class/-c className [--method/-m]</span><br></pre></td></tr></table></figure>
-<p>比如android.accounts中有cts.AccountManagerTest类,那么<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --class android.accounts.cts.AccountManagerTest</span><br></pre></td></tr></table></figure></p>
-<p>就会开始测试这个class了:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; run cts --class android.accounts.cts.AccountManagerTest</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">59</span>:<span class="number">22</span> I/TestInvocation: Starting invocation <span class="keyword">for</span> <span class="string">'cts'</span> on build <span class="string">'5.1_r3'</span> on device V06001220</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">59</span>:<span class="number">22</span> I/V06001220: Created result dir <span class="number">2015.10</span>.<span class="number">20</span>_13.<span class="number">59.22</span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">13</span>:<span class="number">59</span>:<span class="number">22</span> I/CtsTest: ABIs: [armeabi-v7a, arm64-v8a]</span><br></pre></td></tr></table></figure></p>
-<p>只跑class中的某个case,比如只跑上面的class中的testAccountRenameAndGetPreviousName</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --class android.accounts.cts.AccountManagerTest --method <span class="built_in">test</span>AccountRenameAndGetPreviousName</span><br></pre></td></tr></table></figure>
-<p>该命令还有另一个变体<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts -t &lt;class_name&gt;<span class="comment">#&lt;test_method_name&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>使用如下:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts -t  android.accounts.cts.AccountManagerTest<span class="comment">#testAccountRenameAndGetPreviousName</span></span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>在指定的设备上运行CTS测试</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts [options] --serial/<span class="operator">-s</span> device_ID</span><br></pre></td></tr></table></figure>
-<p>device_ID可以通过 list devices</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; list devices</span><br><span class="line">Serial     State      Product  Variant  Build              Battery  </span><br><span class="line">V06001220  Available  qcom     titan    <span class="number">5.1</span>.<span class="number">1</span>_0.<span class="number">570.0</span>.<span class="number">033</span></span><br></pre></td></tr></table></figure>
-<p>V06001220就是ID.</p>
-<p>下面是使用方法:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --class android.accounts.cts.AccountManagerTest --serial V06001220</span><br></pre></td></tr></table></figure></p>
-<ol>
-<li>指定CPU测试平台</li>
-</ol>
-<p>CPU主要有32 bit和64bit两个平台.针对64 bit的CPU,通常要兼容32bit,所以可以在测试的时候,指定</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts [options] --force-abi <span class="number">32</span>|<span class="number">64</span></span><br></pre></td></tr></table></figure>
-<ol>
-<li>同时在多个相同的设备上进行测试</li>
-</ol>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="command">run</span> cts [options] <span class="comment">--shards number_of_shards</span></span><br></pre></td></tr></table></figure>
-<p>比如连接有两台设备的时候:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts --class android.accounts.cts.AccountManagerTest  --shards <span class="number">2</span></span><br></pre></td></tr></table></figure></p>
-<p>这样理论上会缩短测试的时间,因为CTS会把case分配到这些设备上去运行.但是设备不要连的过多,否则不稳定,设备容易掉线.</p>
-<ol>
-<li>查看测试报告</li>
-</ol>
-<p>每当测试完毕的时候,都会生成日志和测试报告,如下所示:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">14</span>:<span class="number">22</span>:<span class="number">29</span> I/V06001220: Saved <span class="built_in">log</span> device_logcat_3551254845224421177.zip</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">14</span>:<span class="number">22</span>:<span class="number">29</span> I/V06001220: Saved <span class="built_in">log</span> host_log_3822658142415389607.zip</span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">14</span>:<span class="number">22</span>:<span class="number">29</span> I/V06001220: armeabi-v7a android.accounts package complete: Passed <span class="number">1</span>, Failed <span class="number">0</span>, Not Executed <span class="number">0</span></span><br><span class="line"><span class="number">10</span>-<span class="number">20</span> <span class="number">14</span>:<span class="number">22</span>:<span class="number">29</span> I/V06001220: Created xml report file at file:<span class="comment">///home/<span class="label">XXXXXX/work/cts/android-cts/tools/./../../android-cts/repository/results/2015.10.20_14.22.12/testResult.xml</span></span></span><br></pre></td></tr></table></figure></p>
-<p>可以看到日志和报告存储的位置.重点关注的是报告.报告是以html的形式生成的.下面我找到一个测试所有包的报告.</p>
-<p>位置在cts中的repository/results下面.都已日期为命名.<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android-cts/repository/results/<span class="number">2015.10</span><span class="number">.17</span>_09<span class="number">.34</span><span class="number">.10</span></span><br></pre></td></tr></table></figure></p>
-<p>内容如下:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cts_result<span class="class">.css</span>  cts_result<span class="class">.xsl</span>  logo<span class="class">.gif</span>  newrule-green<span class="class">.png</span>  testResult.xml</span><br></pre></td></tr></table></figure></p>
-<p>其中testResult.xml就是测试报告.</p>
-<font color="#ff5588">经过测试发现,使用火狐浏览器能方便的打开报告,其他浏览器要么很慢,要么压根就打不开.</font>
-
-<p>打开后如下所示:</p>
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-cts-2-1.png" alt=""></p>
-<p>下面是所有的测试包的测试结果,比如包中有多少case通过了,多少失败了,多少没执行等等.</p>
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-cts-2-2.png" alt=""></p>
-<font color="#ff5588">点击上图中的包名,就可以看到该包的详细信息.就可以看到包里面有哪些class,以及class中有哪些case了</font>
-
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/study-cts-2-3.png" alt=""></p>
-<ol>
-<li>继续测试没有执行的case</li>
-</ol>
-<p>通过报告可以看出,有很多case没有被执行:Not Executed.</p>
-<p>原因可能是没有达到某些case的测试环境要求,或者设备中途掉线了.执行一次CTS不容易,太耗时了.总不能每次都重新测试吧.</p>
-<p>首先查看执行结果:list results<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cts-tf &gt; list results</span><br><span class="line">Session  Pass   Fail  Not Executed  Start <span class="tag">time</span>           Plan name  Device <span class="function"><span class="title">serial</span><span class="params">(s)</span></span>  </span><br><span class="line"><span class="number">0</span>        <span class="number">159</span>    <span class="number">45</span>    <span class="number">199965</span>        <span class="number">2015.10</span>.<span class="number">16</span>_17.<span class="number">59.33</span>  CTS        V06001486</span><br></pre></td></tr></table></figure></p>
-<p>可以看到有很多case没执行,其中第一列 session很重要,可以通过下面的命令:</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="command">run</span> cts <span class="comment">--continue-session session_value</span></span><br></pre></td></tr></table></figure>
-<p>即<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="command">run</span> cts <span class="comment">--continue-session 0</span></span><br></pre></td></tr></table></figure></p>
-<p>当我们根据报告中的信息,解决了某些问题或者设备掉线后,重新连接设备后,可以继续测试.</p>
-<ol>
-<li>测试过程中禁止重启</li>
-</ol>
-<p>默认情况下,CTS测试中,会有多次重启,可以使用下面的选项禁止重启<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run cts [options] --disable-reboot</span><br></pre></td></tr></table></figure></p>
-<p>CTS中有很多package,每个[package中包含若干class,每个class中包含若干case,那么可以制定一个计划,指定测试哪些package,class和case.下一篇在介绍.</p>
-
       
     </div>
     
@@ -348,6 +222,10 @@
 	</div>
 
 
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/20/studyCTS_2/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
