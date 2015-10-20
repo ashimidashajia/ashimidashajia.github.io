@@ -179,10 +179,10 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-studyArmeabi" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Android_SEAndroid_1" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/28/studyArmeabi/" class="article-date">
+      <a href="/2015/09/28/Android_SEAndroid_1/" class="article-date">
   	<time datetime="2015-09-28T05:55:41.000Z" itemprop="datePublished">2015-09-28</time>
 </a>
     </div>
@@ -196,7 +196,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/28/studyArmeabi/">armeabi-v7a armeabi arm64-v8a</a>
+      <a class="article-title" href="/2015/09/28/Android_SEAndroid_1/">Android 5.1 SEAndroid分析之启动篇</a>
     </h1>
   
 
@@ -205,8 +205,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在CTS测试中,发现case有两种版本.一是运行在armeabi-v7a,另外一个是arm64-v8a.这代表什么?</p>
-<p>armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点运算或高级扩展功能的arm v7 cpu。armeabi-v7a（32位ARM设备），arm64-v8a（64位ARM设备）.</p>
+        <p>前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroid中,root用户,也仅仅是一个普通用户而已.</p>
       
     </div>
     
@@ -225,7 +224,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/28/studyArmeabi/#more">more >></a>
+          <a  href="/2015/09/28/Android_SEAndroid_1/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
