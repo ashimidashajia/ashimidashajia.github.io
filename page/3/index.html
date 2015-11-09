@@ -91,6 +91,8 @@
 				        
 							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
 				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
 							<li><a href="/categories/项目管理">项目管理</a></li>
 				        
 							<li><a href="/categories/Python">Python</a></li>
@@ -111,7 +113,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试调试/" style="font-size: 10px;">调试调试</a>
 					</div>
 				</section>
 				
@@ -158,6 +160,8 @@
 		        
 					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
 		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
 					<li><a href="/categories/项目管理">项目管理</a></li>
 		        
 					<li><a href="/categories/Python">Python</a></li>
@@ -178,6 +182,194 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Android_SEAndroid_5" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/01/Android_SEAndroid_5/" class="article-date">
+  	<time datetime="2015-10-01T15:21:29.000Z" itemprop="datePublished">2015-10-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/01/Android_SEAndroid_5/">Android 5.1 SEAndroid分析之打标签</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
+<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/01/Android_SEAndroid_5/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-Android_SEAndroid_4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/30/Android_SEAndroid_4/" class="article-date">
+  	<time datetime="2015-09-30T14:46:37.000Z" itemprop="datePublished">2015-09-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/30/Android_SEAndroid_4/">Android 5.1 SEAndroid分析之加载策略文件</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SEAndroid的初始化,自然是在init进程中完成的了,主要是想内核模块加载策略文件和给主体客体打标签.这篇文章主要介绍策略加载相关的部分.<br>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/30/Android_SEAndroid_4/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-Android_SEAndroid_3" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/30/Android_SEAndroid_3/" class="article-date">
+  	<time datetime="2015-09-30T07:48:31.000Z" itemprop="datePublished">2015-09-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/30/Android_SEAndroid_3/">Android 5.1 SEAndroid分析之type转换篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>type转换分两种情况,一种是进程主体type转换,另一种是资源客体type转换.</p>
+<p>转换指的是什么意思呢?</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/30/Android_SEAndroid_3/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-Android_SEAndroid_2" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -609,198 +801,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/24/Android_init_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_2/" class="article-date">
-  	<time datetime="2015-09-21T15:44:39.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
-<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
-<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_2/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_1/" class="article-date">
-  	<time datetime="2015-09-21T12:44:00.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_1/">Android 5.1 Lollipop的Zygote分析——上篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="整体介绍">整体介绍</h3><p>因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。</p>
-<p>app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行APK程序的核心服务。zygote进程首先加载启动ART虚拟机，然后在加载一些系统核心类和资源，这些都是其他APK程序都可能要用到的资源。最后zygote进程进入监听状态。一旦Android上层有创建新APK进程的需求，zygote进程便会为其分裂出新的进程。这个APK新进程，一开始便拥有了ART虚拟机和zygote预先加载的各种系统类和资源，能大大加速apk应用的启动，同时也能节省很大的内存开支。</p>
-<p>这里解释一下，为什么zygote进程要预先加载系统资源。zygote进程实际上是利用fork分裂出新的进程的，linux内核采用了写时复制技术：内核只为新生成的子进程创建虚拟空间结构，它们来自于父进程的虚拟地址结构，但是不为子进程的虚拟地址分配物理内存，它们共享父进程的物理空间，当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间。</p>
-<p>通常来说，在利用fork创建出的子进程中会调用exec系统调用，去执行新的其他程序。在fork之后exec之前两个进程用的是相同的物理空间（内存区），子进程的代码段、数据段、堆栈都是指向父进程的物理空间，也就是说，两者的虚拟空间不同，但其对应的物理空间是同一个。当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间，如果不是因为exec，内核会给子进程的数据段、堆栈段分配相应的物理空间（至此两者有各自的进程空间，互不影响），而代码段继续共享父进程的物理空间（两者的代码完全相同）。而如果是因为exec，由于两者执行的代码不同，子进程的代码段也会分配单独的物理空间。    </p>
-<p>因为Android上层APK程序不会去修改zygote进程预先加载的系统类和系统资源，所以就不需要为每个APK进程重新分配这些资源，所有APK程序都共用在zygote预先加载的这些资源，所以性能自然也就提高了。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-studyGitlab_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/20/studyGitlab_1/" class="article-date">
-  	<time datetime="2015-09-20T10:48:55.000Z" itemprop="datePublished">2015-09-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/20/studyGitlab_1/">持续集成系统学习之Gitlab篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面我们搭建了持续集成系统,那么现在就开始看看如何使用他们.首先看看Gitlab如何使用吧.另外今天刚刚从CSDN上看到消息,Gitlab所属的公司A轮成功融资400万美元,同时也宣布gitlab 8.0这两天就会发布.真是令人振奋的消息.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/20/studyGitlab_1/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
