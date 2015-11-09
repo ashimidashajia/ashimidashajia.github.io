@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Davlik虚拟机smali简单语法学习 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android的Davlik虚拟机是基于寄存器的,而Smali语言就是Davlik虚拟机的寄存器语言.当apk被反编译工具处理后,会得到一个smail文件夹,里面都是以.smail结尾的文件.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Davlik虚拟机smali简单语法学习">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/11/09/studyAndroidSmail/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Android的Davlik虚拟机是基于寄存器的,而Smali语言就是Davlik虚拟机的寄存器语言.当apk被反编译工具处理后,会得到一个smail文件夹,里面都是以.smail结尾的文件.">
+<meta property="og:updated_time" content="2015-11-09T07:49:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Davlik虚拟机smali简单语法学习">
+<meta name="twitter:description" content="Android的Davlik虚拟机是基于寄存器的,而Smali语言就是Davlik虚拟机的寄存器语言.当apk被反编译工具处理后,会得到一个smail文件夹,里面都是以.smail结尾的文件.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试调试/" style="font-size: 12px;">调试调试</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-studyAndroidSmail" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/11/09/studyAndroidSmail/" class="article-date">
+  	<time datetime="2015-11-09T06:02:52.000Z" itemprop="datePublished">2015-11-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Davlik虚拟机smali简单语法学习
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/调试调试/">调试调试</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/App开发/">App开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android的Davlik虚拟机是基于寄存器的,而Smali语言就是Davlik虚拟机的寄存器语言.当apk被反编译工具处理后,会得到一个smail文件夹,里面都是以.smail结尾的文件.</p>
+<a id="more"></a>
+<p>Android采用的是java语言 进行开发，但是Android系统有自己的虚拟机Dalvik,代码编译最终不是采用的java的class，而是使用的smali。我们反编译得到的代 码，jar的话可能很多地方无法正确的解释出来，如果我们反编译的是smali则可以正确的理解程序的意思。因此，我们有必要熟悉smali语法。</p>
+<h3 id="数据类型">数据类型</h3><p>java里面包含两种类型，原始类型和引用类型(包括对象)，同时映射到smali也是有这两大类型。</p>
+<h4 id="原始类型">原始类型</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">V <span class="title">void</span> <span class="params">(只能用于返回值类型)</span> </span><br><span class="line">Z <span class="keyword">boolean</span> </span><br><span class="line">B <span class="keyword">byte</span> </span><br><span class="line">S <span class="keyword">short</span> </span><br><span class="line">C <span class="keyword">char</span> </span><br><span class="line">I <span class="keyword">int</span> </span><br><span class="line">J <span class="keyword">long</span> </span><br><span class="line">F <span class="keyword">float</span> </span><br><span class="line">D Double</span></span><br></pre></td></tr></table></figure>
+<h4 id="对象类型">对象类型</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Lpackage/name/ObjectName; 相当于java中的<span class="keyword">package</span>.name.ObjectName</span><br></pre></td></tr></table></figure>
+<p>L 表示这是一个对象类型</p>
+<p>package/name 该对象所在的包</p>
+<p>ObjectName 对象名称</p>
+<p>; 标识对象名称的结束.</p>
+<h4 id="数组的表示">数组的表示</h4><p>[I 表示一个int型的一维数组，相当于int[]；</p>
+<p>增加一个维度增加一个[,如[[I表示int[][]</p>
+<p>数组每一个维度最多255个;</p>
+<p>对象数组表示也是类似，如String数组的表示是[Ljava/lang/String</p>
+<h3 id="寄存器与变量">寄存器与变量</h3><p>java中变量都是存放在内存中的，android为了提高性能，变量都是存放在寄存器中的，寄存器为32位，可以支持任何类型，其中long和double是64为的，需要使用两个寄存器保存.</p>
+<p>寄存器采用v和p来命名</p>
+<p>v表示本地寄存器，p表示参数寄存器，关系如下</p>
+<p>如果一个方法有两个本地变量，有三个参数:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">v0 第一个本地寄存器 </span><br><span class="line">v1 第二个本地寄存器 </span><br><span class="line"><span class="function">v2 <span class="title">p0</span> <span class="params">(<span class="keyword">this</span>)</span> </span><br><span class="line">v3 p1 第一个参数 </span><br><span class="line">v4 p2 第二个参数 </span><br><span class="line">v5 p3 第三个参数</span></span><br></pre></td></tr></table></figure>
+<p>当然，如果是静态方法的话就只有5个寄存器了，不需要存this了。</p>
+<p>.registers 使用这个指令指定方法中寄存器的总数</p>
+<p>.locals 使用这个指定表明方法中非参寄存器的总数，放在方法的第一行。</p>
+<h3 id="方法和字段的表示">方法和字段的表示</h3><h4 id="方法签名">方法签名</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">methodName(III)Lpackage/name/ObjectName;</span><br></pre></td></tr></table></figure>
+<p>methodName标识方法名，III表示三个整形参数，Lpackage/name/ObjectName;表示返回值的类型。</p>
+<h4 id="方法的表示">方法的表示</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Lpackage/name/ObjectName;——&gt;methodName(III)Z</span><br></pre></td></tr></table></figure>
+<p>即 package.name.ObjectName中的 function boolean methondName(int a, int b, int c) 类似这样子.</p>
+<h4 id="字段的表示">字段的表示</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Lpackage/name/ObjectName;——&gt;FieldName:Ljava/lang/String;</span><br></pre></td></tr></table></figure>
+<h4 id="方法的定义">方法的定义</h4><p>例如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123; </span><br><span class="line">    <span class="keyword">return</span> a+b; </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>对应的smail代码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.<span class="function">method <span class="keyword">private</span> <span class="keyword">static</span> <span class="title">sum</span><span class="params">(II)</span>I </span><br><span class="line">.locals 4 #表示需要申请4个本地寄存器 </span><br><span class="line">.parameter </span><br><span class="line">.parameter #这里表示有两个参数 </span><br><span class="line">.prologue </span><br><span class="line">.line 27 </span><br><span class="line">move v0, p0 </span><br><span class="line">.local v0, a:I </span><br><span class="line">move v1, p1 </span><br><span class="line">.local v1, b:I </span><br><span class="line">move v2, v0 </span><br><span class="line">move v3, v1 </span><br><span class="line">add-<span class="keyword">int</span>/2addr v2, v3 </span><br><span class="line">move v0, v2 </span><br><span class="line">.end local v0 #a:I </span><br><span class="line">return v0 </span><br><span class="line">.end method</span></span><br></pre></td></tr></table></figure></p>
+<p>函数声明使用.method开始 .end method结束，java中的关键词private,static 等都可以使用，同时使用签名来表示唯一的方法，这里是sum(II)I。</p>
+<h4 id="声明属性">声明属性</h4><p>比如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> TextView mTextView;</span><br></pre></td></tr></table></figure></p>
+<p>对应smail:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.field <span class="keyword">private</span> mTextView:Landroid/widget/TextView;</span><br></pre></td></tr></table></figure>
+<h3 id="指令执行">指令执行</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">move v0, v3 #把v3寄存器的值移动到寄存器v0上.</span><br><span class="line"></span><br><span class="line">const v0， 0x1 #把值0x1赋值到寄存器v0上。</span><br><span class="line"></span><br><span class="line">invoke-static &#123;v4, v5&#125;, Lme/isming/myapplication/MainActivity;-&gt;sum(II)I #执行方法sum(),v4,v5的值分别作为sum的参数。</span><br></pre></td></tr></table></figure>
+<h3 id="smail_语法小结">smail 语法小结</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">.field <span class="keyword">private</span> isFlag:z　　定义变量</span><br><span class="line"></span><br><span class="line">.method　　方法</span><br><span class="line"></span><br><span class="line">.parameter　　方法参数</span><br><span class="line"></span><br><span class="line">.prologue　　方法开始</span><br><span class="line"></span><br><span class="line">.line <span class="number">12</span>　　此方法位于第<span class="number">12</span>行</span><br><span class="line"></span><br><span class="line">invoke-<span class="keyword">super</span>　　调用父函数</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span>/high16  v0, <span class="number">0x7f</span>o3　　把<span class="number">0x7f</span>o3赋值给v0</span><br><span class="line"></span><br><span class="line">invoke-direct　　调用函数</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span>-<span class="keyword">void</span>　　函数返回<span class="keyword">void</span></span><br><span class="line"></span><br><span class="line">.end method　　函数结束</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span>-instance　　创建实例</span><br><span class="line"></span><br><span class="line">iput-object　　对象赋值</span><br><span class="line"></span><br><span class="line">iget-object　　调用对象</span><br><span class="line"></span><br><span class="line">invoke-<span class="keyword">static</span>　　调用静态函数</span><br></pre></td></tr></table></figure>
+<h3 id="跳转分支">跳转分支</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"if-eq vA, vB, :cond_**"</span>   如果vA等于vB则跳转到:cond_**</span><br><span class="line"><span class="string">"if-ne vA, vB, :cond_**"</span>   如果vA不等于vB则跳转到:cond_**</span><br><span class="line"><span class="string">"if-lt vA, vB, :cond_**"</span>    如果vA小于vB则跳转到:cond_**</span><br><span class="line"><span class="string">"if-ge vA, vB, :cond_**"</span>   如果vA大于等于vB则跳转到:cond_**</span><br><span class="line"><span class="string">"if-gt vA, vB, :cond_**"</span>   如果vA大于vB则跳转到:cond_**</span><br><span class="line"><span class="string">"if-le vA, vB, :cond_**"</span>    如果vA小于等于vB则跳转到:cond_**</span><br><span class="line"><span class="string">"if-eqz vA, :cond_**"</span>   如果vA等于<span class="number">0</span>则跳转到:cond_**</span><br><span class="line"><span class="string">"if-nez vA, :cond_**"</span>   如果vA不等于<span class="number">0</span>则跳转到:cond_**</span><br><span class="line"><span class="string">"if-ltz vA, :cond_**"</span>    如果vA小于<span class="number">0</span>则跳转到:cond_**</span><br><span class="line"><span class="string">"if-gez vA, :cond_**"</span>   如果vA大于等于<span class="number">0</span>则跳转到:cond_**</span><br><span class="line"><span class="string">"if-gtz vA, :cond_**"</span>   如果vA大于<span class="number">0</span>则跳转到:cond_**</span><br><span class="line"><span class="string">"if-lez vA, :cond_**"</span>    如果vA小于等于<span class="number">0</span>则跳转到:cond_**</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/11/09/AndroidAppLog/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          发布程序时移除Android 调试Log
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/11/05/AndroidMK/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android.mk 常用语法总结</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="studyAndroidSmail" data-title="Davlik虚拟机smali简单语法学习" data-url="http://www.iloveandroid.net/2015/11/09/studyAndroidSmail/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
