@@ -113,7 +113,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12px;">调试</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 10px;">逆向工程</a>
 					</div>
 				</section>
 				
@@ -182,6 +182,69 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-Android_init_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/25/Android_init_2/" class="article-date">
+  	<time datetime="2015-09-25T07:31:39.000Z" itemprop="datePublished">2015-09-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/25/Android_init_2/">Android 5.1 init进程分析中篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="解析rc文件">解析rc文件</h3><p>init进程相关的源码位置:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android源码/system/core/init/init.c</span><br></pre></td></tr></table></figure></p>
+<p>在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/25/Android_init_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-Android_init_1" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -739,68 +802,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/18/ubuntu14.04 安装HAXM(KVM)提升android虚拟机Android x86运行速度/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-GradleNdkSupport" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/18/GradleNdkSupport/" class="article-date">
-  	<time datetime="2015-09-18T07:40:13.000Z" itemprop="datePublished">2015-09-18</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/18/GradleNdkSupport/">让Gradle构建支持NDK</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原本google公司承诺Android studio 1.3开始支持NDK,但是现在已经到Android studio 1.4 beat 3了，对NDK的支持还是实验性的。那么既然已经对Gradle的有了了解了，那索性就学着添加相关的task让利用$NDK/ndk-build命令编译。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gradle/">Gradle</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/构建/">构建</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/18/GradleNdkSupport/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>DEX格式解析 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Dex是android上的可执行文件类型，其包含了几乎所有代码及变量的内容，正确使用并辨识DEX文件内的内容对分析问题及使用一些较为灵活的操作方式有很大的帮助.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DEX格式解析">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/11/09/AndroidDex_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Dex是android上的可执行文件类型，其包含了几乎所有代码及变量的内容，正确使用并辨识DEX文件内的内容对分析问题及使用一些较为灵活的操作方式有很大的帮助.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/dexfile-jiegou.png">
+<meta property="og:updated_time" content="2015-11-10T05:28:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DEX格式解析">
+<meta name="twitter:description" content="Dex是android上的可执行文件类型，其包含了几乎所有代码及变量的内容，正确使用并辨识DEX文件内的内容对分析问题及使用一些较为灵活的操作方式有很大的帮助.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 10px;">逆向工程</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-AndroidDex_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/11/09/AndroidDex_1/" class="article-date">
+  	<time datetime="2015-11-09T12:18:45.000Z" itemprop="datePublished">2015-11-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      DEX格式解析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向工程/">逆向工程</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/App开发/">App开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Dex是android上的可执行文件类型，其包含了几乎所有代码及变量的内容，正确使用并辨识DEX文件内的内容对分析问题及使用一些较为灵活的操作方式有很大的帮助.</p>
+<a id="more"></a>
+<p>DEX文件从整体上看是一个索引的结构,类名,方法名,字段名等信息都存储在常量池中,这样能够减少存储空间.</p>
+<p>DEX格式定义在dalvik/libdex/DexFile.h的struct DexFile中:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> DexFile &#123;</span><br><span class="line">    <span class="comment">/* directly-mapped "opt" header */</span></span><br><span class="line">    <span class="keyword">const</span> DexOptHeader* pOptHeader;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* pointers to directly-mapped structs and arrays in base DEX */</span></span><br><span class="line">    <span class="keyword">const</span> DexHeader*    pHeader;</span><br><span class="line">    <span class="keyword">const</span> DexStringId*  pStringIds;</span><br><span class="line">    <span class="keyword">const</span> DexTypeId*    pTypeIds; </span><br><span class="line">    <span class="keyword">const</span> DexFieldId*   pFieldIds;</span><br><span class="line">    <span class="keyword">const</span> DexMethodId*  pMethodIds;</span><br><span class="line">    <span class="keyword">const</span> DexProtoId*   pProtoIds;</span><br><span class="line">    <span class="keyword">const</span> DexClassDef*  pClassDefs;</span><br><span class="line">    <span class="keyword">const</span> DexLink*      pLinkData;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span><br><span class="line">     * These are mapped out of the "auxillary" section, and may not be</span><br><span class="line">     * included in the file.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">const</span> DexClassLookup* pClassLookup;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">void</span>*         pRegisterMapPool;       <span class="comment">// RegisterMapClassPool</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* points to start of DEX file data */</span></span><br><span class="line">    <span class="keyword">const</span> u1*           baseAddr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* track memory overhead for auxillary structures */</span></span><br><span class="line">    <span class="keyword">int</span>                 overhead;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* additional app-specific data structures associated with the DEX */</span></span><br><span class="line">    <span class="comment">//void*               auxData;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/dexfile-jiegou.png" alt=""></p>
+<h3 id="header">header</h3><p>是dex的文件头:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> DexHeader &#123;</span><br><span class="line">    u1  magic[<span class="number">8</span>];           <span class="comment">/* includes version number */</span></span><br><span class="line">    u4  checksum;           <span class="comment">/* adler32 checksum */</span></span><br><span class="line">    u1  signature[kSHA1DigestLen]; <span class="comment">/* SHA-1 hash */</span></span><br><span class="line">    u4  fileSize;           <span class="comment">/* length of entire file */</span></span><br><span class="line">    u4  headerSize;         <span class="comment">/* offset to start of next section */</span></span><br><span class="line">    u4  endianTag;</span><br><span class="line">    u4  linkSize;</span><br><span class="line">    u4  linkOff;</span><br><span class="line">    u4  mapOff;</span><br><span class="line">    u4  stringIdsSize;</span><br><span class="line">    u4  stringIdsOff;</span><br><span class="line">    u4  typeIdsSize;</span><br><span class="line">    u4  typeIdsOff;</span><br><span class="line">    u4  protoIdsSize;</span><br><span class="line">    u4  protoIdsOff;</span><br><span class="line">    u4  fieldIdsSize;</span><br><span class="line">    u4  fieldIdsOff;</span><br><span class="line">    u4  methodIdsSize;</span><br><span class="line">    u4  methodIdsOff;</span><br><span class="line">    u4  classDefsSize;</span><br><span class="line">    u4  classDefsOff;</span><br><span class="line">    u4  dataSize;</span><br><span class="line">    u4  dataOff;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中magic字段,是dex的版本,包含8bit数据:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DEX file magic number */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> DEX_MAGIC       <span class="string">"dex\n"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* current version, encoded in 4 bytes of ASCII */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> DEX_MAGIC_VERS  <span class="string">"036\0"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * older but still-recognized version (corresponding to Android API</span><br><span class="line"> * levels 13 and earlier</span><br><span class="line"> */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> DEX_MAGIC_VERS_API_13  <span class="string">"035\0"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* same, but for optimized DEX header */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> DEX_OPT_MAGIC   <span class="string">"dey\n"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> DEX_OPT_MAGIC_VERS  <span class="string">"036\0"</span></span></span><br></pre></td></tr></table></figure>
+<p>前4bit数据是”dex\n”代表是未经优化的dex文件,如果是”dey\n”代表是经过优化的dex文件,也就是odex文件.后4bit数据是版本.</p>
+<p>除了 magic字段外,还有adler32校验值,SHA-1哈希值,dex文件长度,header头大小等等.</p>
+<h3 id="DexStringId">DexStringId</h3><p>该数据类型定义为:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "string_id_item".</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexStringId &#123;</span><br><span class="line">    u4 stringDataOff;      <span class="comment">/* file offset to string_data_item */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在Header中与之相关的成员是:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">u4  stringIdsSize;</span><br><span class="line">u4  stringIdsOff;</span><br></pre></td></tr></table></figure></p>
+<p>假设 stringIdsSize=898,stringIdsOff=112,则表示string索引区位于文件开始便宜112字节的位置,字符串的个数是898个.</p>
+<p>而在文件起始112个偏移后的位置区域中，存在着898个DexStringId类型的指针，每一个大小为u4（4个字节）.</p>
+<p>每一个DexStringId的结构体中都有一个stringDataOff的变量，它指示了这个字符串在数据区（DATA）内距离文件开始时的偏移量，如stringDataOff=35764,则真正的字符串数据是在文件起始位置0x8BB4偏移开始。</p>
+<h3 id="DexTypeId">DexTypeId</h3><p>表示引用程序代码中使用到的具体数据类型:整型,字符串等等.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "type_id_item".</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexTypeId &#123;</span><br><span class="line">    u4  descriptorIdx;      <span class="comment">/* index into stringIds list for type descriptor */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在Header中同样有:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">u4  typeIdsSize;</span><br><span class="line">u4  typeIdsOff;</span><br></pre></td></tr></table></figure></p>
+<p>指明有多少个数据类型,以及数据类型索引区在文件开始的便宜地址.在索引区中同样保存着typeIdsSize个DexTypeId类型的指针,DexTypeId 中的descriptorIdx指向了数据类型.</p>
+<h3 id="DexProtoId">DexProtoId</h3><p>表示方法声明的结构体.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "proto_id_item".</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexProtoId &#123;</span><br><span class="line">    u4  shortyIdx;          <span class="comment">/* index into stringIds for shorty descriptor */</span></span><br><span class="line">    u4  returnTypeIdx;      <span class="comment">/* index into typeIds list for return type */</span></span><br><span class="line">    u4  parametersOff;      <span class="comment">/* file offset to type_list for parameter types */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中shortyIdx是方法声明字符串,格式为:返回值类型紧跟参数列表类型.很像函数签名.</p>
+<p>例如:VI,代表返回值为空,参数为I,也就是整型.所有的引用类型用L表示.</p>
+<p>returnTypeIdx指向DexTypeId列表的索引,表示返回值类型.</p>
+<p>parametersOff指向参数列表索引.</p>
+<p>Header同样有与之相关的字段.</p>
+<h3 id="DexFileId">DexFileId</h3><p>表示代码中的字段(也可理解为类的属性成员).</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "field_id_item".</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexFieldId &#123;</span><br><span class="line">    u2  classIdx;           <span class="comment">/* index into typeIds list for defining class */</span></span><br><span class="line">    u2  typeIdx;            <span class="comment">/* index into typeIds for field type */</span></span><br><span class="line">    u4  nameIdx;            <span class="comment">/* index into stringIds for field name */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>很容易理解了,就是该字段属于哪个类,该字段的类型,以及该字段的名字.</p>
+<h3 id="DexMethodId">DexMethodId</h3><p>表示代码中使用的方法.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "method_id_item".</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexMethodId &#123;</span><br><span class="line">    u2  classIdx;           <span class="comment">/* index into typeIds list for defining class */</span></span><br><span class="line">    u2  protoIdx;           <span class="comment">/* index into protoIds for method prototype */</span></span><br><span class="line">    u4  nameIdx;            <span class="comment">/* index into stringIds for method name */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>分别表示方法所属的类,方法原型(指向DexProtoId索引),方法名字.</p>
+<h3 id="DecClassDef">DecClassDef</h3><p>该结构定义了代码中使用的类和相关的代码指令.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "class_def_item".</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexClassDef &#123;</span><br><span class="line">    u4  classIdx;           <span class="comment">/* index into typeIds for this class */</span></span><br><span class="line">    u4  accessFlags;</span><br><span class="line">    u4  superclassIdx;      <span class="comment">/* index into typeIds for superclass */</span></span><br><span class="line">    u4  interfacesOff;      <span class="comment">/* file offset to DexTypeList */</span></span><br><span class="line">    u4  sourceFileIdx;      <span class="comment">/* index into stringIds for source file name */</span></span><br><span class="line">    u4  annotationsOff;     <span class="comment">/* file offset to annotations_directory_item */</span></span><br><span class="line">    u4  classDataOff;       <span class="comment">/* file offset to class_data_item */</span></span><br><span class="line">    u4  staticValuesOff;    <span class="comment">/* file offset to DexEncodedArray */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>分别表示类的类型,访问标志,父类类型,类内部数据类型列表,类所在源文件名称,注解目录结构,类的数据部分,类中的静态数据.</p>
+<h3 id="DexClassData">DexClassData</h3><p>该数据类型对应DexClassDef中的classDataOff.</p>
+<p>在dalivk/libdex/DexClass.h中定义:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* expanded form of class_data_item. Note: If a particular item is</span><br><span class="line"> * absent (e.g., no static fields), then the corresponding pointer</span><br><span class="line"> * is set to NULL. */</span></span><br><span class="line"><span class="keyword">struct</span> DexClassData &#123;</span><br><span class="line">    DexClassDataHeader header;</span><br><span class="line">    DexField*          staticFields;</span><br><span class="line">    DexField*          instanceFields;</span><br><span class="line">    DexMethod*         directMethods;</span><br><span class="line">    DexMethod*         virtualMethods;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>header:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* expanded form of a class_data_item header */</span></span><br><span class="line"><span class="keyword">struct</span> DexClassDataHeader &#123;</span><br><span class="line">    u4 staticFieldsSize;</span><br><span class="line">    u4 instanceFieldsSize;</span><br><span class="line">    u4 directMethodsSize;</span><br><span class="line">    u4 virtualMethodsSize;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>指明静态字段个数,实例字段个数,直接方法(通过类直接访问的方法)个数和虚方法(通过类实例访问的方法)个数</p>
+<h4 id="DexField">DexField</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* expanded form of encoded_field */</span></span><br><span class="line"><span class="keyword">struct</span> DexField &#123;</span><br><span class="line">    u4 fieldIdx;    <span class="comment">/* index to a field_id_item */</span></span><br><span class="line">    u4 accessFlags;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>表示字段的类型和访问标志.</p>
+<p>其中filedIdx指向DexFiledId.</p>
+<p>accessFlags:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * access flags and masks; the "standard" ones are all &lt;= 0x4000</span><br><span class="line"> *</span><br><span class="line"> * Note: There are related declarations in vm/oo/Object.h in the ClassFlags</span><br><span class="line"> * enum.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    ACC_PUBLIC       = <span class="number">0x00000001</span>,       <span class="comment">// class, field, method, ic</span></span><br><span class="line">    ACC_PRIVATE      = <span class="number">0x00000002</span>,       <span class="comment">// field, method, ic</span></span><br><span class="line">    ACC_PROTECTED    = <span class="number">0x00000004</span>,       <span class="comment">// field, method, ic</span></span><br><span class="line">    ACC_STATIC       = <span class="number">0x00000008</span>,       <span class="comment">// field, method, ic</span></span><br><span class="line">    ACC_FINAL        = <span class="number">0x00000010</span>,       <span class="comment">// class, field, method, ic</span></span><br><span class="line">    ACC_SYNCHRONIZED = <span class="number">0x00000020</span>,       <span class="comment">// method (only allowed on natives)</span></span><br><span class="line">    ACC_SUPER        = <span class="number">0x00000020</span>,       <span class="comment">// class (not used in Dalvik)</span></span><br><span class="line">    ACC_VOLATILE     = <span class="number">0x00000040</span>,       <span class="comment">// field</span></span><br><span class="line">    ACC_BRIDGE       = <span class="number">0x00000040</span>,       <span class="comment">// method (1.5)</span></span><br><span class="line">    ACC_TRANSIENT    = <span class="number">0x00000080</span>,       <span class="comment">// field</span></span><br><span class="line">    ACC_VARARGS      = <span class="number">0x00000080</span>,       <span class="comment">// method (1.5)</span></span><br><span class="line">    ACC_NATIVE       = <span class="number">0x00000100</span>,       <span class="comment">// method</span></span><br><span class="line">    ACC_INTERFACE    = <span class="number">0x00000200</span>,       <span class="comment">// class, ic</span></span><br><span class="line">    ACC_ABSTRACT     = <span class="number">0x00000400</span>,       <span class="comment">// class, method, ic</span></span><br><span class="line">    ACC_STRICT       = <span class="number">0x00000800</span>,       <span class="comment">// method</span></span><br><span class="line">    ACC_SYNTHETIC    = <span class="number">0x00001000</span>,       <span class="comment">// field, method, ic</span></span><br><span class="line">    ACC_ANNOTATION   = <span class="number">0x00002000</span>,       <span class="comment">// class, ic (1.5)</span></span><br><span class="line">    ACC_ENUM         = <span class="number">0x00004000</span>,       <span class="comment">// class, field, ic (1.5)</span></span><br><span class="line">    ACC_CONSTRUCTOR  = <span class="number">0x00010000</span>,       <span class="comment">// method (Dalvik only)</span></span><br><span class="line">    ACC_DECLARED_SYNCHRONIZED =</span><br><span class="line">                       <span class="number">0x00020000</span>,       <span class="comment">// method (Dalvik only)</span></span><br><span class="line">    ACC_CLASS_MASK =</span><br><span class="line">        (ACC_PUBLIC | ACC_FINAL | ACC_INTERFACE | ACC_ABSTRACT</span><br><span class="line">                | ACC_SYNTHETIC | ACC_ANNOTATION | ACC_ENUM),</span><br><span class="line">    ACC_INNER_CLASS_MASK =</span><br><span class="line">        (ACC_CLASS_MASK | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC),</span><br><span class="line">    ACC_FIELD_MASK =</span><br><span class="line">        (ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL</span><br><span class="line">                | ACC_VOLATILE | ACC_TRANSIENT | ACC_SYNTHETIC | ACC_ENUM),</span><br><span class="line">    ACC_METHOD_MASK =</span><br><span class="line">        (ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED | ACC_STATIC | ACC_FINAL</span><br><span class="line">                | ACC_SYNCHRONIZED | ACC_BRIDGE | ACC_VARARGS | ACC_NATIVE</span><br><span class="line">                | ACC_ABSTRACT | ACC_STRICT | ACC_SYNTHETIC | ACC_CONSTRUCTOR</span><br><span class="line">                | ACC_DECLARED_SYNCHRONIZED),</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="DexMethod">DexMethod</h4><p>描述了方法的原型,名称,访问标志以及代码指令的偏移地址.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* expanded form of encoded_method */</span></span><br><span class="line"><span class="keyword">struct</span> DexMethod &#123;</span><br><span class="line">    u4 methodIdx;    <span class="comment">/* index to a method_id_item */</span></span><br><span class="line">    u4 accessFlags;</span><br><span class="line">    u4 codeOff;      <span class="comment">/* file offset to a code_item */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p> methodIdx指向了DexMethodId索引.accessFlags指明了访问标志.</p>
+<p>codeOff表示指令代码的偏移地址.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * Direct-mapped "code_item".</span><br><span class="line"> *</span><br><span class="line"> * The "catches" table is used when throwing an exception,</span><br><span class="line"> * "debugInfo" is used when displaying an exception stack trace or</span><br><span class="line"> * debugging. An offset of zero indicates that there are no entries.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> DexCode &#123;</span><br><span class="line">    u2  registersSize;</span><br><span class="line">    u2  insSize;</span><br><span class="line">    u2  outsSize;</span><br><span class="line">    u2  triesSize;</span><br><span class="line">    u4  debugInfoOff;       <span class="comment">/* file offset to debug info stream */</span></span><br><span class="line">    u4  insnsSize;          <span class="comment">/* size of the insns array, in u2 units */</span></span><br><span class="line">    u2  insns[<span class="number">1</span>];</span><br><span class="line">    <span class="comment">/* followed by optional u2 padding */</span></span><br><span class="line">    <span class="comment">/* followed by try_item[triesSize] */</span></span><br><span class="line">    <span class="comment">/* followed by uleb128 handlersSize */</span></span><br><span class="line">    <span class="comment">/* followed by catch_handler_item[handlersSize] */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/11/09/AndroidAppLog/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">发布程序时移除Android 调试Log</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="AndroidDex_1" data-title="DEX格式解析" data-url="http://www.iloveandroid.net/2015/11/09/AndroidDex_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2015 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
