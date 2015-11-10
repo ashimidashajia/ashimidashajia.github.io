@@ -3,21 +3,31 @@
 <head>
   <meta charset="utf-8">
   
-  <title>armeabi-v7a armeabi arm64-v8a | 码农故事</title>
+  <title>LEB128格式 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在CTS测试中,发现case有两种版本.一是运行在armeabi-v7a,另外一个是arm64-v8a.这代表什么?
-armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点运算或高级扩展功能的arm v7 cpu。armeabi-v7a（32位ARM设备），arm64-v8a（64位ARM设备）.">
+  <meta name="description" content="LEB128即”Little-Endian Base 128”，基于128的小印第安序编码格式，是对任意有符号或者无符号整型数的可变长度的编码。
+也即，用LEB128编码的正数，会根据数字的大小改变所占字节数。在android的.dex文件中，他只用来编码32bits的整型数。
+格式:
+
+上图只是指示性的用两个字节表示。编码的每个字节有效部分只有低7bits，每个字节的最高bit用来指示是否是最后">
 <meta property="og:type" content="article">
-<meta property="og:title" content="armeabi-v7a armeabi arm64-v8a">
-<meta property="og:url" content="http://www.iloveandroid.net/2015/10/20/studyArmeabi/index.html">
+<meta property="og:title" content="LEB128格式">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/11/10/StudyLeb128/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="在CTS测试中,发现case有两种版本.一是运行在armeabi-v7a,另外一个是arm64-v8a.这代表什么?
-armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点运算或高级扩展功能的arm v7 cpu。armeabi-v7a（32位ARM设备），arm64-v8a（64位ARM设备）.">
-<meta property="og:updated_time" content="2015-10-20T12:22:17.000Z">
+<meta property="og:description" content="LEB128即”Little-Endian Base 128”，基于128的小印第安序编码格式，是对任意有符号或者无符号整型数的可变长度的编码。
+也即，用LEB128编码的正数，会根据数字的大小改变所占字节数。在android的.dex文件中，他只用来编码32bits的整型数。
+格式:
+
+上图只是指示性的用两个字节表示。编码的每个字节有效部分只有低7bits，每个字节的最高bit用来指示是否是最后">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/LEB128.png">
+<meta property="og:updated_time" content="2015-11-10T06:08:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="armeabi-v7a armeabi arm64-v8a">
-<meta name="twitter:description" content="在CTS测试中,发现case有两种版本.一是运行在armeabi-v7a,另外一个是arm64-v8a.这代表什么?
-armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点运算或高级扩展功能的arm v7 cpu。armeabi-v7a（32位ARM设备），arm64-v8a（64位ARM设备）.">
+<meta name="twitter:title" content="LEB128格式">
+<meta name="twitter:description" content="LEB128即”Little-Endian Base 128”，基于128的小印第安序编码格式，是对任意有符号或者无符号整型数的可变长度的编码。
+也即，用LEB128编码的正数，会根据数字的大小改变所占字节数。在android的.dex文件中，他只用来编码32bits的整型数。
+格式:
+
+上图只是指示性的用两个字节表示。编码的每个字节有效部分只有低7bits，每个字节的最高bit用来指示是否是最后">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -185,11 +195,11 @@ armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点�
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-studyArmeabi" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-StudyLeb128" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/20/studyArmeabi/" class="article-date">
-  	<time datetime="2015-10-20T12:22:13.000Z" itemprop="datePublished">2015-10-20</time>
+      <a href="/2015/11/10/StudyLeb128/" class="article-date">
+  	<time datetime="2015-11-10T05:56:34.000Z" itemprop="datePublished">2015-11-10</time>
 </a>
     </div>
   
@@ -202,7 +212,7 @@ armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点�
         
   
     <h1 class="article-title" itemprop="name">
-      armeabi-v7a armeabi arm64-v8a
+      LEB128格式
     </h1>
   
 
@@ -211,12 +221,12 @@ armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点�
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向工程/">逆向工程</a></li></ul>
 	</div>
 
         
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	<a class="article-category-link" href="/categories/App开发/">App开发</a>
 	</div>
 
 
@@ -226,21 +236,14 @@ armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点�
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在CTS测试中,发现case有两种版本.一是运行在armeabi-v7a,另外一个是arm64-v8a.这代表什么?</p>
-<p>armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点运算或高级扩展功能的arm v7 cpu。armeabi-v7a（32位ARM设备），arm64-v8a（64位ARM设备）.</p>
-<a id="more"></a>
-<p>在2011年11月，ARM公司发布了新一代处理器64位架构ARMv8的部分技术细节（也就是我们常说的Cortex-A57A53），代表着未来移动处理器迈入64位行列。我们得明确一点，ARM公司自己本身并没有64位芯片设计技术，他是通过了收购MIPS64处理器架构的部分技术使用权，再结合ARM的一些特性设计出来的。也就是说：MIPS、ARM、X86三大架构中，唯一没有64位技术的ARM，通过收购MIPS的形式得到了64位</p>
-<p>所谓的ARMv8架构，就是在MIPS64架构上增加了ARMv7架构中已经拥有的的TrustZone技术、虚拟化技术及NEON advanced SIMD技术等特性，研发成的。</p>
-<p>64位ARMv8架构中包含两个执行状态：AArch32（也就是我们常说的ARMv7）和AArch64（ARMv8）。AArch64执行状态针对64位处理技术，引入了一个全新指令集A64（也就是基于收购的MIPS64架构），而AArch32执行状态将支持现有的ARM指令集。所以64位的ARM处理器中同时包含着32位的ARMv7和64位的ARMv8两种架构。</p>
-<font color="#ff5588">因此ARM64位处理器和电脑的64位处理器是两个截然不容的概念，他并不是64位就能原生向下兼容32位程序，而是通过64位处理器中集成的32位架构来运行32位程序。说得通俗点，它不是以64位形态来运行32位程序，却是以32位的形态运行32位程序的。</font>
-
-<p>芯片面积有着严格的限定，不能过分增加，这导致64位ARM处理器平均分配到每个架构的晶体管数量锐减，也就是说从64位处理器中的32位架构方面，对于同规格的32位处理器而言，不但没有提高，性能反而是一定规模下降的。但处理器厂家又必须给消费者一个交代，以更好的推广64位，所以厂家就必须在其他方面提升性能，以弥补CPU的晶体管数量减少带来的损失。比如：更换性能更强的GPU、提升内存带宽、多核心虚拟单颗核心提升单核性能、联合跑分软件商修改跑分权重（提升GPU分数，降低CPU分数的权重）等等.</p>
-<p>ARM64位处理器从严格意义来说，叫它ARM32+64更加贴切，他相对于ARM32位处理器，有倒退的地方，也有进步的余地，但正因为倒退激起了ARM进取的决心，让它大刀阔斧的向前变革，不得不说也算一种进步.</p>
-<p>  “64位处理器手机”与“64位手机”是两种天壤之别的概念：只要是处理器包含64架构位的，就可以称“64位处理器手机”，这种手机也许还运行不了64位程序，只是用来抢占市场，和32位手机比起来优势并不明显。</p>
-<p>64位手机”就不同了：它包含着64位处理器、64位标准系统、64位安卓虚拟机、以及64位程序，这才是真正意义上的64位手机！</p>
-<p>Android L开始才真正支持32位和64位的ART虚拟机，配合上64位处理器，名正言顺的运行64位软件.</p>
-<p>ARMv8是一套不错的指令集，它既支持未来的64位程序，也向下兼容现有32位程序。有了ARMv8的支撑，以后的64位手机操作系统，如Android L 64bit都可以简单、高效地支持现有的32位App，你不用担心兼容性问题。</p>
-<p>正是因为ARM 64位处理器并不是以64位状态来运行32位程序,而是以32位形态运行32位程序,所以可以看到64位处理器Android手机中,运行Android 5.0以上系统的时候,zygote会有两个:zygote64 zygote32.CTS兼容性测试的时候也有armeabi-v7a和 arm64-v8a之说.v7a是32位,v8a是64位,ARM64位处理器包括这两种状态.</p>
+        <p>LEB128即”Little-Endian Base 128”，基于128的小印第安序编码格式，是对任意有符号或者无符号整型数的可变长度的编码。</p>
+<p>也即，用LEB128编码的正数，会根据数字的大小改变所占字节数。在android的.dex文件中，他只用来编码32bits的整型数。</p>
+<p>格式:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/LEB128.png" alt=""></p>
+<p>上图只是指示性的用两个字节表示。编码的每个字节有效部分只有低7bits，每个字节的最高bit用来指示是否是最后一个字节。非最高字节的bit7为0;最高字节的bit7为1.</p>
+<p>将leb128编码的数字转换为可读数字的规则是：除去每个字节的bit7，将每个字节剩余的7个bits拼接在一起，即为数字。</p>
+<p>比如：<br>LEB128编码的0x02b0 —&gt; 转换后的数字0x0130<br>转换过程：<br>0x02b0 —&gt; 0000 0010 1011 0000 –&gt;去除最高位–&gt; 000 0010 011 0000 –&gt;按4bits重排 –&gt; 00 0001 0011 0000 –&gt; 0x130</p>
+<p>转换函数为：<br>代码位于：dalvik/libdex/leb128.h.</p>
 
       
     </div>
@@ -250,18 +253,9 @@ armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点�
     
 <nav id="article-nav">
   
-    <a href="/2015/10/29/studyPerl/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          perl快速入门
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/10/20/studyCTS_3/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">定制CTS 测试计划plan</div>
+    <a href="/2015/11/09/AndroidDex_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">DEX格式解析</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -290,7 +284,7 @@ armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点�
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="studyArmeabi" data-title="armeabi-v7a armeabi arm64-v8a" data-url="http://www.iloveandroid.net/2015/10/20/studyArmeabi/"></div>
+	<div class="ds-thread" data-thread-key="StudyLeb128" data-title="LEB128格式" data-url="http://www.iloveandroid.net/2015/11/10/StudyLeb128/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
