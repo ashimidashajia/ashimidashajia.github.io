@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://www.iloveandroid.net/2015/09/15/利用清华大学开源镜像下载 Android5.1 源码/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="以前都是从Google的站点下载同步更新的，但是现在有了国内的镜像站点就好多了清华大学不愧为国内第一名校，我等程序猿也能沾沾光，再也不愁为下载android源码而苦恼了！！">
-<meta property="og:updated_time" content="2015-09-25T07:36:34.000Z">
+<meta property="og:updated_time" content="2016-01-14T02:14:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="利用清华大学开源镜像下载 Android5.1 源码">
 <meta name="twitter:description" content="以前都是从Google的站点下载同步更新的，但是现在有了国内的镜像站点就好多了清华大学不愧为国内第一名校，我等程序猿也能沾沾光，再也不愁为下载android源码而苦恼了！！">
@@ -114,7 +114,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 12px;">逆向工程</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
 					</div>
 				</section>
 				
@@ -228,13 +228,16 @@
 <h2 id="下载repo">下载repo</h2><p>1）创建repo目录<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/bin &#10;PATH=~/bin:$PATH</span><br></pre></td></tr></table></figure></p>
 <p>2）下载repo<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git://aosp.tuna.tsinghua.edu.cn/android/git-repo.git/</span><br></pre></td></tr></table></figure></p>
 <p>克隆下来后将git-repo中的repo文件拷贝到bin目录<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp git-repo/repo ~/bin/</span><br></pre></td></tr></table></figure></p>
-<p>3）修改repo文件，设置REPO_URL如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REPO_URL = &#39;git://aosp.tuna.tsinghua.edu.cn/android/git-repo&#39;</span><br></pre></td></tr></table></figure></p>
 <h2 id="初始化repo">初始化repo</h2><p>1）创建目录<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/aosp</span><br></pre></td></tr></table></figure></p>
-<p>2）初始化repo<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/aosp &#10;repo init -u git://aosp.tuna.tsinghua.edu.cn/android/platform/manifest -b android-5.1.0_r3</span><br></pre></td></tr></table></figure></p>
+<p>2）初始化repo</p>
+<p>初始化仓库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest</span><br><span class="line"></span><br><span class="line"><span class="comment">## 如果提示无法连接到 gerrit.googlesource.com，可以编辑 ~/bin/repo，把 REPO_URL 一行替换成下面的：</span></span><br><span class="line">REPO_URL = <span class="string">'https://gerrit-google.tuna.tsinghua.edu.cn/git-repo'</span></span><br></pre></td></tr></table></figure>
+<p>如果需要某个特定的 Android 版本(<a href="https://source.android.com/source/build-numbers.html#source-code-tags-and-builds" target="_blank" rel="external">列表</a>)：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd ~/aosp &#10;repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest  -b android-5.1.0_r3</span><br></pre></td></tr></table></figure>
 <p>ps:在初始化时，提示需要email验证，使用如下命令：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email &#34;you@example.com&#34;&#10;git config --global user.name &#34;Your Name&#34;</span><br></pre></td></tr></table></figure></p>
 <h2 id="替换已有的AOSP源代码的remote">替换已有的AOSP源代码的remote</h2><p>如果你之前已经通过某种途径获得了AOSP的源码，但是你希望以后通过TUNA同步，只需要将.repo/manifest.xml中的 </p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">remote</span>  <span class="attribute">name</span>=<span class="value">"aosp"</span></span><br><span class="line">      <span class="attribute">fetch</span>=<span class="value">".."</span></span><br><span class="line">      <span class="attribute">review</span>=<span class="value">"https://android-review.googlesource.com/"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<p>改为下面的code即可：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">remote</span>  <span class="attribute">name</span>=<span class="value">"aosp"</span></span><br><span class="line">      <span class="attribute">fetch</span>=<span class="value">"git://aosp.tuna.tsinghua.edu.cn/android/"</span></span><br><span class="line">      <span class="attribute">review</span>=<span class="value">"https://android-review.googlesource.com/"</span> /&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>改为下面的code即可：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">remote</span>  <span class="attribute">name</span>=<span class="value">"aosp"</span></span><br><span class="line">      <span class="attribute">fetch</span>=<span class="value">"https://aosp.tuna.tsinghua.edu.cn"</span></span><br><span class="line">      <span class="attribute">review</span>=<span class="value">"https://android-review.googlesource.com/"</span> /&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>这个方法也可以用来在同步Cyanogenmod代码的时候从TUNA同步部分代码</p>
 <h2 id="下载源码">下载源码</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo sync</span><br></pre></td></tr></table></figure>
 <p>清华镜像源，每个 IP 限制并发数为 4, 请勿使用 repo sync -j8 这样的方式同步。不要贪得无厌哦，我没有开多个线程下载源码！！！<br>我是一次就下载成功了！！！共计31G。</p>
@@ -312,7 +315,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2015 genglei.cuan
+    		&copy; 2016 genglei.cuan
    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
     	</div>

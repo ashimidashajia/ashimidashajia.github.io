@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ART虚拟机启动之classlinker | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="classlinker是加载java类的重要组件，他的创建与初始化也是ART虚拟机的重要任务之一。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ART虚拟机启动之classlinker">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/12/20/AndroidART-8/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="classlinker是加载java类的重要组件，他的创建与初始化也是ART虚拟机的重要任务之一。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-12.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-4.png">
+<meta property="og:updated_time" content="2015-12-21T11:03:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ART虚拟机启动之classlinker">
+<meta name="twitter:description" content="classlinker是加载java类的重要组件，他的创建与初始化也是ART虚拟机的重要任务之一。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-AndroidART-8" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/20/AndroidART-8/" class="article-date">
+  	<time datetime="2015-12-20T15:58:05.000Z" itemprop="datePublished">2015-12-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ART虚拟机启动之classlinker
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>classlinker是加载java类的重要组件，他的创建与初始化也是ART虚拟机的重要任务之一。</p>
+<a id="more"></a>
+<p>如下图所示，是classlinker的启动流程：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-12.png" alt=""></p>
+<p>从中可以看出它使用了image空间中加载的boot.oat.因为boot.oat是有BOOTCLASSPATH中的jar包生成的，里面包含了JAVA核心类和Android系统的核心类。classlinker需要从中得到这些核心的jar包中包含的内容。</p>
+<p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">art/runtime/Class_linker.cc</span><br></pre></td></tr></table></figure>
+<p>其中InitFromImage函数如下所示：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">void ClassLinker::InitFromImage() &#123;</span><br><span class="line">  VLOG(startup) &lt;&lt; "ClassLinker::InitFromImage entering";</span><br><span class="line">  CHECK(!init_done_);</span><br><span class="line"></span><br><span class="line">  Thread* self = Thread::Current();</span><br><span class="line">  gc::Heap* heap = Runtime::Current()-&gt;GetHeap();</span><br><span class="line">  gc::space::ImageSpace* space = heap-&gt;GetImageSpace();</span><br><span class="line">  dex_cache_image_class_lookup_required_ = true;</span><br><span class="line">  CHECK(space != nullptr);</span><br><span class="line">  OatFile&amp; oat_file = GetImageOatFile(space);</span><br><span class="line">  CHECK_EQ(oat_file.GetOatHeader().GetImageFileLocationOatChecksum(), 0U);</span><br><span class="line">  CHECK_EQ(oat_file.GetOatHeader().GetImageFileLocationOatDataBegin(), 0U);</span><br><span class="line">  const char* image_file_location = oat_file.GetOatHeader().</span><br><span class="line">      GetStoreValueByKey(OatHeader::kImageLocationKey);</span><br><span class="line">  CHECK(image_file_location == nullptr || *image_file_location == 0);</span><br><span class="line">  portable_resolution_trampoline_ = oat_file.GetOatHeader().GetPortableResolutionTrampoline();</span><br><span class="line">  quick_resolution_trampoline_ = oat_file.GetOatHeader().GetQuickResolutionTrampoline();</span><br><span class="line">  portable_imt_conflict_trampoline_ = oat_file.GetOatHeader().GetPortableImtConflictTrampoline();</span><br><span class="line">  quick_imt_conflict_trampoline_ = oat_file.GetOatHeader().GetQuickImtConflictTrampoline();</span><br><span class="line">  quick_generic_jni_trampoline_ = oat_file.GetOatHeader().GetQuickGenericJniTrampoline();</span><br><span class="line">  quick_to_interpreter_bridge_trampoline_ = oat_file.GetOatHeader().GetQuickToInterpreterBridge();</span><br><span class="line">  mirror::Object* dex_caches_object = space-&gt;GetImageHeader().GetImageRoot(ImageHeader::kDexCaches);</span><br><span class="line">  mirror::ObjectArray&lt;mirror::DexCache&gt;* dex_caches =</span><br><span class="line">      dex_caches_object-&gt;AsObjectArray&lt;mirror::DexCache&gt;();</span><br><span class="line"></span><br><span class="line">  StackHandleScope&lt;1&gt; hs(self);</span><br><span class="line">  Handle&lt;mirror::ObjectArray&lt;mirror::Class&gt;&gt; class_roots(hs.NewHandle(</span><br><span class="line">          space-&gt;GetImageHeader().GetImageRoot(ImageHeader::kClassRoots)-&gt;</span><br><span class="line">          AsObjectArray&lt;mirror::Class&gt;()));</span><br><span class="line">  class_roots_ = GcRoot&lt;mirror::ObjectArray&lt;mirror::Class&gt;&gt;(class_roots.Get());</span><br><span class="line"></span><br><span class="line">  // Special case of setting up the String class early so that we can test arbitrary objects</span><br><span class="line">  // as being Strings or not</span><br><span class="line">  mirror::String::SetClass(GetClassRoot(kJavaLangString));</span><br><span class="line"></span><br><span class="line">  CHECK_EQ(oat_file.GetOatHeader().GetDexFileCount(),</span><br><span class="line">           static_cast&lt;uint32_t&gt;(dex_caches-&gt;GetLength()));</span><br><span class="line">  for (int32_t i = 0; i &lt; dex_caches-&gt;GetLength(); i++) &#123;</span><br><span class="line">    StackHandleScope&lt;1&gt; hs(self);</span><br><span class="line">    Handle&lt;mirror::DexCache&gt; dex_cache(hs.NewHandle(dex_caches-&gt;Get(i)));</span><br><span class="line">    const std::string&amp; dex_file_location(dex_cache-&gt;GetLocation()-&gt;ToModifiedUtf8());</span><br><span class="line">    const OatFile::OatDexFile* oat_dex_file = oat_file.GetOatDexFile(dex_file_location.c_str(),</span><br><span class="line">                                                                     nullptr);</span><br><span class="line">    CHECK(oat_dex_file != nullptr) &lt;&lt; oat_file.GetLocation() &lt;&lt; " " &lt;&lt; dex_file_location;</span><br><span class="line">    std::string error_msg;</span><br><span class="line">    const DexFile* dex_file = oat_dex_file-&gt;OpenDexFile(&amp;error_msg);</span><br><span class="line">    if (dex_file == nullptr) &#123;</span><br><span class="line">      LOG(FATAL) &lt;&lt; "Failed to open dex file " &lt;&lt; dex_file_location</span><br><span class="line">                 &lt;&lt; " from within oat file " &lt;&lt; oat_file.GetLocation()</span><br><span class="line">                 &lt;&lt; " error '" &lt;&lt; error_msg &lt;&lt; "'";</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CHECK_EQ(dex_file-&gt;GetLocationChecksum(), oat_dex_file-&gt;GetDexFileLocationChecksum());</span><br><span class="line"></span><br><span class="line">    AppendToBootClassPath(*dex_file, dex_cache);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Set classes on AbstractMethod early so that IsMethod tests can be performed during the live</span><br><span class="line">  // bitmap walk.</span><br><span class="line">  mirror::ArtMethod::SetClass(GetClassRoot(kJavaLangReflectArtMethod));</span><br><span class="line">  size_t art_method_object_size = mirror::ArtMethod::GetJavaLangReflectArtMethod()-&gt;GetObjectSize();</span><br><span class="line">  if (!Runtime::Current()-&gt;IsCompiler()) &#123;</span><br><span class="line">    // Compiler supports having an image with a different pointer size than the runtime. This</span><br><span class="line">    // happens on the host for compile 32 bit tests since we use a 64 bit libart compiler. We may</span><br><span class="line">    // also use 32 bit dex2oat on a system with 64 bit apps.</span><br><span class="line">    CHECK_EQ(art_method_object_size, mirror::ArtMethod::InstanceSize(sizeof(void*)))</span><br><span class="line">        &lt;&lt; sizeof(void*);</span><br><span class="line">  &#125;</span><br><span class="line">  if (art_method_object_size == mirror::ArtMethod::InstanceSize(4)) &#123;</span><br><span class="line">    image_pointer_size_ = 4;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    CHECK_EQ(art_method_object_size, mirror::ArtMethod::InstanceSize(8));</span><br><span class="line">    image_pointer_size_ = 8;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // Set entry point to interpreter if in InterpretOnly mode.</span><br><span class="line">  if (Runtime::Current()-&gt;GetInstrumentation()-&gt;InterpretOnly()) &#123;</span><br><span class="line">    ReaderMutexLock mu(self, *Locks::heap_bitmap_lock_);</span><br><span class="line">    heap-&gt;VisitObjects(InitFromImageInterpretOnlyCallback, this);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // reinit class_roots_</span><br><span class="line">  mirror::Class::SetClassClass(class_roots-&gt;Get(kJavaLangClass));</span><br><span class="line">  class_roots_ = GcRoot&lt;mirror::ObjectArray&lt;mirror::Class&gt;&gt;(class_roots.Get());</span><br><span class="line"></span><br><span class="line">  // reinit array_iftable_ from any array class instance, they should be ==</span><br><span class="line">  array_iftable_ = GcRoot&lt;mirror::IfTable&gt;(GetClassRoot(kObjectArrayClass)-&gt;GetIfTable());</span><br><span class="line">  DCHECK_EQ(array_iftable_.Read(), GetClassRoot(kBooleanArrayClass)-&gt;GetIfTable());</span><br><span class="line">  // String class root was set above</span><br><span class="line">  mirror::Reference::SetClass(GetClassRoot(kJavaLangRefReference));</span><br><span class="line">  mirror::ArtField::SetClass(GetClassRoot(kJavaLangReflectArtField));</span><br><span class="line">  mirror::BooleanArray::SetArrayClass(GetClassRoot(kBooleanArrayClass));</span><br><span class="line">  mirror::ByteArray::SetArrayClass(GetClassRoot(kByteArrayClass));</span><br><span class="line">  mirror::CharArray::SetArrayClass(GetClassRoot(kCharArrayClass));</span><br><span class="line">  mirror::DoubleArray::SetArrayClass(GetClassRoot(kDoubleArrayClass));</span><br><span class="line">  mirror::FloatArray::SetArrayClass(GetClassRoot(kFloatArrayClass));</span><br><span class="line">  mirror::IntArray::SetArrayClass(GetClassRoot(kIntArrayClass));</span><br><span class="line">  mirror::LongArray::SetArrayClass(GetClassRoot(kLongArrayClass));</span><br><span class="line">  mirror::ShortArray::SetArrayClass(GetClassRoot(kShortArrayClass));</span><br><span class="line">  mirror::Throwable::SetClass(GetClassRoot(kJavaLangThrowable));</span><br><span class="line">  mirror::StackTraceElement::SetClass(GetClassRoot(kJavaLangStackTraceElement));</span><br><span class="line"></span><br><span class="line">  FinishInit(self);</span><br><span class="line"></span><br><span class="line">  VLOG(startup) &lt;&lt; "ClassLinker::InitFromImage exiting";</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>该函数意图也很明显，就是通过boot.oat找到boot.art，将其空间中的函数到出来：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">portable_resolution_trampoline_ = oat_file.GetOatHeader().GetPortableResolutionTrampoline();</span><br><span class="line"> quick_resolution_trampoline_ = oat_file.GetOatHeader().GetQuickResolutionTrampoline();</span><br><span class="line"> portable_imt_conflict_trampoline_ = oat_file.GetOatHeader().GetPortableImtConflictTrampoline();</span><br><span class="line"> quick_imt_conflict_trampoline_ = oat_file.GetOatHeader().GetQuickImtConflictTrampoline();</span><br><span class="line"> quick_generic_jni_trampoline_ = oat_file.GetOatHeader().GetQuickGenericJniTrampoline();</span><br><span class="line"> quick_to_interpreter_bridge_trampoline_ = oat_file.GetOatHeader().GetQuickToInterpreterBridge();</span><br></pre></td></tr></table></figure>
+<p>这些函数将在ART执行本地指令时要用到！！！后面详谈！</p>
+<p>然后找到boot.oat中的dex与dexcache，每个dex都会对应一个dexcache，这些dexcache存储在boot.art中。</p>
+<p>最后在找到java核心类的class：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mirror::Reference::SetClass(GetClassRoot(kJavaLangRefReference));</span><br><span class="line">  mirror::ArtField::SetClass(GetClassRoot(kJavaLangReflectArtField));</span><br><span class="line">  mirror::BooleanArray::SetArrayClass(GetClassRoot(kBooleanArrayClass));</span><br><span class="line">  mirror::ByteArray::SetArrayClass(GetClassRoot(kByteArrayClass));</span><br><span class="line">  mirror::CharArray::SetArrayClass(GetClassRoot(kCharArrayClass));</span><br><span class="line">  mirror::DoubleArray::SetArrayClass(GetClassRoot(kDoubleArrayClass));</span><br><span class="line">  mirror::FloatArray::SetArrayClass(GetClassRoot(kFloatArrayClass));</span><br><span class="line">  mirror::IntArray::SetArrayClass(GetClassRoot(kIntArrayClass));</span><br><span class="line">  mirror::LongArray::SetArrayClass(GetClassRoot(kLongArrayClass));</span><br><span class="line">  mirror::ShortArray::SetArrayClass(GetClassRoot(kShortArrayClass));</span><br><span class="line">  mirror::Throwable::SetClass(GetClassRoot(kJavaLangThrowable));</span><br><span class="line">  mirror::StackTraceElement::SetClass(GetClassRoot(kJavaLangStackTraceElement));</span><br></pre></td></tr></table></figure>
+<p>说白了，初始化classlinker就是从boot.art中拿出事先创建好的东东。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-4.png" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2015/12/20/AndroidART-7/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">ART虚拟机启动之JNI</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="AndroidART-8" data-title="ART虚拟机启动之classlinker" data-url="http://www.iloveandroid.net/2015/12/20/AndroidART-8/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

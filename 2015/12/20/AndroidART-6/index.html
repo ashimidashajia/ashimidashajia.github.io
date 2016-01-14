@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ART虚拟机启动之image空间 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ART虚拟机是由app_process负责启动的，只有启动了虚拟机，Android系统才能开始运行java程序，才能跨入java世界。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ART虚拟机启动之image空间">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/12/20/AndroidART-6/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="ART虚拟机是由app_process负责启动的，只有启动了虚拟机，Android系统才能开始运行java程序，才能跨入java世界。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-11.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-12.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-4.png">
+<meta property="og:updated_time" content="2015-12-21T11:03:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ART虚拟机启动之image空间">
+<meta name="twitter:description" content="ART虚拟机是由app_process负责启动的，只有启动了虚拟机，Android系统才能开始运行java程序，才能跨入java世界。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-AndroidART-6" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/20/AndroidART-6/" class="article-date">
+  	<time datetime="2015-12-20T12:38:16.000Z" itemprop="datePublished">2015-12-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ART虚拟机启动之image空间
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ART虚拟机是由app_process负责启动的，只有启动了虚拟机，Android系统才能开始运行java程序，才能跨入java世界。</p>
+<a id="more"></a>
+<h3 id="app_process">app_process</h3><p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">framework/base/cmds/app_process/app_main.cpp</span><br></pre></td></tr></table></figure>
+<p>app_process可执行程序十分重要，负责启动ART虚拟机，Zygote和systemServer.关于app_process可以查看我之前关于Zygote进程启动的分析。</p>
+<h3 id="ART启动">ART启动</h3><p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">framework/base/cmds/app_process/app_main.cpp</span><br><span class="line"></span><br><span class="line">frameworks/base/core/jni/AndroidRuntime.cpp</span><br><span class="line"></span><br><span class="line">art/runtime/jni_internal.cc</span><br></pre></td></tr></table></figure>
+<p>启动简要流程如下(最好能根据流程吧源码看上一遍)：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-11.png" alt=""></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-12.png" alt=""></p>
+<p>首先AndroidRuntime::start函数中会进行jni的初始化，实际上就是加载虚拟机的so库，并从中导出三个函数，其中JNI_CreateJavaVM用来启动虚拟机。Android 5.0之后默认加载的就是libart.so。</p>
+<p>JNI_CreateJavaVM主要负责创建ART虚拟机实例，并且启动ART虚拟机，然后给app_process返回JNIEnv和JavaVM。有了JNIEnv，app_process中才能使用JNI中的FindClass等函数。</p>
+<p>创建虚拟机实例中，最主要的是Runtime::init函数，负责创建虚拟机堆空间，绑定Thread，创建和初始化classLinker。</p>
+<p>利用gc::Heap创建堆空间时，主要有两件事情，加载boot.ar和boot.oat初始化imgae空间，另外就是与垃圾回收机制相关的东东（垃圾回收太复杂了，暂时略过，后面详谈）。</p>
+<p>要加载boot.art和boot.oat，那么就要首先找到他们。</p>
+<p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">art/runtime/gc/space/image_space.cc</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">bool ImageSpace::FindImageFilename(const char* image_location,</span><br><span class="line">                                   const InstructionSet image_isa,</span><br><span class="line">                                   std::string* system_filename,</span><br><span class="line">                                   bool* has_system,</span><br><span class="line">                                   std::string* cache_filename,</span><br><span class="line">                                   bool* dalvik_cache_exists,</span><br><span class="line">                                   bool* has_cache,</span><br><span class="line">                                   bool* is_global_cache) &#123;</span><br><span class="line">  *has_system = false;</span><br><span class="line">  *has_cache = false;</span><br><span class="line">  // image_location = /system/framework/boot.art</span><br><span class="line">  // system_image_location = /system/framework/&lt;image_isa&gt;/boot.art</span><br><span class="line">  std::string system_image_filename(GetSystemImageFilename(image_location, image_isa));</span><br><span class="line">  if (OS::FileExists(system_image_filename.c_str())) &#123;</span><br><span class="line">    *system_filename = system_image_filename;</span><br><span class="line">    *has_system = true;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  bool have_android_data = false;</span><br><span class="line">  *dalvik_cache_exists = false;</span><br><span class="line">  std::string dalvik_cache;</span><br><span class="line">  GetDalvikCache(GetInstructionSetString(image_isa), true, &amp;dalvik_cache,</span><br><span class="line">                 &amp;have_android_data, dalvik_cache_exists, is_global_cache);</span><br><span class="line"></span><br><span class="line">  if (have_android_data &amp;&amp; *dalvik_cache_exists) &#123;</span><br><span class="line">    // Always set output location even if it does not exist,</span><br><span class="line">    // so that the caller knows where to create the image.</span><br><span class="line">    //</span><br><span class="line">    // image_location = /system/framework/boot.art</span><br><span class="line">    // *image_filename = /data/dalvik-cache/&lt;image_isa&gt;/boot.art</span><br><span class="line">    std::string error_msg;</span><br><span class="line">    if (!GetDalvikCacheFilename(image_location, dalvik_cache.c_str(), cache_filename, &amp;error_msg)) &#123;</span><br><span class="line">      LOG(WARNING) &lt;&lt; error_msg;</span><br><span class="line">      return *has_system;</span><br><span class="line">    &#125;</span><br><span class="line">    *has_cache = OS::FileExists(cache_filename-&gt;c_str());</span><br><span class="line">  &#125;</span><br><span class="line">  return *has_system || *has_cache;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该函数会首先在<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/system/framework/&lt;image_isa&gt;/boot.art</span><br></pre></td></tr></table></figure></p>
+<p>找，然后再在</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/dalvik-cache/&lt;image_isa&gt;/boot.art</span><br></pre></td></tr></table></figure>
+<p>找，最后将结果通过返回值和传进来的参数返回。</p>
+<p>在Heap创建ImageSpace的时候会调用上面的函数：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">ImageSpace* ImageSpace::Create(const char* image_location,</span><br><span class="line">                               const InstructionSet image_isa,</span><br><span class="line">                               std::string* error_msg) &#123;</span><br><span class="line"></span><br><span class="line">.................................</span><br><span class="line">  const bool found_image = FindImageFilename(image_location, image_isa, &amp;system_filename,</span><br><span class="line">                                             &amp;has_system, &amp;cache_filename, &amp;dalvik_cache_exists,</span><br><span class="line">                                             &amp;has_cache, &amp;is_global_cache</span><br><span class="line">................................</span><br><span class="line"> if (found_image) &#123;</span><br><span class="line">    const std::string* image_filename;</span><br><span class="line">    bool is_system = false;</span><br><span class="line">    bool relocated_version_used = false;</span><br><span class="line">    if (relocate) &#123;</span><br><span class="line">      if (!dalvik_cache_exists) &#123;</span><br><span class="line">        *error_msg = StringPrintf("Requiring relocation for image '%s' at '%s' but we do not have "</span><br><span class="line">                                  "any dalvik_cache to find/place it in.",</span><br><span class="line">                                  image_location, system_filename.c_str());</span><br><span class="line">        return nullptr;</span><br><span class="line">      &#125;</span><br><span class="line">      if (has_system) &#123;</span><br><span class="line">        if (has_cache &amp;&amp; ChecksumsMatch(system_filename.c_str(), cache_filename.c_str())) &#123;</span><br><span class="line">          // We already have a relocated version</span><br><span class="line">          image_filename = &amp;cache_filename;</span><br><span class="line">          relocated_version_used = true;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          // We cannot have a relocated version, Relocate the system one and use it.</span><br><span class="line"></span><br><span class="line">          std::string reason;</span><br><span class="line">          bool success;</span><br><span class="line"></span><br><span class="line">          // Check whether we are allowed to relocate.</span><br><span class="line">          if (!can_compile) &#123;</span><br><span class="line">            reason = "Image dex2oat disabled by -Xnoimage-dex2oat.";</span><br><span class="line">            success = false;</span><br><span class="line">          &#125; else if (!ImageCreationAllowed(is_global_cache, &amp;reason)) &#123;</span><br><span class="line">            // Whether we can write to the cache.</span><br><span class="line">            success = false;</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            // Try to relocate.</span><br><span class="line">            success = RelocateImage(image_location, cache_filename.c_str(), image_isa, &amp;reason);</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          if (success) &#123;</span><br><span class="line">            relocated_version_used = true;</span><br><span class="line">            image_filename = &amp;cache_filename;</span><br><span class="line">          &#125; else &#123;</span><br><span class="line">            *error_msg = StringPrintf("Unable to relocate image '%s' from '%s' to '%s': %s",</span><br><span class="line">                                      image_location, system_filename.c_str(),</span><br><span class="line">                                      cache_filename.c_str(), reason.c_str());</span><br><span class="line">            // We failed to create files, remove any possibly garbage output.</span><br><span class="line">            // Since ImageCreationAllowed was true above, we are the zygote</span><br><span class="line">            // and therefore the only process expected to generate these for</span><br><span class="line">            // the device.</span><br><span class="line">            PruneDalvikCache(image_isa);</span><br><span class="line">            return nullptr;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        CHECK(has_cache);</span><br><span class="line">        // We can just use cache's since it should be fine. This might or might not be relocated.</span><br><span class="line">        image_filename = &amp;cache_filename;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      if (has_system &amp;&amp; has_cache) &#123;</span><br><span class="line">        // Check they have the same cksum. If they do use the cache. Otherwise system.</span><br><span class="line">        if (ChecksumsMatch(system_filename.c_str(), cache_filename.c_str())) &#123;</span><br><span class="line">          image_filename = &amp;cache_filename;</span><br><span class="line">          relocated_version_used = true;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          image_filename = &amp;system_filename;</span><br><span class="line">          is_system = true;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else if (has_system) &#123;</span><br><span class="line">        image_filename = &amp;system_filename;</span><br><span class="line">        is_system = true;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        CHECK(has_cache);</span><br><span class="line">        image_filename = &amp;cache_filename;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#123;</span><br><span class="line">      // Note that we must not use the file descriptor associated with</span><br><span class="line">      // ScopedFlock::GetFile to Init the image file. We want the file</span><br><span class="line">      // descriptor (and the associated exclusive lock) to be released when</span><br><span class="line">      // we leave Create.</span><br><span class="line">      ScopedFlock image_lock;</span><br><span class="line">      image_lock.Init(image_filename-&gt;c_str(), error_msg);</span><br><span class="line">      VLOG(startup) &lt;&lt; "Using image file " &lt;&lt; image_filename-&gt;c_str() &lt;&lt; " for image location "</span><br><span class="line">                    &lt;&lt; image_location;</span><br><span class="line">      // If we are in /system we can assume the image is good. We can also</span><br><span class="line">      // assume this if we are using a relocated image (i.e. image checksum</span><br><span class="line">      // matches) since this is only different by the offset. We need this to</span><br><span class="line">      // make sure that host tests continue to work.</span><br><span class="line">      space = ImageSpace::Init(image_filename-&gt;c_str(), image_location,</span><br><span class="line">                               !(is_system || relocated_version_used), error_msg);</span><br><span class="line">    &#125;</span><br><span class="line">    if (space != nullptr) &#123;</span><br><span class="line">      return space;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">................................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ImageSpace::create逻辑很简单，就是先找boot.art和boot.oat.看他们存在与否。如果存在的话，是在/system/framework中呢，还是在/data/dalvik-cache中。</p>
+<p>1). 如果找到了boot.art</p>
+<p>接着判断是否需要对boot.art在内存中的位置重定位，这个是有relocate来判断的。默认情况下，ART虚拟机启动的时候是必须要重定位boot.art的，但是可以通过在ART虚拟机启动的时候，添加在参数“-Xnorelocate”来禁止重定位。</p>
+<p>先看需要重定位的情况：</p>
+<p>此情况下，如果boot.art是在/data/dalvik-cache里的话，那就说明是已经重定位过了，如果/data/dalvik-cache没有，而是在/system/framework里的话，那么就需要对其进行重定位。</p>
+<p>接着就调用RelocateImage对其重定位。该函数实际上是调用patchoat可执行程序对boot.oat和boot.art进行重定位。重定位之后新的boot.art和boot.art会存放在/data/dalvik-cache中。</p>
+<p>不需要重定位：</p>
+<p>此情况下，如果system和data中都有boot.art和boot.oat，倘若两者cksum一致，就使用/data/dalvik-cache中的，否则就使用/system/framework中的。如果system和data中只有其一有，那么谁有，就用谁的。</p>
+<p>2). 如果没找到boot.art</p>
+<p>没找到的话，那就利用GenerateImage函数自己创建，实际上该函数就是调用dex2oat命令将BOOTCLASSPATH中中的jar编译为boot.art和boot.oat。这里要注意的话，该函数生成的是重定位过后的boot.art和boot.oat.</p>
+<p>有了boot.art和boot.oat之后，就调用 ImageSpace::Init初始化image空间。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ImageSpace* ImageSpace::Init(<span class="keyword">const</span> <span class="keyword">char</span>* image_filename, <span class="keyword">const</span> <span class="keyword">char</span>* image_location,</span><br><span class="line">                             <span class="keyword">bool</span> validate_oat_file, <span class="built_in">std</span>::<span class="built_in">string</span>* error_msg) &#123;</span><br><span class="line"></span><br><span class="line">................</span><br><span class="line"></span><br><span class="line">space-&gt;oat_file_.reset(space-&gt;OpenOatFile(image_filename, error_msg));</span><br><span class="line">  <span class="keyword">if</span> (space-&gt;oat_file_.get() == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">    DCHECK(!error_msg-&gt;empty());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (validate_oat_file &amp;&amp; !space-&gt;ValidateOatFile(error_msg)) &#123;</span><br><span class="line">    DCHECK(!error_msg-&gt;empty());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Runtime* runtime = Runtime::Current();</span><br><span class="line">  runtime-&gt;SetInstructionSet(space-&gt;oat_file_-&gt;GetOatHeader().GetInstructionSet());</span><br><span class="line"></span><br><span class="line">  mirror::Object* resolution_method = image_header.GetImageRoot(ImageHeader::kResolutionMethod);</span><br><span class="line">  runtime-&gt;SetResolutionMethod(down_cast&lt;mirror::ArtMethod*&gt;(resolution_method));</span><br><span class="line">  mirror::Object* imt_conflict_method = image_header.GetImageRoot(ImageHeader::kImtConflictMethod);</span><br><span class="line">  runtime-&gt;SetImtConflictMethod(down_cast&lt;mirror::ArtMethod*&gt;(imt_conflict_method));</span><br><span class="line">  mirror::Object* imt_unimplemented_method =</span><br><span class="line">      image_header.GetImageRoot(ImageHeader::kImtUnimplementedMethod);</span><br><span class="line">  runtime-&gt;SetImtUnimplementedMethod(down_cast&lt;mirror::ArtMethod*&gt;(imt_unimplemented_method));</span><br><span class="line">  mirror::Object* default_imt = image_header.GetImageRoot(ImageHeader::kDefaultImt);</span><br><span class="line">  runtime-&gt;SetDefaultImt(down_cast&lt;mirror::ObjectArray&lt;mirror::ArtMethod&gt;*&gt;(default_imt));</span><br><span class="line"></span><br><span class="line">  mirror::Object* callee_save_method = image_header.GetImageRoot(ImageHeader::kCalleeSaveMethod);</span><br><span class="line">  runtime-&gt;SetCalleeSaveMethod(down_cast&lt;mirror::ArtMethod*&gt;(callee_save_method),</span><br><span class="line">                               Runtime::kSaveAll);</span><br><span class="line">  callee_save_method = image_header.GetImageRoot(ImageHeader::kRefsOnlySaveMethod);</span><br><span class="line">  runtime-&gt;SetCalleeSaveMethod(down_cast&lt;mirror::ArtMethod*&gt;(callee_save_method),</span><br><span class="line">                               Runtime::kRefsOnly);</span><br><span class="line">  callee_save_method = image_header.GetImageRoot(ImageHeader::kRefsAndArgsSaveMethod);</span><br><span class="line">  runtime-&gt;SetCalleeSaveMethod(down_cast&lt;mirror::ArtMethod*&gt;(callee_save_method),</span><br><span class="line">                               Runtime::kRefsAndArgs);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (VLOG_IS_ON(heap) || VLOG_IS_ON(startup)) &#123;</span><br><span class="line">    LOG(INFO) &lt;&lt; <span class="string">"ImageSpace::Init exiting ("</span> &lt;&lt; PrettyDuration(NanoTime() - start_time)</span><br><span class="line">             &lt;&lt; <span class="string">") "</span> &lt;&lt; *space.get();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> space.release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>boot.art是img文件，直接映射到内存空间，下图所示Image Roots中的内容，就可以被使用了。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-4.png" alt=""></p>
+<p>boot.oat是一个oat文件，和前面《ART可执行文件oat解析》几乎一样了。</p>
+<h3 id="为何需要对boot-art与boot-oat重定位">为何需要对boot.art与boot.oat重定位</h3><p>重定位的意思重定位其加载到内存中的位置。Android源码中指定了一个base地址作为其加载到内存的默认地址，如果不重定位的话，会导致使用这个ROM的Android 设备image空间起始地址都一样，这容易被攻击。所以就需要重定位。</p>
+<p>一般情况下，/data/dalvik-cache中的boot.art和boot.oat都是经过重定位的。/system/frmework中的是没有经过重定位的。重定位其实很简单，就是在一定范围内产生一个随机数，然后实际加载地址是base+这个随机数。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/12/20/AndroidART-7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          ART虚拟机启动之JNI
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/12/19/AndroidART-5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">反汇编OAT文件</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="AndroidART-6" data-title="ART虚拟机启动之image空间" data-url="http://www.iloveandroid.net/2015/12/20/AndroidART-6/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

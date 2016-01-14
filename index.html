@@ -113,7 +113,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 12px;">逆向工程</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
 					</div>
 				</section>
 				
@@ -183,11 +183,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-studyElf" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-AndroidART-8" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/11/17/studyElf/" class="article-date">
-  	<time datetime="2015-11-17T05:17:34.000Z" itemprop="datePublished">2015-11-17</time>
+      <a href="/2015/12/20/AndroidART-8/" class="article-date">
+  	<time datetime="2015-12-20T15:58:05.000Z" itemprop="datePublished">2015-12-20</time>
 </a>
     </div>
   
@@ -200,7 +200,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/17/studyElf/">Linux elf格式</a>
+      <a class="article-title" href="/2015/12/20/AndroidART-8/">ART虚拟机启动之classlinker</a>
     </h1>
   
 
@@ -209,7 +209,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="elf介绍">elf介绍</h3><p>ELF(Executable and Linkable Format)即可执行连接文件格式，是Linux下常见的默认目标文件格式.</p>
+        <p>classlinker是加载java类的重要组件，他的创建与初始化也是ART虚拟机的重要任务之一。</p>
       
     </div>
     
@@ -217,321 +217,7 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/调试/">调试</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/App开发/">App开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/11/17/studyElf/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-StudyLeb128" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/10/StudyLeb128/" class="article-date">
-  	<time datetime="2015-11-10T05:56:34.000Z" itemprop="datePublished">2015-11-10</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/10/StudyLeb128/">LEB128格式</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>LEB128即”Little-Endian Base 128”，基于128的小印第安序编码格式，是对任意有符号或者无符号整型数的可变长度的编码。</p>
-<p>也即，用LEB128编码的正数，会根据数字的大小改变所占字节数。在android的.dex文件中，他只用来编码32bits的整型数。</p>
-<p>格式:</p>
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/LEB128.png" alt=""></p>
-<p>上图只是指示性的用两个字节表示。编码的每个字节有效部分只有低7bits，每个字节的最高bit用来指示是否是最后一个字节。非最高字节的bit7为0;最高字节的bit7为1.</p>
-<p>将leb128编码的数字转换为可读数字的规则是：除去每个字节的bit7，将每个字节剩余的7个bits拼接在一起，即为数字。</p>
-<p>比如：<br>LEB128编码的0x02b0 —&gt; 转换后的数字0x0130<br>转换过程：<br>0x02b0 —&gt; 0000 0010 1011 0000 –&gt;去除最高位–&gt; 000 0010 011 0000 –&gt;按4bits重排 –&gt; 00 0001 0011 0000 –&gt; 0x130</p>
-<p>转换函数为：<br>代码位于：dalvik/libdex/leb128.h.</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向工程/">逆向工程</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/App开发/">App开发</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-AndroidDex_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/09/AndroidDex_1/" class="article-date">
-  	<time datetime="2015-11-09T12:18:45.000Z" itemprop="datePublished">2015-11-09</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/09/AndroidDex_1/">DEX格式解析</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Dex是android上的可执行文件类型，其包含了几乎所有代码及变量的内容，正确使用并辨识DEX文件内的内容对分析问题及使用一些较为灵活的操作方式有很大的帮助.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向工程/">逆向工程</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/App开发/">App开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/11/09/AndroidDex_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-AndroidAppLog" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/09/AndroidAppLog/" class="article-date">
-  	<time datetime="2015-11-09T06:02:52.000Z" itemprop="datePublished">2015-11-09</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/09/AndroidAppLog/">发布程序时移除Android 调试Log</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在Android开发中，我们使用android.util.Log来打印日志，方便我们的开发调试。但是对于正式发布的程序，我们并不希望这些Log信息显示，一方面对于用户来说影响机器性能，另一方面，其他开发者看到这些信息的时候，对我们应用程序的安全是有威胁的。所以，我们需要在正式发布时不让Log执行，或者将其移除.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/调试/">调试</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/App开发/">App开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/11/09/AndroidAppLog/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-studyAndroidSmail" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/09/studyAndroidSmail/" class="article-date">
-  	<time datetime="2015-11-09T06:02:52.000Z" itemprop="datePublished">2015-11-09</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/09/studyAndroidSmail/">Davlik虚拟机smali简单语法学习</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android的Davlik虚拟机是基于寄存器的,而Smali语言就是Davlik虚拟机的寄存器语言.当apk被反编译工具处理后,会得到一个smail文件夹,里面都是以.smail结尾的文件.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/调试/">调试</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/App开发/">App开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/11/09/studyAndroidSmail/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-AndroidMK" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/05/AndroidMK/" class="article-date">
-  	<time datetime="2015-11-05T05:20:55.000Z" itemprop="datePublished">2015-11-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/05/AndroidMK/">Android.mk 常用语法总结</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android编译/">Android编译</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
 	</div>
 
       
@@ -542,7 +228,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/11/05/AndroidMK/#more">more >></a>
+          <a  href="/2015/12/20/AndroidART-8/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -559,11 +245,11 @@
 
 
   
-    <article id="post-AndroidCommand" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-AndroidART-7" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/11/05/AndroidCommand/" class="article-date">
-  	<time datetime="2015-11-05T05:20:55.000Z" itemprop="datePublished">2015-11-05</time>
+      <a href="/2015/12/20/AndroidART-7/" class="article-date">
+  	<time datetime="2015-12-20T14:47:23.000Z" itemprop="datePublished">2015-12-20</time>
 </a>
     </div>
   
@@ -576,7 +262,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/05/AndroidCommand/">Android 编译常用命令</a>
+      <a class="article-title" href="/2015/12/20/AndroidART-7/">ART虚拟机启动之JNI</a>
     </h1>
   
 
@@ -585,7 +271,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>编译APK,大多是都是利用eclipse或者Android studio来做的,利用IDE来编译,屏蔽了许多细节.</p>
+        <p>AndroidRuntime::start函数中会调用JNIEnv的FindClass函数去加载ZygoteInit类，现在看看JNIEnv的是怎么回事。</p>
       
     </div>
     
@@ -593,7 +279,7 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android编译/">Android编译</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
 	</div>
 
       
@@ -604,7 +290,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/11/05/AndroidCommand/#more">more >></a>
+          <a  href="/2015/12/20/AndroidART-7/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -621,11 +307,11 @@
 
 
   
-    <article id="post-studyPerl" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-AndroidART-6" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/29/studyPerl/" class="article-date">
-  	<time datetime="2015-10-29T11:23:47.000Z" itemprop="datePublished">2015-10-29</time>
+      <a href="/2015/12/20/AndroidART-6/" class="article-date">
+  	<time datetime="2015-12-20T12:38:16.000Z" itemprop="datePublished">2015-12-20</time>
 </a>
     </div>
   
@@ -638,7 +324,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/29/studyPerl/">perl快速入门</a>
+      <a class="article-title" href="/2015/12/20/AndroidART-6/">ART虚拟机启动之image空间</a>
     </h1>
   
 
@@ -647,66 +333,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>perl脚本快速入门demo.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Linux基础/">Linux基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/10/29/studyPerl/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-studyArmeabi" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/10/20/studyArmeabi/" class="article-date">
-  	<time datetime="2015-10-20T12:22:13.000Z" itemprop="datePublished">2015-10-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/20/studyArmeabi/">armeabi-v7a armeabi arm64-v8a</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在CTS测试中,发现case有两种版本.一是运行在armeabi-v7a,另外一个是arm64-v8a.这代表什么?</p>
-<p>armeabi就是针对普通的或旧的arm v5 cpu，armeabi-v7a是针对有浮点运算或高级扩展功能的arm v7 cpu。armeabi-v7a（32位ARM设备），arm64-v8a（64位ARM设备）.</p>
+        <p>ART虚拟机是由app_process负责启动的，只有启动了虚拟机，Android系统才能开始运行java程序，才能跨入java世界。</p>
       
     </div>
     
@@ -714,7 +341,7 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
 	</div>
 
       
@@ -725,7 +352,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/10/20/studyArmeabi/#more">more >></a>
+          <a  href="/2015/12/20/AndroidART-6/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -742,11 +369,11 @@
 
 
   
-    <article id="post-studyCTS_3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-AndroidART-5" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/20/studyCTS_3/" class="article-date">
-  	<time datetime="2015-10-20T07:12:13.000Z" itemprop="datePublished">2015-10-20</time>
+      <a href="/2015/12/19/AndroidART-5/" class="article-date">
+  	<time datetime="2015-12-19T12:47:22.000Z" itemprop="datePublished">2015-12-19</time>
 </a>
     </div>
   
@@ -759,7 +386,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/20/studyCTS_3/">定制CTS 测试计划plan</a>
+      <a class="article-title" href="/2015/12/19/AndroidART-5/">反汇编OAT文件</a>
     </h1>
   
 
@@ -768,7 +395,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>CTS测试中的计划是以XML文件来定制的.位置<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android-cts/repository/plans</span><br></pre></td></tr></table></figure></p>
+        <p>ART虚拟机最大的进步在于利用AOT技术，在dex运行前，将其翻译为本地机器码。不过这些本地码也是比较特殊的，与c/c++编译出的本地机器指令还是有不少差别的。</p>
       
     </div>
     
@@ -776,18 +403,393 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自动化测试/">自动化测试</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
 	</div>
 
       
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
 	</div>
 
 
       
         <p class="article-more-link">
-          <a  href="/2015/10/20/studyCTS_3/#more">more >></a>
+          <a  href="/2015/12/19/AndroidART-5/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-AndroidART-4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/19/AndroidART-4/" class="article-date">
+  	<time datetime="2015-12-19T08:52:30.000Z" itemprop="datePublished">2015-12-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/19/AndroidART-4/">ART运行普通java程序</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>就算是最简单的Android “Hello world”  App程序，其中也夹杂了很多Android东东，不利于我们分析oat文件，所以就产生了能否直接让ART运行普通java程序的念头。ART毕竟是一个java虚拟机嘛，肯定能运行普通java程序了。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/19/AndroidART-4/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-AndroidART-3" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/19/AndroidART-3/" class="article-date">
+  	<time datetime="2015-12-19T07:04:34.000Z" itemprop="datePublished">2015-12-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/19/AndroidART-3/">ART可执行文件oat解析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面简单的介绍了ART的可执行文件有三种：.art(是一个img文件不能单独运行);.oat;.dex.他们都是由dex2oat可执行程序以Dalvik的dex文件为原料加工得来的。而且.oat和.dex是elf文件，实际上.oat和.dex内部格式一样，只是后缀不一样罢了。</p>
+<p>利用readelf命令可以看出ART的elf的特别之处：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-8.png" alt=""></p>
+<p>多了三个特别的符号。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/19/AndroidART-3/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-AndroidART-2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/19/AndroidART-2/" class="article-date">
+  	<time datetime="2015-12-18T17:28:32.000Z" itemprop="datePublished">2015-12-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/19/AndroidART-2/">初探boot.art与boot.oat</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>boot.art与boot.oat与其说是ART虚拟机的两种执行格式，不如说他俩就是ART虚拟机的一部分！！！ART离开了这两个文件，也就无法启动了。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/19/AndroidART-2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-AndroidART-1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/19/AndroidART-1/" class="article-date">
+  	<time datetime="2015-12-18T16:42:11.000Z" itemprop="datePublished">2015-12-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/19/AndroidART-1/">ART虚拟机特点与组件</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>接下来以Android-5.1.1-R14版本的源码介绍ART虚拟机的相关知识，本来不想对Dalvik多说的，可是发现Dalvik虽然已经退休了，但其影响力依然不小，ART中很多地方都引用了其中的内容，而且最近的项目<br>也需要对Dalvik定制，所以可能会穿插Dalvik的内容。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/19/AndroidART-1/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-DalvikDex-2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/18/DalvikDex-2/" class="article-date">
+  	<time datetime="2015-12-18T15:55:10.000Z" itemprop="datePublished">2015-12-18</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/18/DalvikDex-2/">App运行时字段或者方法数目超过65535原因分析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我不做app开发，所以这里只是提出65535的原因，至于如何解决，网上一大堆方案了。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/18/DalvikDex-2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-DalvikDex" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/18/DalvikDex/" class="article-date">
+  	<time datetime="2015-12-18T15:47:49.000Z" itemprop="datePublished">2015-12-18</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/18/DalvikDex/">Dalvik字节码文件dex再探</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面已有文章<a href="http://www.iloveandroid.net/2015/11/09/AndroidDex_1/">介绍dex文件</a>了，不过是参考网络其他同行的分析，最近一直在搞Android虚拟机，也有了自己的认识，整理以下以备查询。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/18/DalvikDex/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -806,7 +808,7 @@
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 </div>
@@ -814,7 +816,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2015 genglei.cuan
+    		&copy; 2016 genglei.cuan
    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
     	</div>

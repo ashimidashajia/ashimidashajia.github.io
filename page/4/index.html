@@ -113,7 +113,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 12px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 16px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 16px;">构建</a> <a href="/tags/签名认证/" style="font-size: 12px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 12px;">逆向工程</a>
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
 					</div>
 				</section>
 				
@@ -183,11 +183,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-Android_property_1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-jksTopm" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/26/Android_property_1/" class="article-date">
-  	<time datetime="2015-09-25T16:27:43.000Z" itemprop="datePublished">2015-09-26</time>
+      <a href="/2015/10/14/jksTopm/" class="article-date">
+  	<time datetime="2015-10-13T16:40:45.000Z" itemprop="datePublished">2015-10-14</time>
 </a>
     </div>
   
@@ -200,7 +200,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/26/Android_property_1/">Android 5.1 property属性系统分析上篇</a>
+      <a class="article-title" href="/2015/10/14/jksTopm/">jks与pem的转换</a>
     </h1>
   
 
@@ -209,10 +209,71 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="简介">简介</h3><p>在”init进程分析”系统文章中,主要介绍了init进程如何处理rc文件,没有过多讲解init进程启动的相关核心服务.例如Android属性系统等,接下来的会逐个讲解init进程启动的核心android服务.</p>
-<p>Android属性系统其实可以理解为键值对:属性名字和属性值;很类似于windows上的注册表.</p>
-<p>我们可以通过在adb shell里敲入getprop命令来获取当前系统的所有属性内容:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/ <span class="comment"># getprop                                                </span></span><br><span class="line">[ARGH]: [ARGH]</span><br><span class="line">[dalvik.vm.dex2oat-Xms]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.dex2oat-Xmx]: [<span class="number">512</span>m]</span><br><span class="line">[dalvik.vm.heapsize]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.image-dex2oat-Xms]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.image-dex2oat-Xmx]: [<span class="number">64</span>m]</span><br><span class="line">...................................</span><br></pre></td></tr></table></figure>
+        <p>android 一般除了使用jarsigner签名 还有使用signapk 后者位于android源码 前者位于jdk中。两者使用的文件格式不同前者使用JKS 后者使用公钥+私钥 是分开的.</p>
+<p>现提供了一个JKS证书文件和证书的密码，需要转成x509.pem文件给SEAndroid的配置,也可用signapk给apk签名</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/签名认证/">签名认证</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/14/jksTopm/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-Android_SEAndroid_6" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/13/Android_SEAndroid_6/" class="article-date">
+  	<time datetime="2015-10-13T07:59:33.000Z" itemprop="datePublished">2015-10-13</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/13/Android_SEAndroid_6/">Android 5.1 SEAndroid实践之策略规则编写篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SEAndroid的使用,一定要多动手去实践.多看Android源码中已经有的策略文件,从中总结出策略文件的相关技巧.</p>
+<p>以下策略规则,都来自Android源码/external/sepolicy中的.te文件.</p>
       
     </div>
     
@@ -231,7 +292,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/26/Android_property_1/#more">more >></a>
+          <a  href="/2015/10/13/Android_SEAndroid_6/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -248,11 +309,11 @@
 
 
   
-    <article id="post-Android_init_3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-studyPtorobuf" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/25/Android_init_3/" class="article-date">
-  	<time datetime="2015-09-25T07:59:55.000Z" itemprop="datePublished">2015-09-25</time>
+      <a href="/2015/10/08/studyPtorobuf/" class="article-date">
+  	<time datetime="2015-10-08T14:32:37.000Z" itemprop="datePublished">2015-10-08</time>
 </a>
     </div>
   
@@ -265,7 +326,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/25/Android_init_3/">Android 5.1 init进程分析下篇</a>
+      <a class="article-title" href="/2015/10/08/studyPtorobuf/">Protobuf简单使用</a>
     </h1>
   
 
@@ -274,7 +335,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>前面我们只是解析了rc文件,并且将其内容填充到了两个链表:action_list和service_list中去.那么这些action和service是怎么被执行的呢?现在就来详细分析下吧.</p>
+        <p>Protobuf是Google开发一种数据描述语言,能够将结构化数据序列化,可用于数据存储、通信协议等方面。据Google官方文档介绍,现在Google内部已经有48,162个消息类型定义在12,183个proto文件中。</p>
       
     </div>
     
@@ -282,18 +343,18 @@
       
       
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用开发/">应用开发</a></li></ul>
 	</div>
 
       
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	<a class="article-category-link" href="/categories/开源框架/">开源框架</a>
 	</div>
 
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/25/Android_init_3/#more">more >></a>
+          <a  href="/2015/10/08/studyPtorobuf/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -310,11 +371,11 @@
 
 
   
-    <article id="post-Android_init_2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-setPyqtEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/25/Android_init_2/" class="article-date">
-  	<time datetime="2015-09-25T07:31:39.000Z" itemprop="datePublished">2015-09-25</time>
+      <a href="/2015/10/06/setPyqtEnvironment/" class="article-date">
+  	<time datetime="2015-10-06T06:58:40.000Z" itemprop="datePublished">2015-10-06</time>
 </a>
     </div>
   
@@ -327,7 +388,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/25/Android_init_2/">Android 5.1 init进程分析中篇</a>
+      <a class="article-title" href="/2015/10/06/setPyqtEnvironment/">ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建</a>
     </h1>
   
 
@@ -336,27 +397,23 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="解析rc文件">解析rc文件</h3><p>init进程相关的源码位置:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android源码/system/core/init/init.c</span><br></pre></td></tr></table></figure></p>
-<p>在init进程的main()函数里，会调用init_parse_config_file(“/init.rc”)一句来解析init.rc脚本。init_parse_config_file()的代码如下：</p>
+        <h3 id="安装QT5-5">安装QT5.5</h3><p>去QT官网或者qtcn论坛下载最新的QT版本,然后安装.此步骤忽略.</p>
+<p>ubuntu系统自带了qmke，但是版本较低，要使用前面安装的最新版本QT中的qmake。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln <span class="operator">-s</span> /usr/<span class="built_in">local</span>/QT5.<span class="number">5</span>/<span class="number">5.5</span>/gcc_64/bin/qmake /usr/bin/qmake</span><br></pre></td></tr></table></figure></p>
       
     </div>
     
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
       
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	<a class="article-category-link" href="/categories/Python/">Python</a>
 	</div>
 
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/25/Android_init_2/#more">more >></a>
+          <a  href="/2015/10/06/setPyqtEnvironment/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -373,11 +430,11 @@
 
 
   
-    <article id="post-Android_init_1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-studyGit_5" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/24/Android_init_1/" class="article-date">
-  	<time datetime="2015-09-24T07:33:06.000Z" itemprop="datePublished">2015-09-24</time>
+      <a href="/2015/10/06/studyGit_5/" class="article-date">
+  	<time datetime="2015-10-06T01:57:00.000Z" itemprop="datePublished">2015-10-06</time>
 </a>
     </div>
   
@@ -390,7 +447,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/24/Android_init_1/">Android 5.1 init进程分析上篇</a>
+      <a class="article-title" href="/2015/10/06/studyGit_5/">版本控制系统Git的数据恢复与浏览commit的GUI工具</a>
     </h1>
   
 
@@ -399,200 +456,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="前言">前言</h3><p>Android系统是运行在linux内核之上的,熟悉linux的人应该都知道内核启动后,第一个进程是init进程.Android系统当然也不例外.只不过相对于原生linux init进程,Android 的init进程有其自己的特点和规则.</p>
-<p>Android init进程会初始化Android的属性系统,这个后续会单独介绍,因为属性系统很重要.init进程主要是加载和解析.rc文件,来启动Android系统的服务.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/24/Android_init_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_2/" class="article-date">
-  	<time datetime="2015-09-21T15:44:39.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_2/">Android 5.1 Lollipop的Zygote分析——下篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>上一篇结尾的时候，说过AppRuntime的start()最后会加载Java层次的ZygoteInit类（com.android.internal.os.ZygoteInit），并调用其main函数。</p>
-<p>ZygoteInit要做一些和Android平台紧密相关的重要动作，比如创建LocalServerSocket对象、预加载一些类以及资源、启动“Android系统服务”.</p>
-<p>ZygoteInit类源码位置：Android源码/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_2/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Zygote_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/21/Zygote_1/" class="article-date">
-  	<time datetime="2015-09-21T12:44:00.000Z" itemprop="datePublished">2015-09-21</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/21/Zygote_1/">Android 5.1 Lollipop的Zygote分析——上篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="整体介绍">整体介绍</h3><p>因为公司最近的项目，频繁的使用了xposed框架。作为一种Hook技术，xposed框架主要是对Android系统中的app_process程序做了手脚。为了弄清楚xposed框架背后的原理,那么肯定要分析app_process它的原理喽。</p>
-<p>app_process是在程序执行期间将其名字修改为zygote的。zygote是受精卵的意思，主要作用就是进行细胞分裂嘛，是Android系统执行APK程序的核心服务。zygote进程首先加载启动ART虚拟机，然后在加载一些系统核心类和资源，这些都是其他APK程序都可能要用到的资源。最后zygote进程进入监听状态。一旦Android上层有创建新APK进程的需求，zygote进程便会为其分裂出新的进程。这个APK新进程，一开始便拥有了ART虚拟机和zygote预先加载的各种系统类和资源，能大大加速apk应用的启动，同时也能节省很大的内存开支。</p>
-<p>这里解释一下，为什么zygote进程要预先加载系统资源。zygote进程实际上是利用fork分裂出新的进程的，linux内核采用了写时复制技术：内核只为新生成的子进程创建虚拟空间结构，它们来自于父进程的虚拟地址结构，但是不为子进程的虚拟地址分配物理内存，它们共享父进程的物理空间，当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间。</p>
-<p>通常来说，在利用fork创建出的子进程中会调用exec系统调用，去执行新的其他程序。在fork之后exec之前两个进程用的是相同的物理空间（内存区），子进程的代码段、数据段、堆栈都是指向父进程的物理空间，也就是说，两者的虚拟空间不同，但其对应的物理空间是同一个。当父子进程中有更改相应段的行为发生时，再为子进程相应的段分配物理空间，如果不是因为exec，内核会给子进程的数据段、堆栈段分配相应的物理空间（至此两者有各自的进程空间，互不影响），而代码段继续共享父进程的物理空间（两者的代码完全相同）。而如果是因为exec，由于两者执行的代码不同，子进程的代码段也会分配单独的物理空间。    </p>
-<p>因为Android上层APK程序不会去修改zygote进程预先加载的系统类和系统资源，所以就不需要为每个APK进程重新分配这些资源，所有APK程序都共用在zygote预先加载的这些资源，所以性能自然也就提高了。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/21/Zygote_1/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-studyGitlab_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/20/studyGitlab_1/" class="article-date">
-  	<time datetime="2015-09-20T10:48:55.000Z" itemprop="datePublished">2015-09-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/20/studyGitlab_1/">持续集成系统学习之Gitlab篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面我们搭建了持续集成系统,那么现在就开始看看如何使用他们.首先看看Gitlab如何使用吧.另外今天刚刚从CSDN上看到消息,Gitlab所属的公司A轮成功融资400万美元,同时也宣布gitlab 8.0这两天就会发布.真是令人振奋的消息.</p>
+        <p>从Git仓库中恢复已删除的分支或丢失的commit：</p>
       
     </div>
     
@@ -611,7 +475,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/20/studyGitlab_1/#more">more >></a>
+          <a  href="/2015/10/06/studyGit_5/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -628,11 +492,11 @@
 
 
   
-    <article id="post-setupPhabricatorEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-studyGit_4" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/20/setupPhabricatorEnvironment/" class="article-date">
-  	<time datetime="2015-09-20T07:43:13.000Z" itemprop="datePublished">2015-09-20</time>
+      <a href="/2015/10/05/studyGit_4/" class="article-date">
+  	<time datetime="2015-10-05T12:24:47.000Z" itemprop="datePublished">2015-10-05</time>
 </a>
     </div>
   
@@ -645,7 +509,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/20/setupPhabricatorEnvironment/">持续集成系统搭建之Phabricator篇</a>
+      <a class="article-title" href="/2015/10/05/studyGit_4/">版本控制系统Git的git flow分支模型</a>
     </h1>
   
 
@@ -654,8 +518,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>现在开始搭建代码评审环境，Phabricator是FaceBook的一个开源工具，非常流行，支持代码提交前审阅和代码提交后审阅。</p>
-<h3 id="phab安装">phab安装</h3><p>Phab依赖的组件较多，有： APache（nginx、lighttpd）、MYSQL、PHP（&gt;5.2）、git、PHP的扩展。一个一个安装的比较麻烦，幸好官方也提供了一键安装脚本。<br>
+        <p>上一篇介绍了大神nvie的git分支策略，那么现在就来介绍以下大神nvie针对其分支策略，所提供的git flow脚本工具吧。</p>
+<p>利用这个套工具，可以方便快捷的按照上一篇介绍的分支策略进行项目开发。</p>
       
     </div>
     
@@ -674,7 +538,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/20/setupPhabricatorEnvironment/#more">more >></a>
+          <a  href="/2015/10/05/studyGit_4/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -691,11 +555,11 @@
 
 
   
-    <article id="post-setupJenkinsEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-studyGit_3" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/19/setupJenkinsEnvironment_2/" class="article-date">
-  	<time datetime="2015-09-19T07:42:41.000Z" itemprop="datePublished">2015-09-19</time>
+      <a href="/2015/10/05/studyGit_3/" class="article-date">
+  	<time datetime="2015-10-05T07:53:26.000Z" itemprop="datePublished">2015-10-05</time>
 </a>
     </div>
   
@@ -708,7 +572,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/19/setupJenkinsEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
+      <a class="article-title" href="/2015/10/05/studyGit_3/">版本控制系统Git的分支管理策略</a>
     </h1>
   
 
@@ -717,10 +581,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.</p>
-<p>官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -P jenkins</span><br></pre></td></tr></table></figure>
-<p>这样就会卸载我们上次安装的jenkins了.</p>
+        <p>git的分支管理策略,最流行的莫过于大神<a href="http://nvie.com/posts/a-successful-git-branching-model/">nvie</a>提出的策略.</p>
       
     </div>
     
@@ -739,7 +600,7 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/19/setupJenkinsEnvironment_2/#more">more >></a>
+          <a  href="/2015/10/05/studyGit_3/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -756,11 +617,11 @@
 
 
   
-    <article id="post-setupJenkinsEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-studyGit_2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/09/19/setupJenkinsEnvironment/" class="article-date">
-  	<time datetime="2015-09-19T05:41:52.000Z" itemprop="datePublished">2015-09-19</time>
+      <a href="/2015/10/05/studyGit_2/" class="article-date">
+  	<time datetime="2015-10-05T01:31:35.000Z" itemprop="datePublished">2015-10-05</time>
 </a>
     </div>
   
@@ -773,7 +634,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/19/setupJenkinsEnvironment/">持续集成系统搭建之Jenkins篇</a>
+      <a class="article-title" href="/2015/10/05/studyGit_2/">版本控制系统Git的分支管理</a>
     </h1>
   
 
@@ -782,9 +643,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>现在开始搭建Jenkins环境，他的主要作用是每当有代码经过审阅提交到gitlab之后，自动拉取代码，编译运行和测试。</p>
-<h3 id="安装jenkins">安装jenkins</h3><p>从<a href="http://jenkins-ci.org/">Jenkins官网</a>中下载Jenkins最新的deb包。</p>
-<p>首先安装一个依赖：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install daemon</span><br></pre></td></tr></table></figure></p>
+        <p>前面一篇文章主要介绍了Git的简单原理和基本操作.现在介绍Git中最具特性的branch管理与使用模型.</p>
       
     </div>
     
@@ -803,7 +662,134 @@
 
       
         <p class="article-more-link">
-          <a  href="/2015/09/19/setupJenkinsEnvironment/#more">more >></a>
+          <a  href="/2015/10/05/studyGit_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-studyGit" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/04/studyGit/" class="article-date">
+  	<time datetime="2015-10-04T10:29:54.000Z" itemprop="datePublished">2015-10-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/04/studyGit/">版本控制系统Git的介绍与简单使用</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介">简介</h3><p>Git作者——Linux教父Linus Torvalds。Git有以下特点：</p>
+<h4 id="1-_git是一个分布式的版本控制系统">1. git是一个分布式的版本控制系统</h4><p>a. 客户端并不只提取最新版本的文件快照，而是把代码仓库完整地镜像下来，相当于备份了一份。</p>
+<p>b. 任何一处协同工作用的服务器发生故障，事后都可以用任何一个镜像出来的本地仓库恢复</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/04/studyGit/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-Android_SEAndroid_5" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/01/Android_SEAndroid_5/" class="article-date">
+  	<time datetime="2015-10-01T15:21:29.000Z" itemprop="datePublished">2015-10-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/01/Android_SEAndroid_5/">Android 5.1 SEAndroid分析之打标签</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在已经对SEAndroid上下文以及它的语法有了简单了解了,而且也已经清楚了如何向内核模块加载策略文件,但是这些安全上下文如何使用呢?也就是说如何将这些上下文和主体客体绑定呢?接下来就来分析这个问题.</p>
+<p>给主体客体绑定SEAndroid上下文,可以称为打标签.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/01/Android_SEAndroid_5/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -822,7 +808,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 </div>
@@ -830,7 +816,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2015 genglei.cuan
+    		&copy; 2016 genglei.cuan
    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
     	</div>

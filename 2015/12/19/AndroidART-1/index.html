@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ART虚拟机特点与组件 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="接下来以Android-5.1.1-R14版本的源码介绍ART虚拟机的相关知识，本来不想对Dalvik多说的，可是发现Dalvik虽然已经退休了，但其影响力依然不小，ART中很多地方都引用了其中的内容，而且最近的项目也需要对Dalvik定制，所以可能会穿插Dalvik的内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ART虚拟机特点与组件">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/12/19/AndroidART-1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="接下来以Android-5.1.1-R14版本的源码介绍ART虚拟机的相关知识，本来不想对Dalvik多说的，可是发现Dalvik虽然已经退休了，但其影响力依然不小，ART中很多地方都引用了其中的内容，而且最近的项目也需要对Dalvik定制，所以可能会穿插Dalvik的内容。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-1.png">
+<meta property="og:updated_time" content="2015-12-21T11:03:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ART虚拟机特点与组件">
+<meta name="twitter:description" content="接下来以Android-5.1.1-R14版本的源码介绍ART虚拟机的相关知识，本来不想对Dalvik多说的，可是发现Dalvik虽然已经退休了，但其影响力依然不小，ART中很多地方都引用了其中的内容，而且最近的项目也需要对Dalvik定制，所以可能会穿插Dalvik的内容。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-AndroidART-1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/19/AndroidART-1/" class="article-date">
+  	<time datetime="2015-12-18T16:42:11.000Z" itemprop="datePublished">2015-12-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ART虚拟机特点与组件
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>接下来以Android-5.1.1-R14版本的源码介绍ART虚拟机的相关知识，本来不想对Dalvik多说的，可是发现Dalvik虽然已经退休了，但其影响力依然不小，ART中很多地方都引用了其中的内容，而且最近的项目<br>也需要对Dalvik定制，所以可能会穿插Dalvik的内容。</p>
+<a id="more"></a>
+<h3 id="ART简介">ART简介</h3><p>Android 4.4开始引入ART虚拟机，Android 5.0开始正式取代Dalvik，成为Android默认虚拟机。</p>
+<p>Dalvik被抛弃的原因：</p>
+<p>1). 解释执行太慢了，IOS可是直接运行的本地机器码！！Google在Android 2.2中引入JIT即时编译，然并卵！</p>
+<p>2). JIT即时编译后的native代码存放在内存中，下次重新启动程序后，还要再次JIT。</p>
+<p>3). 垃圾回收时容易导致程序挂起或者暂停，而且回收效率也不是很高。</p>
+<p>4). Dalvik仅仅支持32bit 处理器！！！！</p>
+<p>5). 其他性能原因,如过耗CPU进而影响续航。</p>
+<h4 id="虚拟机优化技术">虚拟机优化技术</h4><p>虚拟机常用优化技术有两种：JIT和AOT</p>
+<h5 id="JIT：">JIT：</h5><p>最开始指在执行前编译，但是到现在已经发展成为，一开始解释执行，只有被多次调用的程序段才被编译，编译后存放在内存中，下次直接执行编译后的机器码。</p>
+<p>两种方式：<br>method方式：以函数或方法为单位进行编译</p>
+<p>trace方式：以trace为单位进行编译（可以把循环中的内容作为单位编译），此方法也包含method。</p>
+<h5 id="AOT">AOT</h5><p>在程序运行前就编译成机器码，并存储在本地存储器中，以加快运行程度，用此种方式，可执行的程序会变大四五倍。ART虚拟机采用了此优化方案。</p>
+<h4 id="ART特点">ART特点</h4><p>1). 采用AOT预编译优化技术</p>
+<p>2). 支持64bit处理器</p>
+<p>3). 新添加多种垃圾回收算法，支持动态压缩内存，减少内存碎片，降低内存溢出概率，在垃圾回收频率降低的情况下，回收效率提升50%以上</p>
+<p>4). 系统自身占用空间可能会增加不少</p>
+<p>5). 续航提升，降低硬件要求，系统更流畅</p>
+<p>6). App第一次安装启动时较慢，因为要对其进行AOT预编译，所占用的空间也增大</p>
+<font color="#ff5588">ART 策略就是“空间换时间”。</font>
+
+
+
+<h3 id="ART组件">ART组件</h3><p>ART源码目录：Android源码/art。</p>
+<p>编译之后主要生成：</p>
+<p>1).libart-compiler.so:主要负责将dalvik机器码翻译为本地机器码</p>
+<p>2).dex2oat:是一个可执行程序，用来将dex文件转换为oat文件</p>
+<p>3).libart.so:ART虚拟机运行时，app_process可执行程序在启动zygote前，会调用该库启动ART虚拟机</p>
+<p>4). patchoat：是一个可执行程序，ART启动时用来重定位boot.oat和boot.art</p>
+<h3 id="ART可执行文件">ART可执行文件</h3><p>ART虚拟机支持三种文件：boot.art,boot.oat,.dex文件。</p>
+<p>其中boot.art是一个img文件，ART虚拟机不能单独运行他，需要和boot.oat一起才能被ART虚拟机所解析，而且这两个文件也是ART虚拟机自身运行其他java程序十分重要的一部分。</p>
+<p>这里的.dex文件非Dalvik中的dex文件，别看后缀是一样的！！！这些dex文件是dex2oat命令将Apk或者jar包中的原始Dalvik dex文件编译而来的。</p>
+<p>ART可执行文件是一个特殊的ELF文件。ELF文件是linux下常见的文件格式，包括：</p>
+<p>1).可执行文件</p>
+<p>2).共享库，例如so库</p>
+<p>3).可重定位文件，对于的编译器生成的.o文件</p>
+<p>ART实际上是一个共享库，利用readelf命令可以看出来：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-1.png" alt=""></p>
+<p>calculator.dex是从计算器的oat文件。可以从运行Android 5.0以上系统的手机</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/<span class="preprocessor">data</span>/dalvik-cache/<span class="preprocessor">arm</span>[<span class="number">32</span>/<span class="number">64</span>]/</span><br></pre></td></tr></table></figure>
+<p>下查找其他App的Oat文件。要注意，后缀虽然还是dex，但是它们都已经不是Dalvik的dex可执行文件了！！！不要被后缀迷惑了！</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/12/19/AndroidART-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          初探boot.art与boot.oat
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/12/18/DalvikDex-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">App运行时字段或者方法数目超过65535原因分析</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="AndroidART-1" data-title="ART虚拟机特点与组件" data-url="http://www.iloveandroid.net/2015/12/19/AndroidART-1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

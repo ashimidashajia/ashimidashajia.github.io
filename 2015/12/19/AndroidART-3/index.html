@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>ART可执行文件oat解析 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面简单的介绍了ART的可执行文件有三种：.art(是一个img文件不能单独运行);.oat;.dex.他们都是由dex2oat可执行程序以Dalvik的dex文件为原料加工得来的。而且.oat和.dex是elf文件，实际上.oat和.dex内部格式一样，只是后缀不一样罢了。
+利用readelf命令可以看出ART的elf的特别之处：
+
+多了三个特别的符号。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ART可执行文件oat解析">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/12/19/AndroidART-3/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面简单的介绍了ART的可执行文件有三种：.art(是一个img文件不能单独运行);.oat;.dex.他们都是由dex2oat可执行程序以Dalvik的dex文件为原料加工得来的。而且.oat和.dex是elf文件，实际上.oat和.dex内部格式一样，只是后缀不一样罢了。
+利用readelf命令可以看出ART的elf的特别之处：
+
+多了三个特别的符号。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-8.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-5.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-6.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-7.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/art-9.png">
+<meta property="og:updated_time" content="2015-12-21T11:03:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ART可执行文件oat解析">
+<meta name="twitter:description" content="前面简单的介绍了ART的可执行文件有三种：.art(是一个img文件不能单独运行);.oat;.dex.他们都是由dex2oat可执行程序以Dalvik的dex文件为原料加工得来的。而且.oat和.dex是elf文件，实际上.oat和.dex内部格式一样，只是后缀不一样罢了。
+利用readelf命令可以看出ART的elf的特别之处：
+
+多了三个特别的符号。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-AndroidART-3" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/19/AndroidART-3/" class="article-date">
+  	<time datetime="2015-12-19T07:04:34.000Z" itemprop="datePublished">2015-12-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ART可执行文件oat解析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向开发/">逆向开发</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面简单的介绍了ART的可执行文件有三种：.art(是一个img文件不能单独运行);.oat;.dex.他们都是由dex2oat可执行程序以Dalvik的dex文件为原料加工得来的。而且.oat和.dex是elf文件，实际上.oat和.dex内部格式一样，只是后缀不一样罢了。</p>
+<p>利用readelf命令可以看出ART的elf的特别之处：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-8.png" alt=""></p>
+<p>多了三个特别的符号。</p>
+<a id="more"></a>
+<h3 id="oat文件格式">oat文件格式</h3><p>下图所示是ART可执行文件的格式：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-5.png" alt=""></p>
+<p>ART的oat文件是一个特殊的elf文件，其内部oatdata与oatlastword之间的数据才是真正的oat的文件，如上图所示。</p>
+<p>从图中也可以看出oat文件中内嵌了Dalvik的dex文件，而且oat文件原生支持内嵌多个Dalvik的dex文件，在oat的header中有字段记录了该oat文件中包含有几个dex文件。</p>
+<p>一般情况下，boot.oat包含了多个dex文件，普通的app的oat文件通常只有一个dex文件。</p>
+<p>oatclass描述dex中的class,一一对应。oatclass记录了method的本地机器指令。</p>
+<p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">art/runtime/oat.h</span><br><span class="line">art/runtime/oat.c</span><br></pre></td></tr></table></figure>
+<h3 id="oat文件的加载">oat文件的加载</h3><p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">art/runtime/Oat_file.cc</span><br></pre></td></tr></table></figure>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-6.png" alt=""></p>
+<p>思路也很清晰，首先加载elf文件，然后以oatdata和oatlastword找到真正的oat文件。接着解析oat header,根据其中的信息解析oat文件余下的部分。例如装载Dalvik的dex文件等。</p>
+<p>这里要注意，ART中利用OatDexFile类来标示Dalvik的dex，但实际上该类还是会调用DexFile类，如下图所示。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-7.png" alt=""></p>
+<p>OatDexFile类中也记录了该Dalvik dex文件中的class对应的oatclass的位置。</p>
+<h3 id="boot-oat与app的oat文件区别">boot.oat与app的oat文件区别</h3><p>前面已经说过了，dex2oat在生成app的oat文件的时候，是会记录boot.oat在内存中的位置的。那么就意味着只要不在重新生成boot.oat，那么他被加载到了内存中的位置，便是固定的，不能随便加载。</p>
+<p>从源码中也是可以看出这一点的。</p>
+<p>首先看看这两类oat文件的区别：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/art-9.png" alt=""></p>
+<p>上图中的boot.oat和calculator.dex均提取自运行Android 5.0以上系统的设备，为了便于使用，我也修改了他们的名字。</p>
+<p>从图中可以看到程序头表中的第一项LOAD的区别了。对于boot.oat来说其第一项LOAD是不为0的，而对于App的oat文件来说，第一项LOAD是为0的。</p>
+<p>源码位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">art/runtime/ELF_file.cc</span><br></pre></td></tr></table></figure>
+<p>看下面装载elf文件的load函数：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> ElfFile::Load(<span class="keyword">bool</span> executable, <span class="built_in">std</span>::<span class="built_in">string</span>* error_msg) &#123;</span><br><span class="line">  CHECK(program_header_only_) &lt;&lt; file_-&gt;GetPath();</span><br><span class="line"></span><br><span class="line">..............................................................................</span><br><span class="line">    <span class="keyword">if</span> (!reserved) &#123;</span><br><span class="line">      <span class="keyword">uint8_t</span>* reserve_base = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">uint8_t</span>*&gt;(program_header-&gt;p_vaddr);</span><br><span class="line">      <span class="keyword">uint8_t</span>* reserve_base_override = reserve_base;</span><br><span class="line">      <span class="comment">// Override the base (e.g. when compiling with --compile-pic)</span></span><br><span class="line">      <span class="keyword">if</span> (requested_base_ != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        reserve_base_override = requested_base_;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">reservation_name</span><span class="params">(<span class="string">"ElfFile reservation for "</span>)</span></span>;</span><br><span class="line">      reservation_name += file_-&gt;GetPath();</span><br><span class="line">      <span class="built_in">std</span>::unique_ptr&lt;MemMap&gt; reserve(MemMap::MapAnonymous(reservation_name.c_str(),</span><br><span class="line">                                                           reserve_base_override,</span><br><span class="line">                                                           GetLoadedSize(), PROT_NONE, <span class="literal">false</span>,</span><br><span class="line">                                                           error_msg));</span><br><span class="line">.................................................................................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>MapAnonymous函数的第二个参数就是映射到内存的起始位置，不指定的话，就有系统分配了，boot.oat是指定了的！！！</p>
+<p>总的来说：</p>
+<p>1）oat文件其实是包含在一个elf文件中的，符号oatdata和oatlastword分别指定了oat文件在elf文件中的头和尾的位置，符号oatexec指向可执行段的位置；</p>
+<p>2）boot.oat是要被加载到一个固定的地址上的，紧挨着boot.art之后。而对于app的oat文件来说，可以被加载到内存中的任何位置；</p>
+<p>3）oat文件内部包含了若干完整的dex文件。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/12/19/AndroidART-4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          ART运行普通java程序
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/12/19/AndroidART-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">初探boot.art与boot.oat</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="AndroidART-3" data-title="ART可执行文件oat解析" data-url="http://www.iloveandroid.net/2015/12/19/AndroidART-3/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JVM指令集 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用命令: javap -c classFileName。可以反汇编class文件，即可以看到class文件对应的JVM机器指令。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM指令集">
+<meta property="og:url" content="http://www.iloveandroid.net/2015/12/06/jvm指令集/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="使用命令: javap -c classFileName。可以反汇编class文件，即可以看到class文件对应的JVM机器指令。">
+<meta property="og:updated_time" content="2015-12-21T11:03:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM指令集">
+<meta name="twitter:description" content="使用命令: javap -c classFileName。可以反汇编class文件，即可以看到class文件对应的JVM机器指令。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-jvm指令集" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/06/jvm指令集/" class="article-date">
+  	<time datetime="2015-12-06T07:05:35.000Z" itemprop="datePublished">2015-12-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JVM指令集
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向工程/">逆向工程</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/App开发/">App开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>使用命令: javap -c classFileName。可以反汇编class文件，即可以看到class文件对应的JVM机器指令。</p>
+<a id="more"></a>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br></pre></td><td class="code"><pre><span class="line">指令码 助记符    说明</span><br><span class="line"><span class="number">0</span>×<span class="number">00</span> nop      什么都不做</span><br><span class="line"><span class="number">0</span>×<span class="number">01</span> aconst_null 将null推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">02</span> iconst_m1   将<span class="keyword">int</span>型-<span class="number">1</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">03</span> iconst_0   将<span class="keyword">int</span>型<span class="number">0</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">04</span> iconst_1   将<span class="keyword">int</span>型<span class="number">1</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">05</span> iconst_2   将<span class="keyword">int</span>型<span class="number">2</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">06</span> iconst_3   将<span class="keyword">int</span>型<span class="number">3</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">07</span> iconst_4   将<span class="keyword">int</span>型<span class="number">4</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">08</span> iconst_5   将<span class="keyword">int</span>型<span class="number">5</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">09</span> lconst_0   将<span class="keyword">long</span>型<span class="number">0</span>推送至栈顶</span><br><span class="line"><span class="number">0x0a</span> lconst_1   将<span class="keyword">long</span>型<span class="number">1</span>推送至栈顶</span><br><span class="line"><span class="number">0x0b</span> fconst_0   将<span class="keyword">float</span>型<span class="number">0</span>推送至栈顶</span><br><span class="line"><span class="number">0x0c</span> fconst_1   将<span class="keyword">float</span>型<span class="number">1</span>推送至栈顶</span><br><span class="line"><span class="number">0x0d</span> fconst_2   将<span class="keyword">float</span>型<span class="number">2</span>推送至栈顶</span><br><span class="line"><span class="number">0x0e</span> dconst_0   将<span class="keyword">double</span>型<span class="number">0</span>推送至栈顶</span><br><span class="line"><span class="number">0x0f</span> dconst_1   将<span class="keyword">double</span>型<span class="number">1</span>推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">10</span> bipush    将单字节的常量值(-<span class="number">128</span>~<span class="number">127</span>)推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">11</span> sipush    将一个短整型常量值(-<span class="number">32768</span>~<span class="number">32767</span>)推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">12</span> ldc      将<span class="keyword">int</span>, <span class="keyword">float</span>或String型常量值从常量池中推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">13</span> ldc_w     将<span class="keyword">int</span>, <span class="keyword">float</span>或String型常量值从常量池中推送至栈顶（宽索引）</span><br><span class="line"><span class="number">0</span>×<span class="number">14</span> ldc2_w    将<span class="keyword">long</span>或<span class="keyword">double</span>型常量值从常量池中推送至栈顶（宽索引）</span><br><span class="line"><span class="number">0</span>×<span class="number">15</span> iload     将指定的<span class="keyword">int</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">16</span> lload     将指定的<span class="keyword">long</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">17</span> fload     将指定的<span class="keyword">float</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">18</span> dload     将指定的<span class="keyword">double</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">19</span> aload     将指定的引用类型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x1a</span> iload_0    将第一个<span class="keyword">int</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x1b</span> iload_1    将第二个<span class="keyword">int</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x1c</span> iload_2    将第三个<span class="keyword">int</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x1d</span> iload_3    将第四个<span class="keyword">int</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x1e</span> lload_0    将第一个<span class="keyword">long</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x1f</span> lload_1    将第二个<span class="keyword">long</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">20</span> lload_2    将第三个<span class="keyword">long</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">21</span> lload_3    将第四个<span class="keyword">long</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">22</span> fload_0    将第一个<span class="keyword">float</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">23</span> fload_1    将第二个<span class="keyword">float</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">24</span> fload_2    将第三个<span class="keyword">float</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">25</span> fload_3    将第四个<span class="keyword">float</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">26</span> dload_0    将第一个<span class="keyword">double</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">27</span> dload_1    将第二个<span class="keyword">double</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">28</span> dload_2    将第三个<span class="keyword">double</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">29</span> dload_3    将第四个<span class="keyword">double</span>型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x2a</span> aload_0    将第一个引用类型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x2b</span> aload_1    将第二个引用类型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x2c</span> aload_2    将第三个引用类型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x2d</span> aload_3    将第四个引用类型本地变量推送至栈顶</span><br><span class="line"><span class="number">0x2e</span> iaload    将<span class="keyword">int</span>型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0x2f</span> laload    将<span class="keyword">long</span>型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">30</span> faload    将<span class="keyword">float</span>型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">31</span> daload    将<span class="keyword">double</span>型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">32</span> aaload    将引用型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">33</span> baload    将boolean或byte型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">34</span> caload    将<span class="keyword">char</span>型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">35</span> saload    将<span class="keyword">short</span>型数组指定索引的值推送至栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">36</span> istore    将栈顶<span class="keyword">int</span>型数值存入指定本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">37</span> lstore    将栈顶<span class="keyword">long</span>型数值存入指定本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">38</span> fstore    将栈顶<span class="keyword">float</span>型数值存入指定本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">39</span> dstore    将栈顶<span class="keyword">double</span>型数值存入指定本地变量</span><br><span class="line"><span class="number">0x3a</span> astore    将栈顶引用型数值存入指定本地变量</span><br><span class="line"><span class="number">0x3b</span> istore_0   将栈顶<span class="keyword">int</span>型数值存入第一个本地变量</span><br><span class="line"><span class="number">0x3c</span> istore_1   将栈顶<span class="keyword">int</span>型数值存入第二个本地变量</span><br><span class="line"><span class="number">0x3d</span> istore_2   将栈顶<span class="keyword">int</span>型数值存入第三个本地变量</span><br><span class="line"><span class="number">0x3e</span> istore_3   将栈顶<span class="keyword">int</span>型数值存入第四个本地变量</span><br><span class="line"><span class="number">0x3f</span> lstore_0   将栈顶<span class="keyword">long</span>型数值存入第一个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">40</span> lstore_1   将栈顶<span class="keyword">long</span>型数值存入第二个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">41</span> lstore_2   将栈顶<span class="keyword">long</span>型数值存入第三个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">42</span> lstore_3   将栈顶<span class="keyword">long</span>型数值存入第四个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">43</span> fstore_0   将栈顶<span class="keyword">float</span>型数值存入第一个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">44</span> fstore_1   将栈顶<span class="keyword">float</span>型数值存入第二个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">45</span> fstore_2   将栈顶<span class="keyword">float</span>型数值存入第三个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">46</span> fstore_3   将栈顶<span class="keyword">float</span>型数值存入第四个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">47</span> dstore_0   将栈顶<span class="keyword">double</span>型数值存入第一个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">48</span> dstore_1   将栈顶<span class="keyword">double</span>型数值存入第二个本地变量</span><br><span class="line"><span class="number">0</span>×<span class="number">49</span> dstore_2   将栈顶<span class="keyword">double</span>型数值存入第三个本地变量</span><br><span class="line"><span class="number">0x4a</span> dstore_3   将栈顶<span class="keyword">double</span>型数值存入第四个本地变量</span><br><span class="line"><span class="number">0x4b</span> astore_0   将栈顶引用型数值存入第一个本地变量</span><br><span class="line"><span class="number">0x4c</span> astore_1   将栈顶引用型数值存入第二个本地变量</span><br><span class="line"><span class="number">0x4d</span> astore_2   将栈顶引用型数值存入第三个本地变量</span><br><span class="line"><span class="number">0x4e</span> astore_3   将栈顶引用型数值存入第四个本地变量</span><br><span class="line"><span class="number">0x4f</span> iastore    将栈顶<span class="keyword">int</span>型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">50</span> lastore    将栈顶<span class="keyword">long</span>型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">51</span> fastore    将栈顶<span class="keyword">float</span>型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">52</span> dastore    将栈顶<span class="keyword">double</span>型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">53</span> aastore    将栈顶引用型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">54</span> bastore    将栈顶boolean或byte型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">55</span> castore    将栈顶<span class="keyword">char</span>型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">56</span> sastore    将栈顶<span class="keyword">short</span>型数值存入指定数组的指定索引位置</span><br><span class="line"><span class="number">0</span>×<span class="number">57</span> pop      将栈顶数值弹出 (数值不能是<span class="keyword">long</span>或<span class="keyword">double</span>类型的)</span><br><span class="line"><span class="number">0</span>×<span class="number">58</span> pop2     将栈顶的一个（<span class="keyword">long</span>或<span class="keyword">double</span>类型的)或两个数值弹出（其它）</span><br><span class="line"><span class="number">0</span>×<span class="number">59</span> dup      复制栈顶数值并将复制值压入栈顶</span><br><span class="line"><span class="number">0x5a</span> dup_x1    复制栈顶数值并将两个复制值压入栈顶</span><br><span class="line"><span class="number">0x5b</span> dup_x2    复制栈顶数值并将三个（或两个）复制值压入栈顶</span><br><span class="line"><span class="number">0x5c</span> dup2     复制栈顶一个（<span class="keyword">long</span>或<span class="keyword">double</span>类型的)或两个（其它）数值并将复制值压入栈顶</span><br><span class="line"><span class="number">0x5d</span> dup2_x1    &lt;待补充&gt;</span><br><span class="line"><span class="number">0x5e</span> dup2_x2    &lt;待补充&gt;</span><br><span class="line"><span class="number">0x5f</span> swap     将栈最顶端的两个数值互换(数值不能是<span class="keyword">long</span>或<span class="keyword">double</span>类型的)</span><br><span class="line"><span class="number">0</span>×<span class="number">60</span> iadd     将栈顶两<span class="keyword">int</span>型数值相加并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">61</span> ladd     将栈顶两<span class="keyword">long</span>型数值相加并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">62</span> fadd     将栈顶两<span class="keyword">float</span>型数值相加并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">63</span> dadd     将栈顶两<span class="keyword">double</span>型数值相加并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">64</span> isub     将栈顶两<span class="keyword">int</span>型数值相减并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">65</span> lsub     将栈顶两<span class="keyword">long</span>型数值相减并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">66</span> fsub     将栈顶两<span class="keyword">float</span>型数值相减并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">67</span> dsub     将栈顶两<span class="keyword">double</span>型数值相减并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">68</span> imul     将栈顶两<span class="keyword">int</span>型数值相乘并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">69</span> lmul     将栈顶两<span class="keyword">long</span>型数值相乘并将结果压入栈顶</span><br><span class="line"><span class="number">0x6a</span> fmul     将栈顶两<span class="keyword">float</span>型数值相乘并将结果压入栈顶</span><br><span class="line"><span class="number">0x6b</span> dmul     将栈顶两<span class="keyword">double</span>型数值相乘并将结果压入栈顶</span><br><span class="line"><span class="number">0x6c</span> idiv     将栈顶两<span class="keyword">int</span>型数值相除并将结果压入栈顶</span><br><span class="line"><span class="number">0x6d</span> ldiv     将栈顶两<span class="keyword">long</span>型数值相除并将结果压入栈顶</span><br><span class="line"><span class="number">0x6e</span> fdiv     将栈顶两<span class="keyword">float</span>型数值相除并将结果压入栈顶</span><br><span class="line"><span class="number">0x6f</span> ddiv     将栈顶两<span class="keyword">double</span>型数值相除并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">70</span> irem     将栈顶两<span class="keyword">int</span>型数值作取模运算并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">71</span> lrem     将栈顶两<span class="keyword">long</span>型数值作取模运算并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">72</span> frem     将栈顶两<span class="keyword">float</span>型数值作取模运算并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">73</span> drem     将栈顶两<span class="keyword">double</span>型数值作取模运算并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">74</span> ineg     将栈顶<span class="keyword">int</span>型数值取负并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">75</span> lneg     将栈顶<span class="keyword">long</span>型数值取负并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">76</span> fneg     将栈顶<span class="keyword">float</span>型数值取负并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">77</span> dneg     将栈顶<span class="keyword">double</span>型数值取负并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">78</span> ishl     将<span class="keyword">int</span>型数值左移位指定位数并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">79</span> lshl     将<span class="keyword">long</span>型数值左移位指定位数并将结果压入栈顶</span><br><span class="line"><span class="number">0x7a</span> ishr     将<span class="keyword">int</span>型数值右（符号）移位指定位数并将结果压入栈顶</span><br><span class="line"><span class="number">0x7b</span> lshr     将<span class="keyword">long</span>型数值右（符号）移位指定位数并将结果压入栈顶</span><br><span class="line"><span class="number">0x7c</span> iushr     将<span class="keyword">int</span>型数值右（无符号）移位指定位数并将结果压入栈顶</span><br><span class="line"><span class="number">0x7d</span> lushr     将<span class="keyword">long</span>型数值右（无符号）移位指定位数并将结果压入栈顶</span><br><span class="line"><span class="number">0x7e</span> iand     将栈顶两<span class="keyword">int</span>型数值作“按位与”并将结果压入栈顶</span><br><span class="line"><span class="number">0x7f</span> land     将栈顶两<span class="keyword">long</span>型数值作“按位与”并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">80</span> ior      将栈顶两<span class="keyword">int</span>型数值作“按位或”并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">81</span> lor      将栈顶两<span class="keyword">long</span>型数值作“按位或”并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">82</span> ixor     将栈顶两<span class="keyword">int</span>型数值作“按位异或”并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">83</span> lxor     将栈顶两<span class="keyword">long</span>型数值作“按位异或”并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">84</span> iinc     将指定<span class="keyword">int</span>型变量增加指定值（i++, i–, i+=<span class="number">2</span>）</span><br><span class="line"><span class="number">0</span>×<span class="number">85</span> i2l      将栈顶<span class="keyword">int</span>型数值强制转换成<span class="keyword">long</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">86</span> i2f      将栈顶<span class="keyword">int</span>型数值强制转换成<span class="keyword">float</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">87</span> i2d      将栈顶<span class="keyword">int</span>型数值强制转换成<span class="keyword">double</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">88</span> l2i      将栈顶<span class="keyword">long</span>型数值强制转换成<span class="keyword">int</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">89</span> l2f      将栈顶<span class="keyword">long</span>型数值强制转换成<span class="keyword">float</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0x8a</span> l2d      将栈顶<span class="keyword">long</span>型数值强制转换成<span class="keyword">double</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0x8b</span> f2i      将栈顶<span class="keyword">float</span>型数值强制转换成<span class="keyword">int</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0x8c</span> f2l      将栈顶<span class="keyword">float</span>型数值强制转换成<span class="keyword">long</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0x8d</span> f2d      将栈顶<span class="keyword">float</span>型数值强制转换成<span class="keyword">double</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0x8e</span> d2i      将栈顶<span class="keyword">double</span>型数值强制转换成<span class="keyword">int</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0x8f</span> d2l      将栈顶<span class="keyword">double</span>型数值强制转换成<span class="keyword">long</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">90</span> d2f      将栈顶<span class="keyword">double</span>型数值强制转换成<span class="keyword">float</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">91</span> i2b      将栈顶<span class="keyword">int</span>型数值强制转换成byte型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">92</span> i2c      将栈顶<span class="keyword">int</span>型数值强制转换成<span class="keyword">char</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">93</span> i2s      将栈顶<span class="keyword">int</span>型数值强制转换成<span class="keyword">short</span>型数值并将结果压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">94</span> lcmp     比较栈顶两<span class="keyword">long</span>型数值大小，并将结果（<span class="number">1</span>，<span class="number">0</span>，-<span class="number">1</span>）压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">95</span> fcmpl     比较栈顶两<span class="keyword">float</span>型数值大小，并将结果（<span class="number">1</span>，<span class="number">0</span>，-<span class="number">1</span>）压入栈顶；当其中一个数值为NaN时，将-<span class="number">1</span>压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">96</span> fcmpg     比较栈顶两<span class="keyword">float</span>型数值大小，并将结果（<span class="number">1</span>，<span class="number">0</span>，-<span class="number">1</span>）压入栈顶；当其中一个数值为NaN时，将<span class="number">1</span>压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">97</span> dcmpl     比较栈顶两<span class="keyword">double</span>型数值大小，并将结果（<span class="number">1</span>，<span class="number">0</span>，-<span class="number">1</span>）压入栈顶；当其中一个数值为NaN时，将-<span class="number">1</span>压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">98</span> dcmpg     比较栈顶两<span class="keyword">double</span>型数值大小，并将结果（<span class="number">1</span>，<span class="number">0</span>，-<span class="number">1</span>）压入栈顶；当其中一个数值为NaN时，将<span class="number">1</span>压入栈顶</span><br><span class="line"><span class="number">0</span>×<span class="number">99</span> ifeq     当栈顶<span class="keyword">int</span>型数值等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0x9a</span> ifne     当栈顶<span class="keyword">int</span>型数值不等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0x9b</span> iflt     当栈顶<span class="keyword">int</span>型数值小于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0x9c</span> ifge     当栈顶<span class="keyword">int</span>型数值大于等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0x9d</span> ifgt     当栈顶<span class="keyword">int</span>型数值大于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0x9e</span> ifle     当栈顶<span class="keyword">int</span>型数值小于等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0x9f</span> if_icmpeq   比较栈顶两<span class="keyword">int</span>型数值大小，当结果等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0xa0</span> if_icmpne   比较栈顶两<span class="keyword">int</span>型数值大小，当结果不等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0xa1</span> if_icmplt   比较栈顶两<span class="keyword">int</span>型数值大小，当结果小于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0xa2</span> if_icmpge   比较栈顶两<span class="keyword">int</span>型数值大小，当结果大于等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0xa3</span> if_icmpgt   比较栈顶两<span class="keyword">int</span>型数值大小，当结果大于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0xa4</span> if_icmple   比较栈顶两<span class="keyword">int</span>型数值大小，当结果小于等于<span class="number">0</span>时跳转</span><br><span class="line"><span class="number">0xa5</span> if_acmpeq   比较栈顶两引用型数值，当结果相等时跳转</span><br><span class="line"><span class="number">0xa6</span> if_acmpne   比较栈顶两引用型数值，当结果不相等时跳转</span><br><span class="line"><span class="number">0xa7</span> <span class="keyword">goto</span>     无条件跳转</span><br><span class="line"><span class="number">0xa8</span> jsr      跳转至指定<span class="number">16</span>位offset位置，并将jsr下一条指令地址压入栈顶</span><br><span class="line"><span class="number">0xa9</span> ret      返回至本地变量指定的index的指令位置（一般与jsr, jsr_w联合使用）</span><br><span class="line"><span class="number">0xaa</span> tableswitch    用于<span class="keyword">switch</span>条件跳转，<span class="keyword">case</span>值连续（可变长度指令）</span><br><span class="line"><span class="number">0xab</span> lookupswitch   用于<span class="keyword">switch</span>条件跳转，<span class="keyword">case</span>值不连续（可变长度指令）</span><br><span class="line"><span class="number">0xac</span> ireturn    从当前方法返回<span class="keyword">int</span></span><br><span class="line"><span class="number">0xad</span> lreturn    从当前方法返回<span class="keyword">long</span></span><br><span class="line"><span class="number">0xae</span> freturn    从当前方法返回<span class="keyword">float</span></span><br><span class="line"><span class="number">0xaf</span> dreturn    从当前方法返回<span class="keyword">double</span></span><br><span class="line"><span class="number">0xb0</span> areturn    从当前方法返回对象引用</span><br><span class="line"><span class="number">0xb1</span> <span class="keyword">return</span>    从当前方法返回<span class="keyword">void</span></span><br><span class="line"><span class="number">0xb2</span> getstatic   获取指定类的静态域，并将其值压入栈顶</span><br><span class="line"><span class="number">0xb3</span> putstatic   为指定的类的静态域赋值</span><br><span class="line"><span class="number">0xb4</span> getfield   获取指定类的实例域，并将其值压入栈顶</span><br><span class="line"><span class="number">0xb5</span> putfield   为指定的类的实例域赋值</span><br><span class="line"><span class="number">0xb6</span> invokevirtual   调用实例方法</span><br><span class="line"><span class="number">0xb7</span> invokespecial   调用超类构造方法，实例初始化方法，私有方法</span><br><span class="line"><span class="number">0xb8</span> invokestatic   调用静态方法</span><br><span class="line"><span class="number">0xb9</span> invokeinterface 调用接口方法</span><br><span class="line"><span class="number">0xba</span> –</span><br><span class="line"><span class="number">0xbb</span> <span class="keyword">new</span>      创建一个对象，并将其引用值压入栈顶</span><br><span class="line"><span class="number">0xbc</span> newarray   创建一个指定原始类型（如<span class="keyword">int</span>, <span class="keyword">float</span>, <span class="keyword">char</span>…）的数组，并将其引用值压入栈顶</span><br><span class="line"><span class="number">0xbd</span> anewarray   创建一个引用型（如类，接口，数组）的数组，并将其引用值压入栈顶</span><br><span class="line"><span class="number">0xbe</span> arraylength 获得数组的长度值并压入栈顶</span><br><span class="line"><span class="number">0xbf</span> athrow    将栈顶的异常抛出</span><br><span class="line"><span class="number">0xc0</span> checkcast   检验类型转换，检验未通过将抛出ClassCastException</span><br><span class="line"><span class="number">0xc1</span> instanceof 检验对象是否是指定的类的实例，如果是将<span class="number">1</span>压入栈顶，否则将<span class="number">0</span>压入栈顶</span><br><span class="line"><span class="number">0xc2</span> monitorenter   获得对象的锁，用于同步方法或同步块</span><br><span class="line"><span class="number">0xc3</span> monitorexit    释放对象的锁，用于同步方法或同步块</span><br><span class="line"><span class="number">0xc4</span> wide     当本地变量的索引超过<span class="number">255</span>时使用该指令扩展索引宽度。</span><br></pre></td></tr></table></figure>
+<p>用法1： wide <opcode> indexbyte1 indexbyte2</opcode></p>
+<p>其中<opcode>是iload, fload, aload, lload, dload, istore, fstore, astore, lstore, dstore, ret 之一；索引的值为无符号 (indexbyte1&lt;&lt;8 | indexbyte2).</opcode></p>
+<p>用法 2：wide iinc indexbyte1 indexbyte2 constbyte1 constbyte2</p>
+<p>其中索引的值为无符号 (indexbyte1&lt;&lt;8 | indexbyte2)；常量值为有符号(constbyte1&lt;&lt;8 | constbyte2)</p>
+<p>0xc5 multianewarray 创建指定类型和指定维度的多维数组（执行该指令时，操作栈中必须包含各维度的长度值），并将其引用值压入栈顶</p>
+<p>0xc6 ifnull    为null时跳转</p>
+<p>0xc7 ifnonnull   不为null时跳转</p>
+<p>0xc8 goto_w    无条件跳转（宽索引）</p>
+<p>0xc9 jsr_w     跳转至指定32位offset位置，并将jsr_w下一条指令地址压入栈顶</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/12/16/AndroguardEnvironment/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Androguard环境搭建
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/11/17/studyElf/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Linux elf格式</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="jvm指令集" data-title="JVM指令集" data-url="http://www.iloveandroid.net/2015/12/06/jvm指令集/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
