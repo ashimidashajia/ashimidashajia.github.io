@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="前面介绍了pm命令如何使用，从侧面也反应出了PMS提供了哪些功能。那么在真正分析源码之前，还要了解一下PMS的一些默认规则。">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-1.png">
-<meta property="og:updated_time" content="2016-06-20T10:37:24.000Z">
+<meta property="og:updated_time" content="2016-06-20T10:39:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PMS运行时的一些规则">
 <meta name="twitter:description" content="前面介绍了pm命令如何使用，从侧面也反应出了PMS提供了哪些功能。那么在真正分析源码之前，还要了解一下PMS的一些默认规则。">
@@ -243,8 +243,7 @@
 <h4 id="/oem/app">/oem/app</h4><p>该目录中存放oem特有的app。</p>
 <h4 id="/data/app">/data/app</h4><p>用户安装的第三方app</p>
 <p>PMS启动的时候，也是按照上述顺序逐个扫描解析这些目录中的apk的。</p>
-<p>###安装APK的方法</p>
-<h4 id="系统应用的安装">系统应用的安装</h4><p>PMS启动的时候完成，没有安装界面。</p>
+<h3 id="安装APK的方法">安装APK的方法</h3><h4 id="系统应用的安装">系统应用的安装</h4><p>PMS启动的时候完成，没有安装界面。</p>
 <h4 id="通过设备自带的应用商店下载的apk">通过设备自带的应用商店下载的apk</h4><p>下载完APK之后，调用Packagemanager接口安装，没有安装界面。</p>
 <h4 id="ADB命令安装">ADB命令安装</h4><p>adb命令实际上是通过pm命令来安装的，同样没有安装界面。</p>
 <h4 id="第三方应用安装">第三方应用安装</h4><p>通过SD卡里的APK文件安装，有安装界面，由packageinstaller.apk应用处理安装及卸载过程的界面。</p>
