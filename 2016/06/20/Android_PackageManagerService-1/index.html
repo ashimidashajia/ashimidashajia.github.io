@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>初探Android的PMS服务 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android系统中PackageManagerService简称PMS，主要负责各种APK的安装，卸载，优化和查询。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初探Android的PMS服务">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/20/Android_PackageManagerService-1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Android系统中PackageManagerService简称PMS，主要负责各种APK的安装，卸载，优化和查询。">
+<meta property="og:updated_time" content="2016-06-20T07:20:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初探Android的PMS服务">
+<meta name="twitter:description" content="Android系统中PackageManagerService简称PMS，主要负责各种APK的安装，卸载，优化和查询。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/20/Android_PackageManagerService-1/" class="article-date">
+  	<time datetime="2016-06-20T03:38:50.000Z" itemprop="datePublished">2016-06-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      初探Android的PMS服务
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android系统中PackageManagerService简称PMS，主要负责各种APK的安装，卸载，优化和查询。</p>
+<a id="more"></a>
+<p>Android系统中，pm工具是PMS的一个展现命令。通过了解pm的使用，可以了解PMS究竟提供了哪些具体的功能，进而帮助我们理解和分析PMS的源码实现。</p>
+<h3 id="pm使用">pm使用</h3><p>利用adb shell命令，进入Android设备的终端,pm工具在/system/bin中，所以可以直接使用：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm &#60;command&#62;</span><br></pre></td></tr></table></figure>
+<h4 id="包名信息查询">包名信息查询</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list packages [options] [FILTER]</span><br></pre></td></tr></table></figure>
+<p>打印所有的已经安装的应用的包名，如果设置了文件过滤则值显示包含过滤文字的内容.</p>
+<p>参数:</p>
+<p>-f    显示每个包的文件位置 </p>
+<p>-d    使用过滤器，只显示禁用的应用的包名</p>
+<p>-e    使用过滤器，只显示可用的应用的包名</p>
+<p>-s    使用过滤器，只显示系统应用的包名</p>
+<p>-3    使用过滤器，只显示第三方应用的包名</p>
+<p>-i    查看应用的安装者</p>
+<h4 id="权限信息查询">权限信息查询</h4><p>打印所有已知的权限组<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list permission-groups</span><br></pre></td></tr></table></figure></p>
+<p>打印权限：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list permissions [options] [GROUP]</span><br></pre></td></tr></table></figure></p>
+<p>参数:</p>
+<p>g   按组进行列出权限</p>
+<p>-f  打印所有信息</p>
+<p>-s  简短的摘要</p>
+<p>-d  只有危险的权限列表</p>
+<p>-u  只有权限的用户将看到列表用户自定义权限</p>
+<p>Android 6.0之后，允许授权和取消权限：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm grant &#60;package_name&#62; &#60;permission&#62;    &#10;pm revoke &#60;package_name&#62; &#60;permission&#62;</span><br></pre></td></tr></table></figure>
+<p>授权和取消是针对APK中申请的权限的来说的。即APK中没有申请的权限，是没办法通过此命令添加的。</p>
+<h4 id="测试包">测试包</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list instrumentation &#21442;&#25968;</span><br></pre></td></tr></table></figure>
+<p>无参数  列出所有的instrumentation测试包</p>
+<p>-f  列出apk文件位置</p>
+<p>target_package   列出某个app的测试包</p>
+<h4 id="包路径">包路径</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm path package_name</span><br></pre></td></tr></table></figure>
+<h4 id="系统硬件特性">系统硬件特性</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list features</span><br></pre></td></tr></table></figure>
+<h4 id="设备依赖的java库">设备依赖的java库</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list libraries</span><br></pre></td></tr></table></figure>
+<h4 id="dump包信息">dump包信息</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm dump package_name</span><br></pre></td></tr></table></figure>
+<h4 id="安装与卸载apk">安装与卸载apk</h4><p>安装apk</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm install [-lrtsfd] [-i PACKAGE] [PATH]</span><br></pre></td></tr></table></figure>
+<p>adb install实际上就是对pm install的封装调用。</p>
+<p>参数：</p>
+<p>-l  锁定应用程序</p>
+<p>-r  重新安装应用，且保留应用数据</p>
+<p>-t  允许测试apk被安装</p>
+<p>-i  INSTALLER_PACKAGE_NAME 指定安装包的包名</p>
+<p>-s  安装到sd卡</p>
+<p>-f  安装到系统内置存储中（默认安装位置）</p>
+<p>-d  允许降级安装（同一应用低级换高级）</p>
+<p>-g  授予应用程序清单中列出的所有权限（只有6.0系统可用）</p>
+<p>卸载apk:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm uninstall [options] &#60;PACKAGE&#62;</span><br></pre></td></tr></table></figure>
+<p>参数:<br>-k  卸载应用且保留数据与缓存（如果不加-k则全部删除）</p>
+<h4 id="清除应用数据">清除应用数据</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm clear package_name</span><br></pre></td></tr></table></figure>
+<h4 id="禁用和启用系统应用">禁用和启用系统应用</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm enable &#60;PACKAGE_OR_COMPONENT&#62;   &#20351;package&#25110;component&#21487;&#29992;&#10;pm disenable &#60;PACKAGE_OR_COMPONENT&#62;    &#20351;package&#25110;component&#19981;&#21487;&#29992;&#65288;&#30452;&#25509;&#23601;&#25214;&#19981;&#21040;&#24212;&#29992;&#20102;&#65289;&#10;pm disenable-user [options] &#60;PACKAGE_OR_COMPONENT&#62; &#20351;package&#25110;component&#19981;&#21487;&#29992;&#65288;&#20250;&#26174;&#31034;&#24050;&#20572;&#29992;</span><br></pre></td></tr></table></figure>
+<h4 id="隐藏与恢复应用">隐藏与恢复应用</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm hide PACKAGE_OR_COMPONENT&#10;pm unhide PACKAGE_OR_COMPONENT</span><br></pre></td></tr></table></figure>
+<p>被隐藏应用在应用管理中变得不可见，桌面图标也会消失</p>
+<h4 id="设置和查看应用的安装位置">设置和查看应用的安装位置</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm   set-install-location &#21442;&#25968; package_name&#10;pm   get-install-location package_name</span><br></pre></td></tr></table></figure>
+<p>参数：<br>0：自动-让系统决定最好的位置<br>1：内部存储-安装在内部设备上的存储<br>2：外部存储-安装在外部媒体 </p>
+<h4 id="查看当前系统user信息">查看当前系统user信息</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm list users</span><br></pre></td></tr></table></figure>
+<p>可以指的apk安装在某个user下，这样只有切换到该user时，才能显示和使用该apk。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/01/Android-partitions/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">查看Android系统分区</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-1" data-title="初探Android的PMS服务" data-url="http://www.iloveandroid.net/2016/06/20/Android_PackageManagerService-1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
