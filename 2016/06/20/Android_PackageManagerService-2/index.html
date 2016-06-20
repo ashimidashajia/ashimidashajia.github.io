@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Android.mk 常用语法总结 | 码农故事</title>
+  <title>PMS运行时的一些规则 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.">
+  <meta name="description" content="前面介绍了pm命令如何使用，从侧面也反应出了PMS提供了哪些功能。那么在真正分析源码之前，还要了解一下PMS的一些默认规则。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android.mk 常用语法总结">
-<meta property="og:url" content="http://www.iloveandroid.net/2015/11/05/AndroidMK/index.html">
+<meta property="og:title" content="PMS运行时的一些规则">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/20/Android_PackageManagerService-2/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.">
-<meta property="og:updated_time" content="2015-11-05T09:10:07.000Z">
+<meta property="og:description" content="前面介绍了pm命令如何使用，从侧面也反应出了PMS提供了哪些功能。那么在真正分析源码之前，还要了解一下PMS的一些默认规则。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-1.png">
+<meta property="og:updated_time" content="2016-06-20T10:37:24.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android.mk 常用语法总结">
-<meta name="twitter:description" content="Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.">
+<meta name="twitter:title" content="PMS运行时的一些规则">
+<meta name="twitter:description" content="前面介绍了pm命令如何使用，从侧面也反应出了PMS提供了哪些功能。那么在真正分析源码之前，还要了解一下PMS的一些默认规则。">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -182,11 +183,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-AndroidMK" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/11/05/AndroidMK/" class="article-date">
-  	<time datetime="2015-11-05T05:20:55.000Z" itemprop="datePublished">2015-11-05</time>
+      <a href="/2016/06/20/Android_PackageManagerService-2/" class="article-date">
+  	<time datetime="2016-06-20T07:44:17.000Z" itemprop="datePublished">2016-06-20</time>
 </a>
     </div>
   
@@ -199,7 +200,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Android.mk 常用语法总结
+      PMS运行时的一些规则
     </h1>
   
 
@@ -208,7 +209,7 @@
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android编译/">Android编译</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
 	</div>
 
         
@@ -223,12 +224,70 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.</p>
+        <p>前面介绍了pm命令如何使用，从侧面也反应出了PMS提供了哪些功能。那么在真正分析源码之前，还要了解一下PMS的一些默认规则。</p>
 <a id="more"></a>
-<h3 id="自定义宏">自定义宏</h3><p>如果想在源文件中使用一个自己定义的宏，ex. FLAG_TEST，就需要在当前源文件所在目录的Android.mk文件中修改:</p>
-<p>使用的是LOCAL_CFLAGS，其实就是使用的makefile 的CFLAGS命令参数变量。</p>
-<p>定义宏的方法： LOCAL_CFLAGS += -DFLAG_TEST</p>
-<p>取消宏定义的方法： LOCAL_CFLAGS += -UFLAG_TEST</p>
+<p>本文主要介绍与PMS相关的目录与文件，以及PMS操作它们的规则。</p>
+<h3 id="APK文件路径">APK文件路径</h3><p>APK主要分为两类：</p>
+<ol>
+<li><p>系统自带的APK</p>
+</li>
+<li><p>用户安装的第三方APK</p>
+</li>
+</ol>
+<p>对于系统自带的APK,可以从下面的路径中查找：</p>
+<h4 id="/system/priv-app">/system/priv-app</h4><p>该路径存放一些系统底层的应用，比如Setting，systemUI等。该目录中的app拥有较高的系统权限，而且如果要使用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:protectionLevel=signatureOrSystem</span><br></pre></td></tr></table></figure>
+<p>那么该app必须放到priv-app目录中去。</p>
+<h4 id="/system/app">/system/app</h4><p>该目录中存放的系统app权限相对较低，而且当拥有root权限时，就有可能卸载掉这些app。</p>
+<h4 id="/vendor/app">/vendor/app</h4><p>该目录存放vendor厂商的app</p>
+<h4 id="/oem/app">/oem/app</h4><p>该目录中存放oem特有的app。</p>
+<h4 id="/data/app">/data/app</h4><p>用户安装的第三方app</p>
+<p>PMS启动的时候，也是按照上述顺序逐个扫描解析这些目录中的apk的。</p>
+<p>###安装APK的方法</p>
+<h4 id="系统应用的安装">系统应用的安装</h4><p>PMS启动的时候完成，没有安装界面。</p>
+<h4 id="通过设备自带的应用商店下载的apk">通过设备自带的应用商店下载的apk</h4><p>下载完APK之后，调用Packagemanager接口安装，没有安装界面。</p>
+<h4 id="ADB命令安装">ADB命令安装</h4><p>adb命令实际上是通过pm命令来安装的，同样没有安装界面。</p>
+<h4 id="第三方应用安装">第三方应用安装</h4><p>通过SD卡里的APK文件安装，有安装界面，由packageinstaller.apk应用处理安装及卸载过程的界面。</p>
+<p>在ANdroid 5.0之前，Android系统会监视前面所说的几个存放apk的路径，一旦发现有新的apk被放进去了，就会自带安装。5.0之后，不在采取此策略。只有系统启动的时候，才会扫描这写路径中的apk。</p>
+<h3 id="apk数据存储的位置">apk数据存储的位置</h3><p>apk安装之后，产生的数据都存储在/data文件中。</p>
+<h4 id="/data/app-1">/data/app</h4><p>用户安装的第三方apk，以及app所依赖的native library都放在这里。</p>
+<p>在Android 6.0时，此目录了一个文件夹“oat”，用来存放此app，第一次运行时由dex2oat生成的此app的oat文件。在之前的Android版本中，用户安装的app的oat文件存储在</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/dalvik-cache</span><br></pre></td></tr></table></figure>
+<p>中。6.0时，此目录只存放系统自带的apk的oat文件。</p>
+<h4 id="/data/data/">/data/data/</h4><p>是系统当前用户安装的所有app的沙箱目录。该目录实际上是</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/user/&#29992;&#25143;ID</span><br></pre></td></tr></table></figure>
+<p>这个目录的引用。随着用户的切换，”/data/data/“也会映射为不同的用户。</p>
+<h3 id="PMS的配置文件">PMS的配置文件</h3><p>PMS会产生一些配置文件，用来记录系统当前安装的app,这些文件存储在：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/system/</span><br></pre></td></tr></table></figure>
+<ol>
+<li>packages.xml</li>
+</ol>
+<p>记录系统中所有已经安装的应用信息，包括基本信息，签名和权限。</p>
+<p>如下图所示:<br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-1.png" alt=""></p>
+<p>当操作该文件的时候，总会创建备份文件packages-backup.xml.当正常操作完成的时候，会删除该备份。否则，当PMS下次启动的时候，一旦发现有backup文件，就会优先解析备份文件。</p>
+<p>当一个app被升级覆盖安装时，会使用updated-packages表示，当新旧版本app的包名发生改变时，会使用renamed-package记录。</p>
+<ol>
+<li>packages-stoped.xml</li>
+</ol>
+<p>记录系统中被强制停止运行的app的信息。它同样可能存在一个packages-stoped-backup.xml的备份文件，当备份文件存在的时候，优先使用备份文件。因为原文件可能已经损坏了。</p>
+<ol>
+<li>packages.list</li>
+</ol>
+<p>保存应用的数据目录和uid信息。</p>
+<p>如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.qihoo.appstore 10067 0 /data/data/com.qihoo.appstore default 3002,3003,3001</span><br></pre></td></tr></table></figure></p>
+<p>第一列为app的包名。</p>
+<p>10067为此app的用户ID.</p>
+<p>第三列中的0，表示此app所属的系统用户ID.</p>
+<p>第四列为此app的沙箱目录。</p>
+<p>default为seinfo,SEAndroid相关机制会使用该字段。</p>
+<p>最后一列记录了该app所在的权限组，也就是说拥有哪些权限。</p>
+<h3 id="系统硬件特性和权限">系统硬件特性和权限</h3><p>PMS启动的时候会从</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/system/etc/permissions/</span><br></pre></td></tr></table></figure>
+<p>中读取当前Android设备的硬件特性和设定的相关权限。</p>
+<p>所谓的硬件特性，狭义上可以理解为当前设备支持哪些外设，比如camera，NFC，wifi,usb等等。</p>
+<p>正是因为解析了该目录中的文件，所以可以通过pm命令查看features和permissions等信息。</p>
+<p>###多用户管理</p>
+<p>PMS还要对多用户进行管理。因为安装apk的时候，可以PMS可以指定给某个特定的用户，也可以安装给全部的用户。</p>
 
       
     </div>
@@ -238,18 +297,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/11/09/AndroidAppLog/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          发布程序时移除Android 调试Log
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/11/05/AndroidCommand/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Android 编译常用命令</div>
+    <a href="/2016/06/20/Android_PackageManagerService-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">初探Android的PMS服务</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -278,7 +328,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="AndroidMK" data-title="Android.mk 常用语法总结" data-url="http://www.iloveandroid.net/2015/11/05/AndroidMK/"></div>
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-2" data-title="PMS运行时的一些规则" data-url="http://www.iloveandroid.net/2016/06/20/Android_PackageManagerService-2/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
