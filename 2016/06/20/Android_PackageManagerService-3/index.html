@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android-6.0之PMS解析上篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面介绍了pm命令如何使用以及PMS运行时的一些规则和行为，现在就可以尽情享受PMS的代码了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-6.0之PMS解析上篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/20/Android_PackageManagerService-3/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面介绍了pm命令如何使用以及PMS运行时的一些规则和行为，现在就可以尽情享受PMS的代码了。">
+<meta property="og:updated_time" content="2016-06-20T18:10:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-6.0之PMS解析上篇">
+<meta name="twitter:description" content="前面介绍了pm命令如何使用以及PMS运行时的一些规则和行为，现在就可以尽情享受PMS的代码了。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-3" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/20/Android_PackageManagerService-3/" class="article-date">
+  	<time datetime="2016-06-20T10:52:59.000Z" itemprop="datePublished">2016-06-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-6.0之PMS解析上篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面介绍了pm命令如何使用以及PMS运行时的一些规则和行为，现在就可以尽情享受PMS的代码了。</p>
+<a id="more"></a>
+<h3 id="PMS的入口点">PMS的入口点</h3><p>PMS是由SystemServer启动的。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android6.0/frameworks/base/services/java/com/android/server/SystemServer.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startBootstrapServices</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line"> <span class="comment">// Wait for installd to finish starting up so that it has a chance to</span></span><br><span class="line">        <span class="comment">// create critical directories such as /data/user with the appropriate</span></span><br><span class="line">        <span class="comment">// permissions.  We need this to complete before we initialize other services.</span></span><br><span class="line"></span><br><span class="line">Installer installer = mSystemServiceManager.startService(Installer.class);</span><br><span class="line">......................................</span><br><span class="line"></span><br><span class="line"> <span class="comment">// Start the package manager.</span></span><br><span class="line">        Slog.i(TAG, <span class="string">"Package Manager"</span>);</span><br><span class="line">        mPackageManagerService = PackageManagerService.main(mSystemContext, installer,</span><br><span class="line">                mFactoryTestMode != FactoryTest.FACTORY_TEST_OFF, mOnlyCore);</span><br><span class="line">        mFirstBoot = mPackageManagerService.isFirstBoot();</span><br><span class="line">        mPackageManager = mSystemContext.getPackageManager();</span><br><span class="line">......................................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就找到了分析PMS的入口点：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android6.0/frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java的main方法</span><br></pre></td></tr></table></figure>
+<p>main函数中的第二个参数installer负责和native层中的installd守护进程进行socket通信，这里在启动Installer 的时候会有installd创建一些关键目录，后续会详细介绍installd守护进程。</p>
+<p>第四个参数mOnlyCore用于判断是否仅仅扫描系统的目录,只有在与data分区加解密时才会设置为true，其他情况一般都为false。</p>
+<p>main函数也很简单如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PackageManagerService <span class="title">main</span><span class="params">(Context context, Installer installer,</span><br><span class="line">          <span class="keyword">boolean</span> factoryTest, <span class="keyword">boolean</span> onlyCore)</span> </span>&#123;</span><br><span class="line">      PackageManagerService m = <span class="keyword">new</span> PackageManagerService(context, installer,</span><br><span class="line">              factoryTest, onlyCore);</span><br><span class="line">      ServiceManager.addService(<span class="string">"package"</span>, m);</span><br><span class="line">      <span class="keyword">return</span> m;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这里主要做了两件事：</p>
+<ol>
+<li><p>创建PackageManagerService对象，也就是PMS的实体</p>
+</li>
+<li><p>将PMS向SMS中注册，即加入SMS中，方便后续其他进程或者app通过SMS获得PMS服务</p>
+</li>
+</ol>
+<p>PMS的构造函数中，做了大量的工作，总结起来就是扫描Android系统中的apk,并且建立相应的数据结构去管理Package的信息，四大组件的信息，权限信息等内容。</p>
+<h3 id="PMS构造函数分析之Settings">PMS构造函数分析之Settings</h3><p>源码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mLazyDexOpt = <span class="string">"eng"</span>.equals(SystemProperties.get(<span class="string">"ro.build.type"</span>));</span><br><span class="line">mMetrics = <span class="keyword">new</span> DisplayMetrics();</span><br><span class="line">mSettings = <span class="keyword">new</span> Settings(mPackages);</span><br><span class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.system"</span>, Process.SYSTEM_UID,</span><br><span class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</span><br><span class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.phone"</span>, RADIO_UID,</span><br><span class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</span><br><span class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.log"</span>, LOG_UID,</span><br><span class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</span><br><span class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.nfc"</span>, NFC_UID,</span><br><span class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</span><br><span class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.bluetooth"</span>, BLUETOOTH_UID,</span><br><span class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</span><br><span class="line">mSettings.addSharedUserLPw(<span class="string">"android.uid.shell"</span>, SHELL_UID,</span><br><span class="line">        ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);</span><br></pre></td></tr></table></figure></p>
+<p>首先判断build类型，build有三种：user,userdebug,eng。当为eng时，意味着不需要进行odex优化。</p>
+<p>接着创建一个DisplayMetrics对象，用于保存屏幕像素参数。</p>
+<p>然后就是本次分析的重点Settings了.</p>
+<h4 id="创建一个Settings对象。">创建一个Settings对象。</h4><p>源码路径：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android6.0/frameworks/base/services/core/java/com/android/server/pm/Settings.java</span><br></pre></td></tr></table></figure>
+<p>其构造方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Settings(Object lock) &#123;</span><br><span class="line">    <span class="keyword">this</span>(Environment.getDataDirectory(), lock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Settings(File dataDir, Object lock) &#123;</span><br><span class="line">    mLock = lock;</span><br><span class="line"></span><br><span class="line">    mRuntimePermissionsPersistence = <span class="keyword">new</span> RuntimePermissionPersistence(mLock);</span><br><span class="line"></span><br><span class="line">    mSystemDir = <span class="keyword">new</span> File(dataDir, <span class="string">"system"</span>);</span><br><span class="line">    mSystemDir.mkdirs();</span><br><span class="line">    FileUtils.setPermissions(mSystemDir.toString(),</span><br><span class="line">            FileUtils.S_IRWXU|FileUtils.S_IRWXG</span><br><span class="line">            |FileUtils.S_IROTH|FileUtils.S_IXOTH,</span><br><span class="line">            -<span class="number">1</span>, -<span class="number">1</span>);</span><br><span class="line">    mSettingsFilename = <span class="keyword">new</span> File(mSystemDir, <span class="string">"packages.xml"</span>);</span><br><span class="line">    mBackupSettingsFilename = <span class="keyword">new</span> File(mSystemDir, <span class="string">"packages-backup.xml"</span>);</span><br><span class="line">    mPackageListFilename = <span class="keyword">new</span> File(mSystemDir, <span class="string">"packages.list"</span>);</span><br><span class="line">    FileUtils.setPermissions(mPackageListFilename, <span class="number">0640</span>, SYSTEM_UID, PACKAGE_INFO_GID);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Deprecated: Needed for migration</span></span><br><span class="line">    mStoppedPackagesFilename = <span class="keyword">new</span> File(mSystemDir, <span class="string">"packages-stopped.xml"</span>);</span><br><span class="line">    mBackupStoppedPackagesFilename = <span class="keyword">new</span> File(mSystemDir, <span class="string">"packages-stopped-backup.xml"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>dataDir为<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data</span><br></pre></td></tr></table></figure></p>
+<p>所以mSystemDir为<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/system</span><br></pre></td></tr></table></figure></p>
+<p>该构造函数中主要创建了前面文章中介绍的关于PMS的若干配置文件的File对象，并且设置了权限等。</p>
+<h4 id="mSettings-addSharedUserLPw">mSettings.addSharedUserLPw</h4><p>addSharedUserLPw方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">SharedUserSetting <span class="title">addSharedUserLPw</span><span class="params">(String name, <span class="keyword">int</span> uid, <span class="keyword">int</span> pkgFlags, <span class="keyword">int</span> pkgPrivateFlags)</span> </span>&#123;</span><br><span class="line">        SharedUserSetting s = mSharedUsers.get(name);</span><br><span class="line">        <span class="keyword">if</span> (s != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s.userId == uid) &#123;</span><br><span class="line">                <span class="keyword">return</span> s;</span><br><span class="line">            &#125;</span><br><span class="line">            PackageManagerService.reportSettingsProblem(Log.ERROR,</span><br><span class="line">                    <span class="string">"Adding duplicate shared user, keeping first: "</span> + name);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        s = <span class="keyword">new</span> SharedUserSetting(name, pkgFlags, pkgPrivateFlags);</span><br><span class="line">        s.userId = uid;</span><br><span class="line">        <span class="keyword">if</span> (addUserIdLPw(uid, s, name)) &#123;</span><br><span class="line">            mSharedUsers.put(name, s);</span><br><span class="line">            <span class="keyword">return</span> s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">该方法主要是创建共享UID的相关信息。</span><br><span class="line"></span><br><span class="line">这里先以name为key在mSharedUsers中查看找是否已经有名为name的共享UID了。如果有的话，判断此UID和传入的uid是否相等，不相等的就报错。这意味着，不能对已有的共享UID信息，绑定新的uid。</span><br><span class="line"></span><br><span class="line">如果没有的话，创建一个新的SharedUserSetting，并将其加入mSharedUsers中去。</span><br><span class="line"></span><br><span class="line">pkgFlags为ApplicationInfo.FLAG_SYSTEM表明该app是system app.</span><br><span class="line"></span><br><span class="line">pkgPrivateFlags为ApplicationInfo.PRIVATE_FLAG_PRIVILEGED表明具备system权限。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```<span class="function">java</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">addUserIdLPw</span><span class="params">(<span class="keyword">int</span> uid, Object obj, Object name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (uid &gt; Process.LAST_APPLICATION_UID) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (uid &gt;= Process.FIRST_APPLICATION_UID) &#123;</span><br><span class="line">            <span class="keyword">int</span> N = mUserIds.size();</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> index = uid - Process.FIRST_APPLICATION_UID;</span><br><span class="line">            <span class="keyword">while</span> (index &gt;= N) &#123;</span><br><span class="line">                mUserIds.add(<span class="keyword">null</span>);</span><br><span class="line">                N++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mUserIds.get(index) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                PackageManagerService.reportSettingsProblem(Log.ERROR,</span><br><span class="line">                        <span class="string">"Adding duplicate user id: "</span> + uid</span><br><span class="line">                        + <span class="string">" name="</span> + name);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            mUserIds.set(index, obj);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (mOtherUserIds.get(uid) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                PackageManagerService.reportSettingsProblem(Log.ERROR,</span><br><span class="line">                        <span class="string">"Adding duplicate shared id: "</span> + uid</span><br><span class="line">                                + <span class="string">" name="</span> + name);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            mOtherUserIds.put(uid, obj);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>主要针对普通uid和system uid进行不同处理。</p>
+<p>每个普通的app安装的时候，都会被分配一个uid，这和Android系统一些系统服务和具备高权限的app的uid是不在一个区间的。</p>
+<p>普通的app的uid加入mUsrIds，其他的加入mOtherUserIds.</p>
+<p>PMS构造方法中创建了android.uid.system,android.uid.phone,android.uid.log,android.uid.nfc,android.uid.bluetooth,android.uid.shell这些共享uid。主要给以下场景使用提供便利：</p>
+<p>在一些系统app的AndroidManifest.xml中会有下面的信息：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:sharedUserId=<span class="string">"android.uis.system"</span></span><br></pre></td></tr></table></figure></p>
+<p>或者android.uid.phone等，如果不提前创建好，就没办法拥有这些共享uid所具备的权限了。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/20/Android_PackageManagerService-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">PMS运行时的一些规则</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-3" data-title="Android-6.0之PMS解析上篇" data-url="http://www.iloveandroid.net/2016/06/20/Android_PackageManagerService-3/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
