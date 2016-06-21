@@ -183,6 +183,72 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-StudyLeb128" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/11/10/StudyLeb128/" class="article-date">
+  	<time datetime="2015-11-10T05:56:34.000Z" itemprop="datePublished">2015-11-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/10/StudyLeb128/">LEB128格式</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>LEB128即”Little-Endian Base 128”，基于128的小印第安序编码格式，是对任意有符号或者无符号整型数的可变长度的编码。</p>
+<p>也即，用LEB128编码的正数，会根据数字的大小改变所占字节数。在android的.dex文件中，他只用来编码32bits的整型数。</p>
+<p>格式:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/LEB128.png" alt=""></p>
+<p>上图只是指示性的用两个字节表示。编码的每个字节有效部分只有低7bits，每个字节的最高bit用来指示是否是最后一个字节。非最高字节的bit7为0;最高字节的bit7为1.</p>
+<p>将leb128编码的数字转换为可读数字的规则是：除去每个字节的bit7，将每个字节剩余的7个bits拼接在一起，即为数字。</p>
+<p>比如：<br>LEB128编码的0x02b0 —&gt; 转换后的数字0x0130<br>转换过程：<br>0x02b0 —&gt; 0000 0010 1011 0000 –&gt;去除最高位–&gt; 000 0010 011 0000 –&gt;按4bits重排 –&gt; 00 0001 0011 0000 –&gt; 0x130</p>
+<p>转换函数为：<br>代码位于：dalvik/libdex/leb128.h.</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/逆向工程/">逆向工程</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/App开发/">App开发</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-AndroidDex_1" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -369,68 +435,6 @@
 
 
   
-    <article id="post-AndroidMK" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/05/AndroidMK/" class="article-date">
-  	<time datetime="2015-11-05T05:20:55.000Z" itemprop="datePublished">2015-11-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/05/AndroidMK/">Android.mk 常用语法总结</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android编译/">Android编译</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/11/05/AndroidMK/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
     <article id="post-AndroidCommand" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -477,6 +481,68 @@
       
         <p class="article-more-link">
           <a  href="/2015/11/05/AndroidCommand/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-AndroidMK" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/11/05/AndroidMK/" class="article-date">
+  	<time datetime="2015-11-05T05:20:55.000Z" itemprop="datePublished">2015-11-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/05/AndroidMK/">Android.mk 常用语法总结</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android.mk其实就是和Makefile差不多,知识很零碎,需要便用边总结.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android编译/">Android编译</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/11/05/AndroidMK/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
@@ -722,68 +788,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/10/20/studyCTS_3/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-studyCTS_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/10/20/studyCTS_2/" class="article-date">
-  	<time datetime="2015-10-20T03:30:55.000Z" itemprop="datePublished">2015-10-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/20/studyCTS_2/">CTS常用命令</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>总结一下CTS中常用的命令:</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自动化测试/">自动化测试</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/10/20/studyCTS_2/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

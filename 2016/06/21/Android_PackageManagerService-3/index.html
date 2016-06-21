@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://www.iloveandroid.net/2016/06/21/Android_PackageManagerService-3/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="前面介绍了pm命令如何使用以及PMS运行时的一些规则和行为，现在就可以尽情享受PMS的代码了。">
-<meta property="og:updated_time" content="2016-06-21T07:07:51.000Z">
+<meta property="og:updated_time" content="2016-06-21T07:12:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-6.0之PMS解析上篇">
 <meta name="twitter:description" content="前面介绍了pm命令如何使用以及PMS运行时的一些规则和行为，现在就可以尽情享受PMS的代码了。">
@@ -290,6 +290,7 @@
 <p>readPermissions方法的作用就是读取指定目录下的xml文件，然后调用readPermissionsFromXml方法来解析xml文件。</p>
 <p>这些xml文件中指明了当前设备的硬件特性：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">permissions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">feature</span> <span class="attribute">name</span>=<span class="value">"android.hardware.nfc"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">permissions</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>解析后，存储在ArrayMap<string, featureinfo="">类型的变量mAvailableFeatures中。</string,></p>
 <p>还可能指明了一些运行行时除了加载framework中的库之外，还要加载的一些java库：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">permissions</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="title">library</span> <span class="attribute">name</span>=<span class="value">"com.qualcomm.qcrilhook"</span></span><br><span class="line">          <span class="attribute">file</span>=<span class="value">"/system/framework/qcrilhook.jar"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">permissions</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>这些library字段中的name属性值，将会存放到PMS的成员变量mSharedLibrsries中。</p>
@@ -307,6 +308,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/06/21/Android_PackageManagerService-4/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android-6.0之PMS解析中篇
+        
+      </div>
+    </a>
   
   
     <a href="/2016/06/20/Android_PackageManagerService-2/" id="article-nav-older" class="article-nav-link-wrap">
