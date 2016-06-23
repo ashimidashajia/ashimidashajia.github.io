@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android-6.0之PMS解析下篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面介绍了PMS启动的时候，扫描系统app目录时的代码，现在分析PMS启动时，如何扫描用户安装的app。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-6.0之PMS解析下篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/23/Android_PackageManagerService-6/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面介绍了PMS启动的时候，扫描系统app目录时的代码，现在分析PMS启动时，如何扫描用户安装的app。">
+<meta property="og:updated_time" content="2016-06-23T12:44:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-6.0之PMS解析下篇">
+<meta name="twitter:description" content="前面介绍了PMS启动的时候，扫描系统app目录时的代码，现在分析PMS启动时，如何扫描用户安装的app。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-6" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/23/Android_PackageManagerService-6/" class="article-date">
+  	<time datetime="2016-06-23T09:24:27.000Z" itemprop="datePublished">2016-06-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-6.0之PMS解析下篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面介绍了PMS启动的时候，扫描系统app目录时的代码，现在分析PMS启动时，如何扫描用户安装的app。</p>
+<a id="more"></a>
+<p>继续PMS 构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//调用installd执行/system/etc/updatecmds下命令脚本</span></span><br><span class="line"><span class="keyword">if</span> (DEBUG_UPGRADE) Log.v(TAG, <span class="string">"Running installd update commands"</span>);</span><br><span class="line">          mInstaller.moveFiles();</span><br></pre></td></tr></table></figure>
+<p>接下来一段代码是处理有升级包的系统应用，也就是执行过OTA升级后，第一次启动时，需要关心的逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Prune any system packages that no longer exist.</span></span><br><span class="line">           <span class="keyword">final</span> List&lt;String&gt; possiblyDeletedUpdatedSystemApps = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">           <span class="keyword">if</span> (!mOnlyCore) &#123;</span><br><span class="line">               Iterator&lt;PackageSetting&gt; psit = mSettings.mPackages.values().iterator();</span><br><span class="line">               <span class="keyword">while</span> (psit.hasNext()) &#123;</span><br><span class="line">                   PackageSetting ps = psit.next();</span><br><span class="line"></span><br><span class="line">                   <span class="comment">/*</span><br><span class="line">                    * If this is not a system app, it can't be a</span><br><span class="line">                    * disable system app.</span><br><span class="line">                    */</span></span><br><span class="line">                   <span class="keyword">if</span> ((ps.pkgFlags &amp; ApplicationInfo.FLAG_SYSTEM) == <span class="number">0</span>) &#123;</span><br><span class="line">                       <span class="keyword">continue</span>;<span class="comment">//忽略普通应用</span></span><br><span class="line">                   &#125;</span><br><span class="line"></span><br><span class="line">                   <span class="comment">/*</span><br><span class="line">                    * If the package is scanned, it's not erased.</span><br><span class="line">                    */</span></span><br><span class="line">                   <span class="keyword">final</span> PackageParser.Package scannedPkg = mPackages.get(ps.name);</span><br><span class="line">                   <span class="keyword">if</span> (scannedPkg != <span class="keyword">null</span>) &#123;</span><br><span class="line">                       <span class="comment">/*</span><br><span class="line">                        * If the system app is both scanned and in the</span><br><span class="line">                        * disabled packages list, then it must have been</span><br><span class="line">                        * added via OTA. Remove it from the currently</span><br><span class="line">                        * scanned package so the previously user-installed</span><br><span class="line">                        * application can be scanned.</span><br><span class="line">                        */</span></span><br><span class="line">                        <span class="comment">// packages.xml中&lt;updated-package&gt;修饰的package会被记录到mSettings中的disable列表中去</span></span><br><span class="line">                        <span class="comment">// 这说明扫描的系统app是带有升级包的</span></span><br><span class="line">                       <span class="keyword">if</span> (mSettings.isDisabledSystemPackageLPr(ps.name)) &#123;</span><br><span class="line">                           logCriticalInfo(Log.WARN, <span class="string">"Expecting better updated system app for "</span></span><br><span class="line">                                   + ps.name + <span class="string">"; removing system app.  Last known codePath="</span></span><br><span class="line">                                   + ps.codePathString + <span class="string">", installStatus="</span> + ps.installStatus</span><br><span class="line">                                   + <span class="string">", versionCode="</span> + ps.versionCode + <span class="string">"; scanned versionCode="</span></span><br><span class="line">                                   + scannedPkg.mVersionCode);</span><br><span class="line">                           removePackageLI(ps, <span class="keyword">true</span>);<span class="comment">//将其从mPackages中移除</span></span><br><span class="line">                           mExpectingBetter.put(ps.name, ps.codePath);<span class="comment">// 将其添加到mExpectingBetter，后续处理</span></span><br><span class="line">                       &#125;</span><br><span class="line"></span><br><span class="line">                       <span class="keyword">continue</span>;</span><br><span class="line">                   &#125;</span><br><span class="line"></span><br><span class="line">                  <span class="comment">// 运行到这里说明packages.xml中记录的app，这次没有扫描到。</span></span><br><span class="line">                   <span class="keyword">if</span> (!mSettings.isDisabledSystemPackageLPr(ps.name)) &#123;</span><br><span class="line">                     <span class="comment">// 如果这个app在packages.xml也不属于&lt;updated-package&gt;</span></span><br><span class="line">                     <span class="comment">// 意味着这个应用是残留在packages.xml中的，可能还会剩下沙箱数据，因此也要删掉</span></span><br><span class="line">                       psit.remove();</span><br><span class="line">                       logCriticalInfo(Log.WARN, <span class="string">"System package "</span> + ps.name</span><br><span class="line">                               + <span class="string">" no longer exists; wiping its data"</span>);</span><br><span class="line">                       removeDataDirsLI(<span class="keyword">null</span>, ps.name);</span><br><span class="line">                   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                     <span class="comment">// 如果这个app在packages.xml属于&lt;updated-package&gt;</span></span><br><span class="line">                     <span class="comment">// 将其加入possiblyDeletedUpdatedSystemApps</span></span><br><span class="line">                       <span class="keyword">final</span> PackageSetting disabledPs = mSettings.getDisabledSystemPkgLPr(ps.name);</span><br><span class="line">                       <span class="keyword">if</span> (disabledPs.codePath == <span class="keyword">null</span> || !disabledPs.codePath.exists()) &#123;</span><br><span class="line">                           possiblyDeletedUpdatedSystemApps.add(ps.name);</span><br><span class="line">                       &#125;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure>
+<p>进行一些清理工作：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//扫描并删除未成功安装的apk包（针对第三方app）</span></span><br><span class="line"> <span class="comment">//look for any incomplete package installations</span></span><br><span class="line">ArrayList&lt;PackageSetting&gt; deletePkgsList = mSettings.getListOfIncompleteInstallPackagesLPr();</span><br><span class="line"><span class="comment">//clean up list</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; deletePkgsList.size(); i++) &#123;</span><br><span class="line">    <span class="comment">//clean up here</span></span><br><span class="line">    cleanupInstallFailedPackage(deletePkgsList.get(i));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除临时文件</span></span><br><span class="line"><span class="comment">//delete tmp files</span></span><br><span class="line">deleteTempPackageFiles();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把从mSettings中没有关联任何应用的SharedUserSetting对象删掉</span></span><br><span class="line">mSettings.pruneSharedUsersLPw();</span><br></pre></td></tr></table></figure></p>
+<p>现在开始扫描用户安装的app了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">EventLog.writeEvent(EventLogTags.BOOT_PROGRESS_PMS_DATA_SCAN_START,</span><br><span class="line">        SystemClock.uptimeMillis());</span><br><span class="line">scanDirLI(mAppInstallDir, <span class="number">0</span>, scanFlags | SCAN_REQUIRE_KNOWN, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">scanDirLI(mDrmAppPrivateInstallDir, PackageParser.PARSE_FORWARD_LOCK,</span><br><span class="line">        scanFlags | SCAN_REQUIRE_KNOWN, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>同样是调用scanDirLI方法去扫描apk目录。这里要扫描的这两个文件是：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/app&#10;&#10;/data/app-priv</span><br></pre></td></tr></table></figure>
+<p>逻辑和上一篇分析的是一样的，只不过传入的扫描参数发生了变化： SCAN_REQUIRE_KNOWN。</p>
+<p>接下来是处理possiblyDeletedUpdatedSystemApps。</p>
+<p>它里面存储的是在packages.xml中被标记为<updated-package>,但是前面又没有扫描到的其apk文件的app。</updated-package></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * Remove disable package settings for any updated system</span><br><span class="line"> * apps that were removed via an OTA. If they're not a</span><br><span class="line"> * previously-updated app, remove them completely.</span><br><span class="line"> * Otherwise, just revoke their system-level permissions.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">for</span> (String deletedAppName : possiblyDeletedUpdatedSystemApps) &#123;</span><br><span class="line">    <span class="comment">// 在扫描了用户app目录之后，再次尝试查找是否有这些app</span></span><br><span class="line">    PackageParser.Package deletedPkg = mPackages.get(deletedAppName);</span><br><span class="line">    mSettings.removeDisabledSystemPackageLPw(deletedAppName);</span><br><span class="line"></span><br><span class="line">    String msg;</span><br><span class="line">    <span class="comment">// 依旧没有，那么就删除他们的数据目录</span></span><br><span class="line">    <span class="keyword">if</span> (deletedPkg == <span class="keyword">null</span>) &#123;</span><br><span class="line">        msg = <span class="string">"Updated system package "</span> + deletedAppName</span><br><span class="line">                + <span class="string">" no longer exists; wiping its data"</span>;</span><br><span class="line">        removeDataDirsLI(<span class="keyword">null</span>, deletedAppName);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 找到了，说明是在用户app目录中找到的，那么移除系统权限</span></span><br><span class="line">        msg = <span class="string">"Updated system app + "</span> + deletedAppName</span><br><span class="line">                + <span class="string">" no longer present; removing system privileges for "</span></span><br><span class="line">                + deletedAppName;</span><br><span class="line"></span><br><span class="line">        deletedPkg.applicationInfo.flags &amp;= ~ApplicationInfo.FLAG_SYSTEM;</span><br><span class="line"></span><br><span class="line">        PackageSetting deletedPs = mSettings.mPackages.get(deletedAppName);</span><br><span class="line">        deletedPs.pkgFlags &amp;= ~ApplicationInfo.FLAG_SYSTEM;</span><br><span class="line">    &#125;</span><br><span class="line">    logCriticalInfo(Log.WARN, msg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>存放到mExpectingBetter是那些带有升级包的系统应用。前面已经把他们从PMS的mPackages中移除并放到了mExpectingBetter中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span><br><span class="line">     * Make sure all system apps that we expected to appear on</span><br><span class="line">     * the userdata partition actually showed up. If they never</span><br><span class="line">     * appeared, crawl back and revive the system version.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mExpectingBetter.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">final</span> String packageName = mExpectingBetter.keyAt(i);</span><br><span class="line">        <span class="keyword">if</span> (!mPackages.containsKey(packageName)) &#123;</span><br><span class="line">            <span class="keyword">final</span> File scanFile = mExpectingBetter.valueAt(i);</span><br><span class="line"></span><br><span class="line">            logCriticalInfo(Log.WARN, <span class="string">"Expected better "</span> + packageName</span><br><span class="line">                    + <span class="string">" but never showed up; reverting to system"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//确保是在</span></span><br><span class="line">            <span class="comment">///system/app-priv</span></span><br><span class="line">            <span class="comment">///system/app</span></span><br><span class="line">            <span class="comment">///vendor/app</span></span><br><span class="line">            <span class="comment">///oem/app</span></span><br><span class="line">            <span class="comment">// 这四个目录中。</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> reparseFlags;</span><br><span class="line">            <span class="keyword">if</span> (FileUtils.contains(privilegedAppDir, scanFile)) &#123;</span><br><span class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</span><br><span class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR</span><br><span class="line">                        | PackageParser.PARSE_IS_PRIVILEGED;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(systemAppDir, scanFile)) &#123;</span><br><span class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</span><br><span class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(vendorAppDir, scanFile)) &#123;</span><br><span class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</span><br><span class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (FileUtils.contains(oemAppDir, scanFile)) &#123;</span><br><span class="line">                reparseFlags = PackageParser.PARSE_IS_SYSTEM</span><br><span class="line">                        | PackageParser.PARSE_IS_SYSTEM_DIR;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Slog.e(TAG, <span class="string">"Ignoring unexpected fallback path "</span> + scanFile);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 会将其加入mSettings的mPackages中</span></span><br><span class="line">            mSettings.enableSystemPackageLPw(packageName);</span><br><span class="line"></span><br><span class="line">            <span class="comment">/// 重新扫描这些文件</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                scanPackageLI(scanFile, reparseFlags, scanFlags, <span class="number">0</span>, <span class="keyword">null</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (PackageManagerException e) &#123;</span><br><span class="line">                Slog.e(TAG, <span class="string">"Failed to parse original system package: "</span></span><br><span class="line">                        + e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">  <span class="comment">// 清除mExpectingBetter</span></span><br><span class="line">  mExpectingBetter.clear();</span><br></pre></td></tr></table></figure>
+<p>接下来的代码作用是更新所有应用的动态库路径，如果是OTA升级导致前后SDK版本不一致，还要进行权限重新检查，并且删除app oat cache目录。</p>
+<p>最后所有的操作完成后，更新数据库版本，调用mSettings.writeLPr()将信息写入packages.xml中。</p>
+<p>PMS构造方法的执行过程就是先读取保存在packages.xml中记录的系统关机前记录所有安装的app信息，保存在mSettings中的mPackages中。<br>然后扫描指定的若干目录中的app，并把信息记录在PMS的mPackages中。最后对两者进行对比，看是否能发现有升级的app，然后进行相关处理，最后在写入packages.xml中。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/21/Android_PackageManagerService-5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android-6.0之PMS解析中篇2</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-6" data-title="Android-6.0之PMS解析下篇" data-url="http://www.iloveandroid.net/2016/06/23/Android_PackageManagerService-6/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

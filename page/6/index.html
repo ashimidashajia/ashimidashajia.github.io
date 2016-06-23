@@ -183,6 +183,68 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Android_SEAndroid_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/28/Android_SEAndroid_1/" class="article-date">
+  	<time datetime="2015-09-28T05:55:41.000Z" itemprop="datePublished">2015-09-28</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/28/Android_SEAndroid_1/">Android 5.1 SEAndroid分析之启动篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroid中,root用户,也仅仅是一个普通用户而已.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/28/Android_SEAndroid_1/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Android_property_2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -739,71 +801,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/20/setupPhabricatorEnvironment/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-setupJenkinsEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/19/setupJenkinsEnvironment_2/" class="article-date">
-  	<time datetime="2015-09-19T07:42:41.000Z" itemprop="datePublished">2015-09-19</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/19/setupJenkinsEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.</p>
-<p>官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -P jenkins</span><br></pre></td></tr></table></figure>
-<p>这样就会卸载我们上次安装的jenkins了.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/19/setupJenkinsEnvironment_2/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>

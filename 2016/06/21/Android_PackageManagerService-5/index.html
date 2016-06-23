@@ -14,7 +14,7 @@
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-4.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-2.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-3.png">
-<meta property="og:updated_time" content="2016-06-23T09:09:07.000Z">
+<meta property="og:updated_time" content="2016-06-23T11:24:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android-6.0之PMS解析中篇2">
 <meta name="twitter:description" content="本篇文章主要针对上篇文章中两个未分析的方法进行分析。">
@@ -257,7 +257,7 @@
 <p>对核心应用调用parseBaseApk解析，对非核心应用调用parseSplitApk，解析到的结果会保存在同一个PackageParser.Package对象中。</p>
 <p>时序图：</p>
 <p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-3.png" alt=""></p>
-<h3 id="scanPackageDirtyLI方法">scanPackageDirtyLI方法</h3><p>前面分析的scanPackageLI方法的最后还会调用同但参数不同的scanPackageLI方法。前面的那个scanPackageLI主要是对mSettings中的mPackages进行设置，而这里的scanPackageLI主要是对PMS中的mPackages进行设置。</p>
+<h3 id="scanPackageDirtyLI方法">scanPackageDirtyLI方法</h3><p>前面分析的scanPackageLI方法的最后还会调用同但参数不同的scanPackageLI方法。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> PackageParser.<span class="function">Package <span class="title">scanPackageLI</span><span class="params">(PackageParser.Package pkg, <span class="keyword">int</span> parseFlags,</span><br><span class="line">        <span class="keyword">int</span> scanFlags, <span class="keyword">long</span> currentTime, UserHandle user)</span> <span class="keyword">throws</span> PackageManagerException </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> success = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> PackageParser.Package res = scanPackageDirtyLI(pkg, parseFlags, scanFlags,</span><br><span class="line">                currentTime, user);</span><br><span class="line">        success = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!success &amp;&amp; (scanFlags &amp; SCAN_DELETE_DATA_ON_FAILURES) != <span class="number">0</span>) &#123;</span><br><span class="line">            removeDataDirsLI(pkg.volumeUuid, pkg.packageName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>该方法内部调用 scanPackageDirtyLI来完成相应的工作.scanPackageLI方法也能被单独调用使用，我们这里只关心当它被前一个scanPackageLI方法调用时的逻辑。</p>
 <p>Android系统中有这样的一个场景，当发出一个intent的时候，如果对话框中存在多个响应的activity，Android就会弹出一个对话框，让用户进行选择。典型的例子，就是设备中安装了多个可以打开的word文件的软件的时候，当打开word时，如过没有设置默认使用的软件，那么就会弹出一个对话框，让用户选择使用哪个app来打开word文件。这个对话框叫做ResolverActivity.因此该对话框，是存在与系统内部的对象，它保存在PMS的mResolveActivity变量。</p>
@@ -274,7 +274,6 @@
 <p>然后在沙箱目录中创建一个lib连接文件，指向上述目录。</p>
 <p>如果检测到应用所依赖的动态库文件发生了改变，咋调用performDexOpt重新执行。</p>
 <p>最后就是把app中Activity,Service,Provider,receiver,permission,Permission Group等信息全部提取出来，放到PMS相关成员变量中。</p>
-<p>总之最先调用的scanPackageLI是把解析到的信息放入到mSeetings中的，而这次的scanPackageLI的是吧解析到的信息放入到PMS中。</p>
 
       
     </div>
@@ -283,6 +282,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/06/23/Android_PackageManagerService-6/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android-6.0之PMS解析下篇
+        
+      </div>
+    </a>
   
   
     <a href="/2016/06/21/Android_PackageManagerService-4/" id="article-nav-older" class="article-nav-link-wrap">
