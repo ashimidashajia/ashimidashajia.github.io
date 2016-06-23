@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android-6.0之PMS解析中篇2 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本篇文章主要针对上篇文章中两个未分析的方法进行分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-6.0之PMS解析中篇2">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/21/Android_PackageManagerService-5/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="本篇文章主要针对上篇文章中两个未分析的方法进行分析。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-4.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-2.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-3.png">
+<meta property="og:updated_time" content="2016-06-23T09:09:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-6.0之PMS解析中篇2">
+<meta name="twitter:description" content="本篇文章主要针对上篇文章中两个未分析的方法进行分析。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-5" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/21/Android_PackageManagerService-5/" class="article-date">
+  	<time datetime="2016-06-21T11:21:00.000Z" itemprop="datePublished">2016-06-21</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-6.0之PMS解析中篇2
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本篇文章主要针对上篇文章中两个未分析的方法进行分析。</p>
+<a id="more"></a>
+<h3 id="APK文件的解析">APK文件的解析</h3><p>上一篇中的scanPackageLI分析的开头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> PackageParser.<span class="function">Package <span class="title">scanPackageLI</span><span class="params">(File scanFile, <span class="keyword">int</span> parseFlags, <span class="keyword">int</span> scanFlags,</span><br><span class="line">         <span class="keyword">long</span> currentTime, UserHandle user)</span> <span class="keyword">throws</span> PackageManagerException </span>&#123;</span><br><span class="line">  ..........................</span><br><span class="line">     <span class="keyword">final</span> PackageParser.Package pkg;</span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         pkg = pp.parsePackage(scanFile, parseFlags);</span><br><span class="line">     &#125; <span class="keyword">catch</span> (PackageParserException e) &#123;</span><br><span class="line">         <span class="keyword">throw</span> PackageManagerException.from(e);</span><br><span class="line">     &#125;</span><br><span class="line">     ...........</span><br></pre></td></tr></table></figure>
+<p>我们并没有对PackageParser.parsePackage方法进行分析，现在着手分析它都做了什么。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Package <span class="title">parsePackage</span><span class="params">(File packageFile, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> PackageParserException </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (packageFile.isDirectory()) &#123;</span><br><span class="line">          <span class="keyword">return</span> parseClusterPackage(packageFile, flags);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> parseMonolithicPackage(packageFile, flags);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>parsePackage方法中要对传入File进行判断。</p>
+<p>Android 5.0 之后默认支持一个应用关联多个APK的形式，当某个app是这类情况的话，这些APK就会放在一个文件夹中，那么此时就会调用parseClusterPackage处理。</p>
+<p>当传入的file就是一个apk文件的话，调用parseMonolithicPackage来处理。</p>
+<h4 id="解析单个apk">解析单个apk</h4><p>首先分析file为一个apk文件的情况，即parseMonolithicPackage：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Package <span class="title">parseMonolithicPackage</span><span class="params">(File apkFile, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> PackageParserException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mOnlyCoreApps) &#123;<span class="comment">//PMS初始化时，该变量一般为false,只有在data区加解密等特殊情况下，才为true</span></span><br><span class="line">            <span class="keyword">final</span> PackageLite lite = parseMonolithicPackageLite(apkFile, flags);</span><br><span class="line">            <span class="keyword">if</span> (!lite.coreApp) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> PackageParserException(INSTALL_PARSE_FAILED_MANIFEST_MALFORMED,</span><br><span class="line">                        <span class="string">"Not a coreApp: "</span> + apkFile);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> AssetManager assets = <span class="keyword">new</span> AssetManager();<span class="comment">//AssetManager是资源管理框架</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> Package pkg = parseBaseApk(apkFile, assets, flags);<span class="comment">// 在parseBaseApk的时候，会把assets传人</span></span><br><span class="line">            pkg.codePath = apkFile.getAbsolutePath();</span><br><span class="line">            <span class="keyword">return</span> pkg;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            IoUtils.closeQuietly(assets);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>先创建一个资源管理框架的对象AssetManager，在将其和apkfile等一起传入parseBaseApk方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Package <span class="title">parseBaseApk</span><span class="params">(File apkFile, AssetManager assets, <span class="keyword">int</span> flags)</span></span><br><span class="line">           <span class="keyword">throws</span> PackageParserException </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> String apkPath = apkFile.getAbsolutePath();<span class="comment">// 返回apkFile绝对路径名字字符串</span></span><br><span class="line"></span><br><span class="line">       String volumeUuid = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">if</span> (apkPath.startsWith(MNT_EXPAND)) &#123;</span><br><span class="line">           <span class="keyword">final</span> <span class="keyword">int</span> end = apkPath.indexOf(<span class="string">'/'</span>, MNT_EXPAND.length());</span><br><span class="line">           volumeUuid = apkPath.substring(MNT_EXPAND.length(), end);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       mParseError = PackageManager.INSTALL_SUCCEEDED;</span><br><span class="line">       mArchiveSourcePath = apkFile.getAbsolutePath();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (DEBUG_JAR) Slog.d(TAG, <span class="string">"Scanning base APK: "</span> + apkPath);</span><br><span class="line"></span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">int</span> cookie = loadApkIntoAssetManager(assets, apkPath, flags);</span><br><span class="line"></span><br><span class="line">       Resources res = <span class="keyword">null</span>;</span><br><span class="line">       XmlResourceParser parser = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           res = <span class="keyword">new</span> Resources(assets, mMetrics, <span class="keyword">null</span>);</span><br><span class="line">           <span class="comment">/*</span><br><span class="line">            Resources类构造方法中调用其成员函数updateConfiguration,</span><br><span class="line">            首先是根据参数config和metrics来更新设备的当前配置信息，</span><br><span class="line">            例如，屏幕大小和密码、国家地区和语言、键盘配置情况等等，</span><br><span class="line">            接着再调用成员变量mAssets所指向的一个Java层的AssetManager对象的成员函数setConfiguration来将这些配置信息设置到与之关联的C++层的AssetManager对象中去。</span><br><span class="line">           */</span></span><br><span class="line">           assets.setConfiguration(<span class="number">0</span>, <span class="number">0</span>, <span class="keyword">null</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">                   Build.VERSION.RESOURCES_SDK_INT);</span><br><span class="line">          <span class="comment">//创建AndroidMainfest.xml的xml解析器</span></span><br><span class="line">           parser = assets.openXmlResourceParser(cookie, ANDROID_MANIFEST_FILENAME);</span><br><span class="line"></span><br><span class="line">           <span class="keyword">final</span> String[] outError = <span class="keyword">new</span> String[<span class="number">1</span>];</span><br><span class="line">           <span class="comment">// 开始真正解析AndroidMainfest.xml</span></span><br><span class="line">           <span class="keyword">final</span> Package pkg = parseBaseApk(res, parser, flags, outError);</span><br><span class="line">           <span class="keyword">if</span> (pkg == <span class="keyword">null</span>) &#123;</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> PackageParserException(mParseError,</span><br><span class="line">                       apkPath + <span class="string">" (at "</span> + parser.getPositionDescription() + <span class="string">"): "</span> + outError[<span class="number">0</span>]);</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           pkg.volumeUuid = volumeUuid;</span><br><span class="line">           pkg.baseCodePath = apkPath;</span><br><span class="line">           pkg.mSignatures = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">return</span> pkg;</span><br><span class="line"></span><br><span class="line">       &#125; <span class="keyword">catch</span> (PackageParserException e) &#123;</span><br><span class="line">           <span class="keyword">throw</span> e;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> PackageParserException(INSTALL_PARSE_FAILED_UNEXPECTED_EXCEPTION,</span><br><span class="line">                   <span class="string">"Failed to read manifest from "</span> + apkPath, e);</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">           IoUtils.closeQuietly(parser);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>该方法说白了，就是对AndroidMainfest.xml文件进行解析。真正解析这个xml的是其内部调用的parseBaseApk方法。该方法先调用以pkgName为参数的构造方法创建一个PackageParser.Package对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Package</span><span class="params">(String packageName)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">this</span>.packageName = packageName;</span><br><span class="line">           applicationInfo.packageName = packageName;</span><br><span class="line">           applicationInfo.uid = -<span class="number">1</span>;</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+<p>接下来就是将解析到的AndroidMainfest.xml相关信息，赋值到Package的相关属性字段中去。如xml中声明的四大组件了，该app的版本号了等等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Package</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String packageName;</span><br><span class="line"></span><br><span class="line">        .........................</span><br><span class="line">        <span class="keyword">public</span> String codePath;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/** Path of base APK */</span></span><br><span class="line">        <span class="keyword">public</span> String baseCodePath;</span><br><span class="line">        <span class="comment">/** Paths of any split APKs, ordered by parsed splitName */</span></span><br><span class="line">        <span class="keyword">public</span> String[] splitCodePaths;</span><br><span class="line"></span><br><span class="line">        ................................</span><br><span class="line">        <span class="comment">// For now we only support one application per package.</span></span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ApplicationInfo applicationInfo = <span class="keyword">new</span> ApplicationInfo();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;Permission&gt; permissions = <span class="keyword">new</span> ArrayList&lt;Permission&gt;(<span class="number">0</span>);</span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;PermissionGroup&gt; permissionGroups = <span class="keyword">new</span> ArrayList&lt;PermissionGroup&gt;(<span class="number">0</span>);</span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;Activity&gt; activities = <span class="keyword">new</span> ArrayList&lt;Activity&gt;(<span class="number">0</span>);</span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;Activity&gt; receivers = <span class="keyword">new</span> ArrayList&lt;Activity&gt;(<span class="number">0</span>);</span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;Provider&gt; providers = <span class="keyword">new</span> ArrayList&lt;Provider&gt;(<span class="number">0</span>);</span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;Service&gt; services = <span class="keyword">new</span> ArrayList&lt;Service&gt;(<span class="number">0</span>);</span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">final</span> ArrayList&lt;Instrumentation&gt; instrumentation = <span class="keyword">new</span> ArrayList&lt;Instrumentation&gt;(<span class="number">0</span>);</span><br><span class="line">        .....................................</span><br><span class="line">        <span class="comment">// The version code declared for this package.</span></span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">int</span> mVersionCode;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// The version name declared for this package.</span></span><br><span class="line">       <span class="keyword">public</span> String mVersionName;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// The shared user id that this package wants to use.</span></span><br><span class="line">       <span class="keyword">public</span> String mSharedUserId;</span><br><span class="line">       .................................</span><br></pre></td></tr></table></figure>
+<p>实际上解析apk的过程，就是解析xml，然后填充PackageParser.Package对象的过程。</p>
+<p>时序图：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-4.png" alt=""></p>
+<h4 id="解析一个app有多个apk的情况">解析一个app有多个apk的情况</h4><p>Split APK是Google为解决65536上限，以及APK安装包越来越大等问题，在Android L中引入的机制。</p>
+<p>Split APK可以将一个庞大的APK，按屏幕密度，ABI等形式拆分成多个独立的APK，在应用程序更新时，不必下载整个APK，只需单独下载某个模块即可安装更新。</p>
+<p>Split APK将原来一个APK中多个模块共享同一份资源的模型分离成多个APK使用各自的资源，并且可以继承Base APK中的资源，多个APK有相同的data，cache目录，多个dex文件，相同的进程，在Settings.apk中只显示一个APK，并且使用相同的包名。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-2.png" alt=""></p>
+<p>可参考<a href="http://blog.csdn.net/ximsfei/article/details/50884862" target="_blank" rel="external">该文章</a>，了解如何使用该机制。</p>
+<p>当是这种情况时，会调用parseClusterPackage</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Package <span class="title">parseClusterPackage</span><span class="params">(File packageDir, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> PackageParserException </span>&#123;</span><br><span class="line">      <span class="comment">// 获取应用目录的PackageLite对象，该对象中分开保存了该目录下的核心应用和非核心应用的名称。</span></span><br><span class="line">       <span class="keyword">final</span> PackageLite lite = parseClusterPackageLite(packageDir, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (mOnlyCoreApps &amp;&amp; !lite.coreApp) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> PackageParserException(INSTALL_PARSE_FAILED_MANIFEST_MALFORMED,</span><br><span class="line">                   <span class="string">"Not a coreApp: "</span> + packageDir);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">final</span> AssetManager assets = <span class="keyword">new</span> AssetManager();</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">// Load the base and all splits into the AssetManager</span></span><br><span class="line">           <span class="comment">// so that resources can be overriden when parsing the manifests.</span></span><br><span class="line">           <span class="comment">// 先装载核心应用的资源</span></span><br><span class="line">           loadApkIntoAssetManager(assets, lite.baseCodePath, flags);</span><br><span class="line"></span><br><span class="line">          <span class="comment">// 在装载其他非核心应用的资源</span></span><br><span class="line">           <span class="keyword">if</span> (!ArrayUtils.isEmpty(lite.splitCodePaths)) &#123;</span><br><span class="line">               <span class="keyword">for</span> (String path : lite.splitCodePaths) &#123;</span><br><span class="line">                   loadApkIntoAssetManager(assets, path, flags);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">final</span> File baseApk = <span class="keyword">new</span> File(lite.baseCodePath);</span><br><span class="line">           <span class="comment">// 对核心应用调用parseBaseApk进行解析</span></span><br><span class="line">           <span class="keyword">final</span> Package pkg = parseBaseApk(baseApk, assets, flags);</span><br><span class="line">           <span class="keyword">if</span> (pkg == <span class="keyword">null</span>) &#123;</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> PackageParserException(INSTALL_PARSE_FAILED_NOT_APK,</span><br><span class="line">                       <span class="string">"Failed to parse base APK: "</span> + baseApk);</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (!ArrayUtils.isEmpty(lite.splitNames)) &#123;</span><br><span class="line">               <span class="keyword">final</span> <span class="keyword">int</span> num = lite.splitNames.length;</span><br><span class="line">               pkg.splitNames = lite.splitNames;</span><br><span class="line">               pkg.splitCodePaths = lite.splitCodePaths;</span><br><span class="line">               pkg.splitRevisionCodes = lite.splitRevisionCodes;</span><br><span class="line">               pkg.splitFlags = <span class="keyword">new</span> <span class="keyword">int</span>[num];</span><br><span class="line">               pkg.splitPrivateFlags = <span class="keyword">new</span> <span class="keyword">int</span>[num];</span><br><span class="line"></span><br><span class="line">               <span class="comment">//对非核心应用调用parseSplitApk解析</span></span><br><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; num; i++) &#123;</span><br><span class="line">                   parseSplitApk(pkg, i, assets, flags);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           pkg.codePath = packageDir.getAbsolutePath();</span><br><span class="line">           <span class="keyword">return</span> pkg;</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">           IoUtils.closeQuietly(assets);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>parseClusterPackage首先调用parseClusterPackageLite对目录下的apk文件进行初步分析，主要是区别除核心应用和非核心应用。核心应用只有一个，非核心应用可以没有，也可以有多个。</p>
+<p>对核心应用调用parseBaseApk解析，对非核心应用调用parseSplitApk，解析到的结果会保存在同一个PackageParser.Package对象中。</p>
+<p>时序图：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-3.png" alt=""></p>
+<h3 id="scanPackageDirtyLI方法">scanPackageDirtyLI方法</h3><p>前面分析的scanPackageLI方法的最后还会调用同但参数不同的scanPackageLI方法。前面的那个scanPackageLI主要是对mSettings中的mPackages进行设置，而这里的scanPackageLI主要是对PMS中的mPackages进行设置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> PackageParser.<span class="function">Package <span class="title">scanPackageLI</span><span class="params">(PackageParser.Package pkg, <span class="keyword">int</span> parseFlags,</span><br><span class="line">        <span class="keyword">int</span> scanFlags, <span class="keyword">long</span> currentTime, UserHandle user)</span> <span class="keyword">throws</span> PackageManagerException </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> success = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> PackageParser.Package res = scanPackageDirtyLI(pkg, parseFlags, scanFlags,</span><br><span class="line">                currentTime, user);</span><br><span class="line">        success = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!success &amp;&amp; (scanFlags &amp; SCAN_DELETE_DATA_ON_FAILURES) != <span class="number">0</span>) &#123;</span><br><span class="line">            removeDataDirsLI(pkg.volumeUuid, pkg.packageName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法内部调用 scanPackageDirtyLI来完成相应的工作.scanPackageLI方法也能被单独调用使用，我们这里只关心当它被前一个scanPackageLI方法调用时的逻辑。</p>
+<p>Android系统中有这样的一个场景，当发出一个intent的时候，如果对话框中存在多个响应的activity，Android就会弹出一个对话框，让用户进行选择。典型的例子，就是设备中安装了多个可以打开的word文件的软件的时候，当打开word时，如过没有设置默认使用的软件，那么就会弹出一个对话框，让用户选择使用哪个app来打开word文件。这个对话框叫做ResolverActivity.因此该对话框，是存在与系统内部的对象，它保存在PMS的mResolveActivity变量。</p>
+<p>ResolverActivity的代码位于framework-res.apk中，因此scanPackageLi扫描发现文件的包名是“Android”的时候，会从文件中提取ResolverActivity的信息，并创建mResolveActivity对象。如果系统中通过定义字符串”config_customResolverActivity”指定了替代的ResolverActivity，那么则会在找到了替代的包名后，在创建mResolveActivity对象，不在使用framework-res.apk中的ResolverActivity.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">ivate PackageParser.<span class="function">Package <span class="title">scanPackageDirtyLI</span><span class="params">(PackageParser.Package pkg, <span class="keyword">int</span> parseFlags,</span><br><span class="line">            <span class="keyword">int</span> scanFlags, <span class="keyword">long</span> currentTime, UserHandle user)</span> <span class="keyword">throws</span> PackageManagerException </span>&#123;</span><br><span class="line"></span><br><span class="line">              ...................</span><br><span class="line">              <span class="keyword">if</span> (mCustomResolverComponentName != <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">                              mCustomResolverComponentName.getPackageName().equals(pkg.packageName)) &#123;</span><br><span class="line"></span><br><span class="line">                          <span class="comment">// 该方法中会将 mResolverReplaced 设置为true</span></span><br><span class="line">                          setUpCustomResolverActivity(pkg);</span><br><span class="line">                      &#125;</span><br><span class="line">              ...................</span><br><span class="line">              <span class="keyword">if</span> (pkg.packageName.equals(<span class="string">"android"</span>)) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (mPackages) &#123;</span><br><span class="line">                <span class="keyword">if</span> (mAndroidApplication != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    Slog.w(TAG, <span class="string">"*************************************************"</span>);</span><br><span class="line">                    Slog.w(TAG, <span class="string">"Core android package being redefined.  Skipping."</span>);</span><br><span class="line">                    Slog.w(TAG, <span class="string">" file="</span> + scanFile);</span><br><span class="line">                    Slog.w(TAG, <span class="string">"*************************************************"</span>);</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> PackageManagerException(INSTALL_FAILED_DUPLICATE_PACKAGE,</span><br><span class="line">                            <span class="string">"Core android package being redefined.  Skipping."</span>);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Set up information for our fall-back user intent resolution activity.</span></span><br><span class="line">                mPlatformPackage = pkg;</span><br><span class="line">                pkg.mVersionCode = mSdkVersion;</span><br><span class="line">                mAndroidApplication = pkg.applicationInfo;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!mResolverReplaced) &#123;</span><br><span class="line">                    mResolveActivity.applicationInfo = mAndroidApplication;</span><br><span class="line">                    mResolveActivity.name = ResolverActivity.class.getName();</span><br><span class="line">                    mResolveActivity.packageName = mAndroidApplication.packageName;</span><br><span class="line">                    mResolveActivity.processName = <span class="string">"system:ui"</span>;</span><br><span class="line">                    mResolveActivity.launchMode = ActivityInfo.LAUNCH_MULTIPLE;</span><br><span class="line">                    mResolveActivity.documentLaunchMode = ActivityInfo.DOCUMENT_LAUNCH_NEVER;</span><br><span class="line">                    mResolveActivity.flags = ActivityInfo.FLAG_EXCLUDE_FROM_RECENTS;</span><br><span class="line">                    mResolveActivity.theme = R.style.Theme_Holo_Dialog_Alert;</span><br><span class="line">                    mResolveActivity.exported = <span class="keyword">true</span>;</span><br><span class="line">                    mResolveActivity.enabled = <span class="keyword">true</span>;</span><br><span class="line">                    mResolveInfo.activityInfo = mResolveActivity;</span><br><span class="line">                    mResolveInfo.priority = <span class="number">0</span>;</span><br><span class="line">                    mResolveInfo.preferredOrder = <span class="number">0</span>;</span><br><span class="line">                    mResolveInfo.match = <span class="number">0</span>;</span><br><span class="line">                    mResolveComponentName = <span class="keyword">new</span> ComponentName(</span><br><span class="line">                            mAndroidApplication.packageName, mResolveActivity.name);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        .....................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可能在其他目录中已经扫描并安装过一个同名的app了，所以抛出异常。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mPackages.containsKey(pkg.packageName)</span><br><span class="line">             || mSharedLibraries.containsKey(pkg.packageName)) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> PackageManagerException(INSTALL_FAILED_DUPLICATE_PACKAGE,</span><br><span class="line">                 <span class="string">"Application package "</span> + pkg.packageName</span><br><span class="line">                 + <span class="string">" already installed.  Skipping duplicate."</span>);</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来的代码不贴了太多了，间要说下余下代码都做了什么事情。</p>
+<p>如果扫描应用中有<original-package>标签，并且有升级包则将包的悉尼西加入到mSeetings的mRenamedPackages变量中，这些信息也会保存在packages.xml中<rename-package>标签下。</rename-package></original-package></p>
+<p>再次校验签名，并检查共享UID的app签名是否一致，不一致要报错。</p>
+<p>利用fixProcessName（）修改app将来运行时的进程名称，将来可以通过/proc/self/cmdline读取。</p>
+<p>如果应用的沙箱目录已经存在，那么检查是否有错误，如uid是否一致等等，发现错误的话，删掉数据目录，重新建立。</p>
+<p>安装应用中的动态，这里要注意系统app和第三方app的区别。系统app的so库，一般会放在/system/lib下。另外系统app的目录中会有一个连接文件指向/system/lib下的so库，这就导致系统app，无法通过分析目录文件确定其so库使用的abi.而第三方app，可以通过armeabi,armeabi-v7a等目录名字确定其abi。对于第三方app，其so库会放在</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/app/&#21253;&#21517;/lib/(arm/arm64/x86)/</span><br></pre></td></tr></table></figure>
+<p>然后在沙箱目录中创建一个lib连接文件，指向上述目录。</p>
+<p>如果检测到应用所依赖的动态库文件发生了改变，咋调用performDexOpt重新执行。</p>
+<p>最后就是把app中Activity,Service,Provider,receiver,permission,Permission Group等信息全部提取出来，放到PMS相关成员变量中。</p>
+<p>总之最先调用的scanPackageLI是把解析到的信息放入到mSeetings中的，而这次的scanPackageLI的是吧解析到的信息放入到PMS中。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/21/Android_PackageManagerService-4/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android-6.0之PMS解析中篇1</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-5" data-title="Android-6.0之PMS解析中篇2" data-url="http://www.iloveandroid.net/2016/06/21/Android_PackageManagerService-5/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
