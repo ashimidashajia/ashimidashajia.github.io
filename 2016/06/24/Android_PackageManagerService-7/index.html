@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android-6.0之PMS安装APK前奏 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面介绍了PMS是如何启动的，现在介绍Android系统是如何安装一个APK的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-6.0之PMS安装APK前奏">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/24/Android_PackageManagerService-7/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面介绍了PMS是如何启动的，现在介绍Android系统是如何安装一个APK的。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-5.png">
+<meta property="og:updated_time" content="2016-06-24T11:03:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-6.0之PMS安装APK前奏">
+<meta name="twitter:description" content="前面介绍了PMS是如何启动的，现在介绍Android系统是如何安装一个APK的。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-7" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/24/Android_PackageManagerService-7/" class="article-date">
+  	<time datetime="2016-06-24T06:22:50.000Z" itemprop="datePublished">2016-06-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-6.0之PMS安装APK前奏
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面介绍了PMS是如何启动的，现在介绍Android系统是如何安装一个APK的。</p>
+<a id="more"></a>
+<p>前面介绍PMS时，已经确定了PMS会注册成为一个service,而Android系统中需要使用一个service时，通常要找到其客户端代理，然后通过其代理使用PMS提供的功能。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/PMS-5.png" alt=""></p>
+<p> 如上图所示：</p>
+<ol>
+<li><p>IPackageManager使用了Android的AIDL语言定义了server要提供的业务函数，然后AIDL编译器会自动生成IPackageManager接口代码，其子类Stub继承Binder且实现了IPackageManager接口</p>
+</li>
+<li><p>PMS继承Stub，所以可以作为Server端</p>
+</li>
+<li><p>Stub中的一个内部类Proxy中有一个IBinder的成员变量mRemote，利用mRemote可以和Server端通信</p>
+</li>
+<li><p>client端在使用的时候是使用Context.getPackageManager函数返回的ApplicationPackageManager对象来处理，ApplicationPackageManager内部成员变量mPM指向Proxy类型的对象。也就意味着可以和PMS通信了。</p>
+</li>
+</ol>
+<p>这是一个典型的Binder服务模型，Android系统很多关键服务都是采用binder服务模型。最终上层获取到的PMS的代理是PackageManager这个抽象类的实现类ApplicationPackageManager对象。</p>
+<h3 id="如何获得PMS代理对象">如何获得PMS代理对象</h3><p>使用下面的代码，可以获取到PMS的一个代理对象：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Context ct = getApplicationContext();</span><br><span class="line">PackageManager pm =  ct.getPackageManager();</span><br></pre></td></tr></table></figure></p>
+<p>其中getPackageManager源码位置：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/core/java/android/app/ContextImpl.java</span><br></pre></td></tr></table></figure></p>
+<p>实现代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> PackageManager <span class="title">getPackageManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (mPackageManager != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">return</span> mPackageManager;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      IPackageManager pm = ActivityThread.getPackageManager();</span><br><span class="line">      <span class="keyword">if</span> (pm != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">// Doesn't matter if we make more than one instance.</span></span><br><span class="line">          <span class="keyword">return</span> (mPackageManager = <span class="keyword">new</span> ApplicationPackageManager(<span class="keyword">this</span>, pm));</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>ActivityThread.getPackageManager源码位置：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/core/java/android/app/ActivityThread.java</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IPackageManager <span class="title">getPackageManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (sPackageManager != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//Slog.v("PackageManager", "returning cur default = " + sPackageManager);</span></span><br><span class="line">        <span class="keyword">return</span> sPackageManager;</span><br><span class="line">    &#125;</span><br><span class="line">    IBinder b = ServiceManager.getService(<span class="string">"package"</span>);</span><br><span class="line">    <span class="comment">//Slog.v("PackageManager", "default service binder = " + b);</span></span><br><span class="line">    sPackageManager = IPackageManager.Stub.asInterface(b);</span><br><span class="line">    <span class="comment">//Slog.v("PackageManager", "default service = " + sPackageManager);</span></span><br><span class="line">    <span class="keyword">return</span> sPackageManager;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只要了解Android binder框架的，就会马上发现，这无非就是向SM查询名为”package”的服务，SM查询成功的话，返回名为”package”服务的一个引用对象，然后使用asInterface将其转换一个代理对象。</p>
+<p>PMS在向SM注册时，名字确实是”package”。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PackageManagerService <span class="title">main</span><span class="params">(Context context, Installer installer,</span><br><span class="line">          <span class="keyword">boolean</span> factoryTest, <span class="keyword">boolean</span> onlyCore)</span> </span>&#123;</span><br><span class="line">      PackageManagerService m = <span class="keyword">new</span> PackageManagerService(context, installer,</span><br><span class="line">              factoryTest, onlyCore);</span><br><span class="line">      ServiceManager.addService(<span class="string">"package"</span>, m);</span><br><span class="line">      <span class="keyword">return</span> m;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>对PackageManager的调用，最终都转换为对PMS的调用。</p>
+<h3 id="安装apk">安装apk</h3><p>可以使用如下代码，调用去安装一个apk文件已经在设备中的apk。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">File apkfile  =  <span class="keyword">new</span> File(<span class="string">"/data/local/tmp/demo.apk"</span>);</span><br><span class="line">Uri uri = Uri.fromFile(apkfile);</span><br><span class="line">Intent intent = <span class="keyword">new</span> Intent(Intent.ACTION_VIEW);</span><br><span class="line">intent.setDataAndType(uri,<span class="string">"application/vnd.android.package-archive"</span>);</span><br><span class="line">startActivity(intent);</span><br></pre></td></tr></table></figure>
+<p>源码路径：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/packages/apps/PackageInstaller</span><br></pre></td></tr></table></figure></p>
+<p>系统应用PackageInstaller将会响应这个intent.</p>
+<p>它的AndroidMainifest.xml中：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">activity</span> <span class="attribute">android:name</span>=<span class="value">".PackageInstallerActivity"</span></span><br><span class="line">                <span class="attribute">android:configChanges</span>=<span class="value">"orientation|keyboardHidden|screenSize"</span></span><br><span class="line">                <span class="attribute">android:excludeFromRecents</span>=<span class="value">"true"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.action.VIEW"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.action.INSTALL_PACKAGE"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.category.DEFAULT"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">data</span> <span class="attribute">android:scheme</span>=<span class="value">"file"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">data</span> <span class="attribute">android:mimeType</span>=<span class="value">"application/vnd.android.package-archive"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">            .......</span><br></pre></td></tr></table></figure>
+<p>也就是说PackageInstallerActivity会真正响应这个intent.</p>
+<p>PackageInstallerActivity中有两个重要的成员</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PackageManager mPm;</span><br><span class="line">PackageInstaller mInstaller;</span><br></pre></td></tr></table></figure>
+<p>其中mPm是PMS的代理对象，mInstaller是PackageInstallerService的代理对象。PMS类之后内聚了PackageInstallerService，在PMS启动的时候，初始化了改变量。</p>
+<p>当PackageInstallerActivity这个Activity启动的时候</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle icicle)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(icicle);</span><br><span class="line"></span><br><span class="line">        mPm = getPackageManager();</span><br><span class="line">        mInstaller = mPm.getPackageInstaller();</span><br><span class="line"></span><br><span class="line">        ..............</span><br></pre></td></tr></table></figure>
+<p>一开始便获取到了这两个对象。</p>
+<p>继续PackageInstallerActivity的onCreate：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (PackageInstaller.ACTION_CONFIRM_PERMISSIONS.equals(intent.getAction())) &#123;</span><br><span class="line">      ...............</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">//走的这个分支</span></span><br><span class="line">          mSessionId = -<span class="number">1</span>;</span><br><span class="line">          mPackageURI = intent.getData();</span><br><span class="line">          mOriginatingURI = intent.getParcelableExtra(Intent.EXTRA_ORIGINATING_URI);</span><br><span class="line">          mReferrerURI = intent.getParcelableExtra(Intent.EXTRA_REFERRER);</span><br><span class="line">      &#125;</span><br><span class="line">.......................</span><br><span class="line"><span class="keyword">if</span> (<span class="string">"package"</span>.equals(mPackageURI.getScheme())) &#123;</span><br><span class="line">        .................</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 走的这个分支</span></span><br><span class="line">          mInstallFlowAnalytics.setFileUri(<span class="keyword">true</span>);</span><br><span class="line">          <span class="keyword">final</span> File sourceFile = <span class="keyword">new</span> File(mPackageURI.getPath());</span><br><span class="line">          PackageParser.Package parsed = PackageUtil.getPackageInfo(sourceFile);</span><br><span class="line"></span><br><span class="line">          <span class="comment">// Check for parse errors</span></span><br><span class="line">          <span class="keyword">if</span> (parsed == <span class="keyword">null</span>) &#123;</span><br><span class="line">              Log.w(TAG, <span class="string">"Parse error when parsing manifest. Discontinuing installation"</span>);</span><br><span class="line">              showDialogInner(DLG_PACKAGE_ERROR);</span><br><span class="line">              setPmResult(PackageManager.INSTALL_FAILED_INVALID_APK);</span><br><span class="line">              mInstallFlowAnalytics.setPackageInfoObtained();</span><br><span class="line">              mInstallFlowAnalytics.setFlowFinished(</span><br><span class="line">                      InstallFlowAnalytics.RESULT_FAILED_TO_GET_PACKAGE_INFO);</span><br><span class="line">              <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          mPkgInfo = PackageParser.generatePackageInfo(parsed, <span class="keyword">null</span>,</span><br><span class="line">                  PackageManager.GET_PERMISSIONS, <span class="number">0</span>, <span class="number">0</span>, <span class="keyword">null</span>,</span><br><span class="line">                  <span class="keyword">new</span> PackageUserState());</span><br><span class="line">          mPkgDigest = parsed.manifestDigest;</span><br><span class="line">          as = PackageUtil.getAppSnippet(<span class="keyword">this</span>, mPkgInfo.applicationInfo, sourceFile);</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<p>代码逻辑还是比较好理解的，从intent获取到要安装的apk的路径。调用PackageUtil.getPackageInfo解析。</p>
+<p>其中PackageUtil.getPackageInfo：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> PackageParser.<span class="function">Package <span class="title">getPackageInfo</span><span class="params">(File sourceFile)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">final</span> PackageParser parser = <span class="keyword">new</span> PackageParser();</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          PackageParser.Package pkg = parser.parseMonolithicPackage(sourceFile, <span class="number">0</span>);</span><br><span class="line">          parser.collectManifestDigest(pkg);</span><br><span class="line">          <span class="keyword">return</span> pkg;</span><br><span class="line">      &#125; <span class="keyword">catch</span> (PackageParserException e) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>是不是有种熟悉的感觉，在PMS启动的时候，扫描解析APK不就用到了PackageParser吗。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/core/java/android/content/pm/PackageParser.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Package <span class="title">parseMonolithicPackage</span><span class="params">(File apkFile, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> PackageParserException </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (mOnlyCoreApps) &#123;</span><br><span class="line">        ....................</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">final</span> AssetManager assets = <span class="keyword">new</span> AssetManager();</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">final</span> Package pkg = parseBaseApk(apkFile, assets, flags);</span><br><span class="line">           pkg.codePath = apkFile.getAbsolutePath();</span><br><span class="line">           <span class="keyword">return</span> pkg;</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">           IoUtils.closeQuietly(assets);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>就是调用parseBaseApk来解析传入的apk文件，这个过程实际上就是在解析apk中AndroidMainfest.xml文件，将其中的信息村粗，并把解析结果存入PackageParser.Package对象中返回。</p>
+<p>然后将解析得到的Package对象，通过generatePackageInfo()方法转换为一个PackageInfo对象。</p>
+<p>继续PackageInstallerActivity的onCreate：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Block the install attempt on the Unknown Sources setting if necessary.</span></span><br><span class="line">        <span class="keyword">if</span> (!requestFromUnknownSource) &#123;</span><br><span class="line">            initiateInstall();</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If the admin prohibits it, or we're running in a managed profile, just show error</span></span><br><span class="line">        <span class="comment">// and exit. Otherwise show an option to take the user to Settings to change the setting.</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">boolean</span> isManagedProfile = mUserManager.isManagedProfile();</span><br><span class="line">        <span class="keyword">if</span> (!unknownSourcesAllowedByAdmin</span><br><span class="line">                || (!unknownSourcesAllowedByUser &amp;&amp; isManagedProfile)) &#123;</span><br><span class="line">            showDialogInner(DLG_ADMIN_RESTRICTS_UNKNOWN_SOURCES);</span><br><span class="line">            mInstallFlowAnalytics.setFlowFinished(</span><br><span class="line">                    InstallFlowAnalytics.RESULT_BLOCKED_BY_UNKNOWN_SOURCES_SETTING);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!unknownSourcesAllowedByUser) &#123;</span><br><span class="line">            <span class="comment">// Ask user to enable setting first</span></span><br><span class="line">            showDialogInner(DLG_UNKNOWN_SOURCES);</span><br><span class="line">            mInstallFlowAnalytics.setFlowFinished(</span><br><span class="line">                    InstallFlowAnalytics.RESULT_BLOCKED_BY_UNKNOWN_SOURCES_SETTING);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            initiateInstall();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>requestFromUnknownSource为true,因为我们确实是从未知来源安装的，没有通过内置的应用商店安装。</p>
+<p>这里做一些检查，例如如果没有在设置中打开允许安装位置来源，这样就要弹出一个提示框，然后用户去设置中打开允许位置来源安装。</p>
+<p>最终都是调用initiateInstall这个方法的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initiateInstall</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String pkgName = mPkgInfo.packageName;</span><br><span class="line">        <span class="comment">// Check if there is already a package on the device with this name</span></span><br><span class="line">        <span class="comment">// but it has been renamed to something else.</span></span><br><span class="line">        String[] oldName = mPm.canonicalToCurrentPackageNames(<span class="keyword">new</span> String[] &#123; pkgName &#125;);</span><br><span class="line">        <span class="keyword">if</span> (oldName != <span class="keyword">null</span> &amp;&amp; oldName.length &gt; <span class="number">0</span> &amp;&amp; oldName[<span class="number">0</span>] != <span class="keyword">null</span>) &#123;</span><br><span class="line">            pkgName = oldName[<span class="number">0</span>];</span><br><span class="line">            mPkgInfo.packageName = pkgName;</span><br><span class="line">            mPkgInfo.applicationInfo.packageName = pkgName;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Check if package is already installed. display confirmation dialog if replacing pkg</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// This is a little convoluted because we want to get all uninstalled</span></span><br><span class="line">            <span class="comment">// apps, but this may include apps with just data, and if it is just</span></span><br><span class="line">            <span class="comment">// data we still want to count it as "installed".</span></span><br><span class="line">            mAppInfo = mPm.getApplicationInfo(pkgName,</span><br><span class="line">                    PackageManager.GET_UNINSTALLED_PACKAGES);</span><br><span class="line">            <span class="keyword">if</span> ((mAppInfo.flags&amp;ApplicationInfo.FLAG_INSTALLED) == <span class="number">0</span>) &#123;</span><br><span class="line">                mAppInfo = <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NameNotFoundException e) &#123;</span><br><span class="line">            mAppInfo = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mInstallFlowAnalytics.setReplace(mAppInfo != <span class="keyword">null</span>);</span><br><span class="line">        mInstallFlowAnalytics.setSystemApp(</span><br><span class="line">                (mAppInfo != <span class="keyword">null</span>) &amp;&amp; ((mAppInfo.flags &amp; ApplicationInfo.FLAG_SYSTEM) != <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">        startInstallConfirm();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>代码逻辑也很简单，主要是判断当前系统中是否已经安装这个app，安装过的话，设置替换flag等信息，然后调用startInstallConfirm，会弹出一个对话框，询问是否需要安装此应用吗，以及这个app将获得哪些权限等。</p>
+<p>因为前面已经解析过该apk了，所以显示其有哪些权限就很简单。</p>
+<p>当点击确定按钮的时候，执行下面的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (v == mOk) &#123;</span><br><span class="line">        <span class="keyword">if</span> (mOkCanInstall || mScrollView == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mInstallFlowAnalytics.setInstallButtonClicked();</span><br><span class="line">            <span class="keyword">if</span> (mSessionId != -<span class="number">1</span>) &#123;</span><br><span class="line">                .................</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">              <span class="comment">// 走这个分支</span></span><br><span class="line">                startInstall();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mScrollView.pageScroll(View.FOCUS_DOWN);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(v == mCancel) &#123;</span><br><span class="line">      ........................</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>主要工作由startInstall()完成：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startInstall</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="comment">// Start subactivity to actually install the application</span></span><br><span class="line">      Intent newIntent = <span class="keyword">new</span> Intent();</span><br><span class="line">      newIntent.putExtra(PackageUtil.INTENT_ATTR_APPLICATION_INFO,</span><br><span class="line">              mPkgInfo.applicationInfo);</span><br><span class="line">      newIntent.setData(mPackageURI);</span><br><span class="line">      newIntent.setClass(<span class="keyword">this</span>, InstallAppProgress.class);</span><br><span class="line">      newIntent.putExtra(InstallAppProgress.EXTRA_MANIFEST_DIGEST, mPkgDigest);</span><br><span class="line">      newIntent.putExtra(</span><br><span class="line">              InstallAppProgress.EXTRA_INSTALL_FLOW_ANALYTICS, mInstallFlowAnalytics);</span><br><span class="line">      String installerPackageName = getIntent().getStringExtra(</span><br><span class="line">              Intent.EXTRA_INSTALLER_PACKAGE_NAME);</span><br><span class="line">      <span class="keyword">if</span> (mOriginatingURI != <span class="keyword">null</span>) &#123;</span><br><span class="line">          newIntent.putExtra(Intent.EXTRA_ORIGINATING_URI, mOriginatingURI);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (mReferrerURI != <span class="keyword">null</span>) &#123;</span><br><span class="line">          newIntent.putExtra(Intent.EXTRA_REFERRER, mReferrerURI);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (mOriginatingUid != VerificationParams.NO_UID) &#123;</span><br><span class="line">          newIntent.putExtra(Intent.EXTRA_ORIGINATING_UID, mOriginatingUid);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (installerPackageName != <span class="keyword">null</span>) &#123;</span><br><span class="line">          newIntent.putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME,</span><br><span class="line">                  installerPackageName);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (getIntent().getBooleanExtra(Intent.EXTRA_RETURN_RESULT, <span class="keyword">false</span>)) &#123;</span><br><span class="line">          newIntent.putExtra(Intent.EXTRA_RETURN_RESULT, <span class="keyword">true</span>);</span><br><span class="line">          newIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span>(localLOGV) Log.i(TAG, <span class="string">"downloaded app uri="</span>+mPackageURI);</span><br><span class="line">      startActivity(newIntent);</span><br><span class="line">      finish();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里创建一个Intent，设置数据和哪个发送给哪个class，调用 startActivity(newIntent)，启动InstallAppProgress.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/23/Android_PackageManagerService-6/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android-6.0之PMS解析下篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-7" data-title="Android-6.0之PMS安装APK前奏" data-url="http://www.iloveandroid.net/2016/06/24/Android_PackageManagerService-7/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
