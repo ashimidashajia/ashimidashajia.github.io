@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android-6.0之PMS的守护进程installd | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="有一个名为installd的native 守护进程一直默默的为PMS服务。现在就来看看它究竟在做什么。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-6.0之PMS的守护进程installd">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/30/Android_PackageManagerService-11/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="有一个名为installd的native 守护进程一直默默的为PMS服务。现在就来看看它究竟在做什么。">
+<meta property="og:updated_time" content="2016-06-30T07:53:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-6.0之PMS的守护进程installd">
+<meta name="twitter:description" content="有一个名为installd的native 守护进程一直默默的为PMS服务。现在就来看看它究竟在做什么。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-11" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/30/Android_PackageManagerService-11/" class="article-date">
+  	<time datetime="2016-06-30T06:12:55.000Z" itemprop="datePublished">2016-06-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-6.0之PMS的守护进程installd
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>有一个名为installd的native 守护进程一直默默的为PMS服务。现在就来看看它究竟在做什么。</p>
+<a id="more"></a>
+<p>installd定义在init.rc中：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#10;service installd /system/bin/installd&#10;    class main&#10;    socket installd stream 600 system system</span><br></pre></td></tr></table></figure>
+<p>installd架构相对比较简单，会监听一个本地的socket，这个socket通过在init.rc文件中指定服务属性的方式创建，创建的本地socket位于：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/dev/socket/installd</span><br></pre></td></tr></table></figure>
+<p>源码位置：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/native/cmds/installd/Installd.cpp</span><br></pre></td></tr></table></figure></p>
+<h3 id="入口点">入口点</h3><p>自然就是main函数了：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">int main(const int argc unused, char ×argv[]) &#123;</span><br><span class="line">    ...................</span><br><span class="line"></span><br><span class="line">    // 初始化全局变量</span><br><span class="line">    if (initialize_globals() &lt; 0) &#123;</span><br><span class="line">        ALOGE("Could not initialize globals; exiting.\n");</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    // 初始化系统目录</span><br><span class="line">    if (initialize_directories() &lt; 0) &#123;</span><br><span class="line">        ALOGE("Could not create directories; exiting.\n");</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (selinux_enabled &amp;&amp; selinux_status_open(true) &lt; 0) &#123;</span><br><span class="line">        ALOGE("Could not open selinux status; exiting.\n");</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    // 从环境变量ANDROID_SOCKET_installd中获取用于监听的本地socket</span><br><span class="line">    lsocket = android_get_control_socket(SOCKET_PATH);</span><br><span class="line">    if (lsocket &lt; 0) &#123;</span><br><span class="line">        ALOGE("Failed to get socket from environment: %s\n", strerror(errno));</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    // 监听socket</span><br><span class="line">    if (listen(lsocket, 5)) &#123;</span><br><span class="line">        ALOGE("Listen on socket failed: %s\n", strerror(errno));</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    fcntl(lsocket, F_SETFD, FD_CLOEXEC);</span><br><span class="line"></span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        alen = sizeof(addr);</span><br><span class="line">        // 接收连接</span><br><span class="line">        s = accept(lsocket, &amp;addr, &amp;alen);</span><br><span class="line">        if (s &lt; 0) &#123;</span><br><span class="line">            ALOGE("Accept failed: %s\n", strerror(errno));</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        fcntl(s, F_SETFD, FD_CLOEXEC);</span><br><span class="line"></span><br><span class="line">        // 立即处理新的连接，这说明install一次只能处理一个请求</span><br><span class="line">        ALOGI("new connection\n");</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            unsigned short count;</span><br><span class="line">            // 读取命令长度</span><br><span class="line">            if (readx(s, &amp;count, sizeof(count))) &#123;</span><br><span class="line">                ALOGE("failed to read size\n");</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 如果命令长度错误则停止处理</span><br><span class="line">            if ((count &lt; 1) || (count &gt;= BUFFER_MAX)) &#123;</span><br><span class="line">                ALOGE("invalid size %d\n", count);</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            // 读取命令</span><br><span class="line">            if (readx(s, buf, count)) &#123;</span><br><span class="line">                ALOGE("failed to read command\n");</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            buf[count] = 0;</span><br><span class="line">            if (selinux_enabled &amp;&amp; selinux_status_updated() &gt; 0) &#123;</span><br><span class="line">                selinux_android_seapp_context_reload();</span><br><span class="line">            &#125;</span><br><span class="line">            // 执行命令</span><br><span class="line">            if (execute(s, buf)) break;</span><br><span class="line">        &#125;</span><br><span class="line">        ALOGI("closing connection\n");</span><br><span class="line">        close(s);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过代码中的注释，已经可以大体知道他的工作流程了。</p>
+<p>initialize_globals()是用来初始化全局变量的，当该方法执行完毕的时候，可以确定以下的全局变量的值：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">dir_rec_t</span> android_data_dir; <span class="comment">// /data</span></span><br><span class="line"><span class="keyword">dir_rec_t</span> android_asec_dir; <span class="comment">// /mnt/asec</span></span><br><span class="line"><span class="keyword">dir_rec_t</span> android_app_dir; <span class="comment">// /data/app</span></span><br><span class="line"><span class="keyword">dir_rec_t</span> android_app_private_dir; <span class="comment">// /data/priv-app</span></span><br><span class="line"><span class="keyword">dir_rec_t</span> android_app_lib_dir; <span class="comment">// /data/app-lib</span></span><br><span class="line"><span class="keyword">dir_rec_t</span> android_media_dir;<span class="comment">// /data/media</span></span><br><span class="line"><span class="keyword">dir_rec_t</span> android_mnt_expand_dir; <span class="comment">// /mnt/expand</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// android_system_dirs.count = 4;</span></span><br><span class="line"><span class="comment">//  /system/app  </span></span><br><span class="line"><span class="comment">//  /system/priv-app</span></span><br><span class="line"><span class="comment">// /vendor/app</span></span><br><span class="line"><span class="comment">// /oem/app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">dir_rec_array_t</span> android_system_dirs;<span class="comment">// /</span></span><br></pre></td></tr></table></figure>
+<p>initialize_directories()负责保证上面的文件夹都被创建了，以及设置了正确的权限。</p>
+<h3 id="installd支持的命令">installd支持的命令</h3><p>支持如下命令：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> cmdinfo cmds[] = &#123;</span><br><span class="line">    &#123; <span class="string">"ping"</span>,                 <span class="number">0</span>, do_ping &#125;, <span class="comment">// 用于测试的空操作</span></span><br><span class="line">    &#123; <span class="string">"install"</span>,              <span class="number">5</span>, do_install &#125;, <span class="comment">// 安装应用</span></span><br><span class="line">    &#123; <span class="string">"dexopt"</span>,               <span class="number">9</span>, do_dexopt &#125;, <span class="comment">//将dex转换为oat或者patchoat oat文件</span></span><br><span class="line">    &#123; <span class="string">"markbootcomplete"</span>,     <span class="number">1</span>, do_mark_boot_complete &#125;,</span><br><span class="line">    &#123; <span class="string">"movedex"</span>,              <span class="number">3</span>, do_move_dex &#125;,  <span class="comment">//把apk文件从一个目录移动到另一个目录</span></span><br><span class="line">    &#123; <span class="string">"rmdex"</span>,                <span class="number">2</span>, do_rm_dex &#125;, <span class="comment">// 删除apk文件</span></span><br><span class="line">    &#123; <span class="string">"remove"</span>,               <span class="number">3</span>, do_remove &#125;, <span class="comment">// 卸载应用</span></span><br><span class="line">    &#123; <span class="string">"rename"</span>,               <span class="number">2</span>, do_rename &#125;, <span class="comment">// 更改应用数据目录的名称</span></span><br><span class="line">    &#123; <span class="string">"fixuid"</span>,               <span class="number">4</span>, do_fixuid &#125;, <span class="comment">// 更改应用数据目录的uid</span></span><br><span class="line">    &#123; <span class="string">"freecache"</span>,            <span class="number">2</span>, do_free_cache &#125;, <span class="comment">// 清除/cache目录下的文件</span></span><br><span class="line">    &#123; <span class="string">"rmcache"</span>,              <span class="number">3</span>, do_rm_cache &#125;, <span class="comment">// 删除/cache下某个应用的目录</span></span><br><span class="line">    &#123; <span class="string">"rmcodecache"</span>,          <span class="number">3</span>, do_rm_code_cache &#125;, <span class="comment">// 删除数据目录中code_cache文件夹</span></span><br><span class="line">    &#123; <span class="string">"getsize"</span>,              <span class="number">8</span>, do_get_size &#125;, <span class="comment">// 计算一个应用占用的空间大小，包括apk大小，数据目录，cache目录等</span></span><br><span class="line">    &#123; <span class="string">"rmuserdata"</span>,           <span class="number">3</span>, do_rm_user_data &#125;,<span class="comment">// 删除一个用户中某个app的应用数据</span></span><br><span class="line">    &#123; <span class="string">"cpcompleteapp"</span>,        <span class="number">6</span>, do_cp_complete_app &#125;,</span><br><span class="line">    &#123; <span class="string">"movefiles"</span>,            <span class="number">0</span>, do_movefiles &#125;,<span class="comment">//执行/system/etc/updatecmds/中的脚本</span></span><br><span class="line">    &#123; <span class="string">"linklib"</span>,              <span class="number">4</span>, do_linklib &#125;, <span class="comment">// 建立 jib连接</span></span><br><span class="line">    &#123; <span class="string">"mkuserdata"</span>,           <span class="number">5</span>, do_mk_user_data &#125;,<span class="comment">// 为某个用户创建应用数据目录</span></span><br><span class="line">    &#123; <span class="string">"mkuserconfig"</span>,         <span class="number">1</span>, do_mk_user_config &#125;,<span class="comment">// 创建/data/misc/user/userid/</span></span><br><span class="line">    &#123; <span class="string">"rmuser"</span>,               <span class="number">2</span>, do_rm_user &#125;,<span class="comment">// 删除一个user的所有文件</span></span><br><span class="line">    &#123; <span class="string">"idmap"</span>,                <span class="number">3</span>, do_idmap &#125;,</span><br><span class="line">    &#123; <span class="string">"restorecondata"</span>,       <span class="number">4</span>, do_restorecon_data &#125;,<span class="comment">// 恢复目录的SEAndroid安全上下文</span></span><br><span class="line">    &#123; <span class="string">"createoatdir"</span>,         <span class="number">2</span>, do_create_oat_dir &#125;, <span class="comment">// 创建 /data/app/包名/oat/&lt;inst&gt;文件夹</span></span><br><span class="line">    &#123; <span class="string">"rmpackagedir"</span>,         <span class="number">1</span>, do_rm_package_dir &#125;,<span class="comment">// 删除/data/app/包名</span></span><br><span class="line">    &#123; <span class="string">"linkfile"</span>,             <span class="number">3</span>, do_link_file &#125; <span class="comment">// 创建软连接</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中do_install所做的安装工作，实际上就是创建应用数据目录，这里分为用户id为0和不为0两种情况。（应用安装在内部存储）</p>
+<p>当用户ID为0：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/data/&#21253;&#21517;/</span><br></pre></td></tr></table></figure>
+<p>用户ID不为0：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/user/userid/&#21253;&#21517;</span><br></pre></td></tr></table></figure>
+<p>用户安装在外部存储时就一种情况：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/mnt/expand/volume_uuid/user/userid/&#21253;&#21517;</span><br></pre></td></tr></table></figure>
+<p>创建完文件夹之后，就修改权限为0751，然后SEAndroid上下文，以及uid和gid。</p>
+<p>另外do_dexopt中既可以执行dex2oat命令，将dex转换为oat文件，也可以执行patchoat，为oat文件随机化内存加载地址。</p>
+<p>还要了解的的是installd命令的格式：</p>
+<p>先发命令长度，然后再发命令。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/29/Android_PackageManagerService-10/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android-6.0之PMS卸载APK</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-11" data-title="Android-6.0之PMS的守护进程installd" data-url="http://www.iloveandroid.net/2016/06/30/Android_PackageManagerService-11/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
