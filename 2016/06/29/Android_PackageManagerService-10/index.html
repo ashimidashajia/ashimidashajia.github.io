@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android-6.0之PMS卸载APK | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面详细介绍了如何安装一个apk，现在分析PMS卸载APK的过程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-6.0之PMS卸载APK">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/06/29/Android_PackageManagerService-10/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面详细介绍了如何安装一个apk，现在分析PMS卸载APK的过程。">
+<meta property="og:updated_time" content="2016-06-30T04:01:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android-6.0之PMS卸载APK">
+<meta name="twitter:description" content="前面详细介绍了如何安装一个apk，现在分析PMS卸载APK的过程。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_PackageManagerService-10" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/29/Android_PackageManagerService-10/" class="article-date">
+  	<time datetime="2016-06-29T08:03:42.000Z" itemprop="datePublished">2016-06-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android-6.0之PMS卸载APK
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面详细介绍了如何安装一个apk，现在分析PMS卸载APK的过程。</p>
+<a id="more"></a>
+<p>卸载一个app,要指明卸载哪个用户中的该app。卸载的过程无非就是删除沙箱目录，删除/data/app/包名,以及删除其在PMS中的相关信息，比如从PMS中去除与该app相关的组件信息等。另外也要在清除其在相关配置文件中记录，如packages.xml。</p>
+<p>PMS卸载一个app的api是名为deletePackageAsUser的方法，刚好和installPackageAsUser()安装apk的方法相对应。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deletePackageAsUser</span><span class="params">(String packageName, IPackageDeleteObserver observer, <span class="keyword">int</span> userId,</span><br><span class="line">            <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">        deletePackage(packageName, <span class="keyword">new</span> LegacyPackageDeleteObserver(observer).getBinder(), userId,</span><br><span class="line">                flags);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deletePackage</span><span class="params">(<span class="keyword">final</span> String packageName,</span><br><span class="line">            <span class="keyword">final</span> IPackageDeleteObserver2 observer, <span class="keyword">final</span> <span class="keyword">int</span> userId, <span class="keyword">final</span> <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 同样要检查权限，看是否有权限卸载</span></span><br><span class="line">        <span class="comment">// 主要检查卸载发起者进程是是否有权限卸载</span></span><br><span class="line">        <span class="comment">// 当前用户是否有权限卸载</span></span><br><span class="line">        <span class="comment">// 以及卸载的是全部用户还是当前用户</span></span><br><span class="line">        mContext.enforceCallingOrSelfPermission(</span><br><span class="line">                android.Manifest.permission.DELETE_PACKAGES, <span class="keyword">null</span>);</span><br><span class="line">        Preconditions.checkNotNull(packageName);</span><br><span class="line">        Preconditions.checkNotNull(observer);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> uid = Binder.getCallingUid();</span><br><span class="line">        <span class="keyword">if</span> (UserHandle.getUserId(uid) != userId) &#123;</span><br><span class="line">            mContext.enforceCallingPermission(</span><br><span class="line">                    android.Manifest.permission.INTERACT_ACROSS_USERS_FULL,</span><br><span class="line">                    <span class="string">"deletePackage for user "</span> + userId);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isUserRestricted(userId, UserManager.DISALLOW_UNINSTALL_APPS)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                observer.onPackageDeleted(packageName,</span><br><span class="line">                        PackageManager.DELETE_FAILED_USER_RESTRICTED, <span class="keyword">null</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RemoteException re) &#123;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">................................................</span><br><span class="line"><span class="comment">// 在消息处理方法中执行卸载应用的操作</span></span><br><span class="line">        mHandler.post(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                mHandler.removeCallbacks(<span class="keyword">this</span>);</span><br><span class="line">                <span class="comment">// 调用这个方法进行实际的卸载的操作</span></span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> returnCode = deletePackageX(packageName, userId, flags);</span><br><span class="line">                <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                      <span class="comment">// 发送卸载应用的结果</span></span><br><span class="line">                        observer.onPackageDeleted(packageName, returnCode, <span class="keyword">null</span>);</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">                        Log.i(TAG, <span class="string">"Observer no longer exists."</span>);</span><br><span class="line">                    &#125; <span class="comment">//end catch</span></span><br><span class="line">                &#125; <span class="comment">//end if</span></span><br><span class="line">            &#125; <span class="comment">//end run</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>deletePackageAsUser()方法检查调用者权限之后，post了一个消息。在消息的处理方法中继续执行卸载操作，这样就避免了Binder调用时间过长。实际的卸载过程又是通过deletePackageX()方法来完成的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">deletePackageX</span><span class="params">(String packageName, <span class="keyword">int</span> userId, <span class="keyword">int</span> flags)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> PackageRemovedInfo info = <span class="keyword">new</span> PackageRemovedInfo();</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> res;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 卸载哪个用户下的该app</span></span><br><span class="line">    <span class="keyword">final</span> UserHandle removeForUser = (flags &amp; PackageManager.DELETE_ALL_USERS) != <span class="number">0</span></span><br><span class="line">            ? UserHandle.ALL : <span class="keyword">new</span> UserHandle(userId);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查userid代表的用户是否由权限卸载这个应用</span></span><br><span class="line">    <span class="keyword">if</span> (isPackageDeviceAdmin(packageName, removeForUser.getIdentifier())) &#123;</span><br><span class="line">        Slog.w(TAG, <span class="string">"Not removing package "</span> + packageName + <span class="string">": has active device admin"</span>);</span><br><span class="line">        <span class="keyword">return</span> PackageManager.DELETE_FAILED_DEVICE_POLICY_MANAGER;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 是否为所有用户都卸载这个应用</span></span><br><span class="line">    <span class="keyword">boolean</span> removedForAllUsers = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">boolean</span> systemUpdate = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// for the uninstall-updates case and restricted profiles, remember the per-</span></span><br><span class="line">    <span class="comment">// userhandle installed state</span></span><br><span class="line">    <span class="keyword">int</span>[] allUsers;</span><br><span class="line">    <span class="keyword">boolean</span>[] perUserInstalled;</span><br><span class="line">    <span class="keyword">synchronized</span> (mPackages) &#123;</span><br><span class="line">      <span class="comment">// 获取应用在mSettings中记录的信息</span></span><br><span class="line">        PackageSetting ps = mSettings.mPackages.get(packageName);</span><br><span class="line">        <span class="comment">// 获取当前哪些用户安装了该app</span></span><br><span class="line">        allUsers = sUserManager.getUserIds();</span><br><span class="line">        perUserInstalled = <span class="keyword">new</span> <span class="keyword">boolean</span>[allUsers.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; allUsers.length; i++) &#123;</span><br><span class="line">            perUserInstalled[i] = ps != <span class="keyword">null</span> ? ps.getInstalled(allUsers[i]) : <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">synchronized</span> (mInstallLock) &#123;</span><br><span class="line">        <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"deletePackageX: pkg="</span> + packageName + <span class="string">" user="</span> + userId);</span><br><span class="line">        <span class="comment">// 调用这个方法进行卸载操作</span></span><br><span class="line">        res = deletePackageLI(packageName, removeForUser,</span><br><span class="line">                <span class="keyword">true</span>, allUsers, perUserInstalled,</span><br><span class="line">                flags | REMOVE_CHATTY, info, <span class="keyword">true</span>);</span><br><span class="line">        systemUpdate = info.isRemovedPackageSystemUpdate;</span><br><span class="line">        <span class="keyword">if</span> (res &amp;&amp; !systemUpdate &amp;&amp; mPackages.get(packageName) == <span class="keyword">null</span>) &#123;</span><br><span class="line">            removedForAllUsers = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"delete res: systemUpdat                                      e="</span> + systemUpdate</span><br><span class="line">                + <span class="string">" removedForAllUsers="</span> + removedForAllUsers);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (res) &#123;</span><br><span class="line">        info.sendBroadcast(<span class="keyword">true</span>, systemUpdate, removedForAllUsers);</span><br><span class="line"></span><br><span class="line">      <span class="comment">//如果卸载的应用是某个系统应用的升级包，卸载它，将导致低版本的系统应用重新使用，因此发送下面的广播通知这种变化。</span></span><br><span class="line">        <span class="keyword">if</span> (systemUpdate) &#123;</span><br><span class="line">            Bundle extras = <span class="keyword">new</span> Bundle(<span class="number">1</span>);</span><br><span class="line">            extras.putInt(Intent.EXTRA_UID, info.removedAppId &gt;= <span class="number">0</span></span><br><span class="line">                    ? info.removedAppId : info.uid);</span><br><span class="line">            extras.putBoolean(Intent.EXTRA_REPLACING, <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">            sendPackageBroadcast(Intent.ACTION_PACKAGE_ADDED, packageName,</span><br><span class="line">                    extras, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">            sendPackageBroadcast(Intent.ACTION_PACKAGE_REPLACED, packageName,</span><br><span class="line">                    extras, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">            sendPackageBroadcast(Intent.ACTION_MY_PACKAGE_REPLACED, <span class="keyword">null</span>,</span><br><span class="line">                    <span class="keyword">null</span>, packageName, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Force a gc here.</span></span><br><span class="line">    Runtime.getRuntime().gc();</span><br><span class="line">    <span class="comment">// Delete the resources here after sending the broadcast to let</span></span><br><span class="line">    <span class="comment">// other processes clean up before deleting resources.</span></span><br><span class="line">    <span class="keyword">if</span> (info.args != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (mInstallLock) &#123;</span><br><span class="line">          <span class="comment">// 调用FileInstallArgs中的该方法进行清理工作</span></span><br><span class="line">          <span class="comment">// 保证/data/app/包名中的文件都被删除了</span></span><br><span class="line">            info.args.doPostDeleteLI(<span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res ? PackageManager.DELETE_SUCCEEDED : PackageManager.DELETE_FAILED_INTERNAL_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>deletePackageX()方法手机了应用在不同用户下的安装情况后，调用deletePackageLI()方法继续执行卸载删除工作。如果卸载的是某个系统应用的升级包，还要广播通知以前的低版本系统应用可以再次被使用了。</p>
+<p>deletePackageLI方法参数：</p>
+<ol>
+<li><p>要卸载的apk的包名</p>
+</li>
+<li><p>卸载哪个用户中的该apk</p>
+</li>
+<li><p>是否删除code和Resources</p>
+</li>
+<li><p>当前所有用户</p>
+</li>
+<li><p>当前所有用户中该app的安装状态</p>
+</li>
+<li><p>flags</p>
+</li>
+<li><p>PackageRemovedInfo</p>
+</li>
+<li><p>是否修改packages.xml</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * This method handles package deletion in general</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">deletePackageLI</span><span class="params">(String packageName, UserHandle user,</span><br><span class="line">        <span class="keyword">boolean</span> deleteCodeAndResources, <span class="keyword">int</span>[] allUserHandles, <span class="keyword">boolean</span>[] perUserInstalled,</span><br><span class="line">        <span class="keyword">int</span> flags, PackageRemovedInfo outInfo,</span><br><span class="line">        <span class="keyword">boolean</span> writeSettings)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (packageName == <span class="keyword">null</span>) &#123;</span><br><span class="line">        Slog.w(TAG, <span class="string">"Attempt to delete null packageName."</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"deletePackageLI: "</span> + packageName + <span class="string">" user "</span> + user);</span><br><span class="line">    PackageSetting ps;</span><br><span class="line">    <span class="keyword">boolean</span> dataOnly = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">int</span> removeUser = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> appId = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">synchronized</span> (mPackages) &#123;</span><br><span class="line">        ps = mSettings.mPackages.get(packageName);</span><br><span class="line">        <span class="keyword">if</span> (ps == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Slog.w(TAG, <span class="string">"Package named '"</span> + packageName + <span class="string">"' doesn't exist."</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ((!isSystemApp(ps) || (flags&amp;PackageManager.DELETE_SYSTEM_APP) != <span class="number">0</span>) &amp;&amp; user != <span class="keyword">null</span></span><br><span class="line">                &amp;&amp; user.getIdentifier() != UserHandle.USER_ALL) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 设置要卸载的该app的用户状态，修改该app在该用户中的相关信息，标记为卸载，另外要删除在该用户中的沙箱中的数据</span></span><br><span class="line">            <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Only deleting for single user"</span>);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> userId = user.getIdentifier();</span><br><span class="line">            ps.setUserState(userId,</span><br><span class="line">                    COMPONENT_ENABLED_STATE_DEFAULT,</span><br><span class="line">                    <span class="keyword">false</span>, <span class="comment">//installed</span></span><br><span class="line">                    <span class="keyword">true</span>,  <span class="comment">//stopped</span></span><br><span class="line">                    <span class="keyword">true</span>,  <span class="comment">//notLaunched</span></span><br><span class="line">                    <span class="keyword">false</span>, <span class="comment">//hidden</span></span><br><span class="line">                    <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>,</span><br><span class="line">                    <span class="keyword">false</span>, <span class="comment">// blockUninstall</span></span><br><span class="line">                    ps.readUserState(userId).domainVerificationStatus, <span class="number">0</span>);</span><br><span class="line">            <span class="keyword">if</span> (!isSystemApp(ps)) &#123;</span><br><span class="line">              <span class="comment">// 该app被其他用户也安装了，那么就不能删除该app在/data/app/下面的东西了</span></span><br><span class="line">              <span class="comment">// 只能删除对应用用户自己的沙箱目录</span></span><br><span class="line">                <span class="keyword">if</span> (ps.isAnyInstalled(sUserManager.getUserIds())) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Still installed by other users"</span>);</span><br><span class="line">                    removeUser = user.getIdentifier();</span><br><span class="line">                    appId = ps.appId;</span><br><span class="line">                    <span class="comment">// 修改/data/users/&lt;userid&gt;/package-restrictions.xml</span></span><br><span class="line">                    <span class="comment">// 将上述信息记录其中</span></span><br><span class="line">                    scheduleWritePackageRestrictionsLocked(removeUser);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                  <span class="comment">//只有一个用户安装的时候，要设置其userState中的installed为true</span></span><br><span class="line">                  <span class="comment">// 前面将其设置为了false</span></span><br><span class="line">                    <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Not installed by other users, full delete"</span>);</span><br><span class="line">                    ps.setInstalled(<span class="keyword">true</span>, user.getIdentifier());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Deleting system app"</span>);</span><br><span class="line">                removeUser = user.getIdentifier();</span><br><span class="line">                appId = ps.appId;</span><br><span class="line">                scheduleWritePackageRestrictionsLocked(removeUser);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 紧紧处理的是一个用户</span></span><br><span class="line">    <span class="comment">// 因为 USER_ALL = -1</span></span><br><span class="line">    <span class="keyword">if</span> (removeUser &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// From above, we determined that we are deleting this only</span></span><br><span class="line">        <span class="comment">// for a single user.  Continue the work here.</span></span><br><span class="line">        <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Updating install state for user: "</span> + removeUser);</span><br><span class="line">        <span class="keyword">if</span> (outInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">            outInfo.removedPackage = packageName;</span><br><span class="line">            outInfo.removedAppId = appId;</span><br><span class="line">            outInfo.removedUsers = <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;removeUser&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 删除该用户中的该app的沙箱目录</span></span><br><span class="line">        mInstaller.clearUserData(ps.volumeUuid, packageName, removeUser);</span><br><span class="line">        removeKeystoreDataIfNeeded(removeUser, appId);</span><br><span class="line">        <span class="comment">// 发送START_CLEANING_PACKAGE消息</span></span><br><span class="line">        <span class="comment">// 处理该消息时调用startCleaningPackages()</span></span><br><span class="line">        <span class="comment">// 该方法中会发送“android.content.pm.CLEAN_EXTERNAL_STORAGE”的intent</span></span><br><span class="line">        <span class="comment">// com.android.defcontainer.DefaultContainerService会处理它</span></span><br><span class="line">        schedulePackageCleaning(packageName, removeUser, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">synchronized</span> (mPackages) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (clearPackagePreferredActivitiesLPw(packageName, removeUser)) &#123;</span><br><span class="line">                <span class="comment">//处理UserHandle.USER_ALL这个情况</span></span><br><span class="line">                scheduleWritePackageRestrictionsLocked(removeUser);</span><br><span class="line">            &#125;</span><br><span class="line">            resetUserChangesToRuntimePermissionsAndFlagsLPw(ps, removeUser);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ..............................</span><br><span class="line">    <span class="comment">// 处理 USER_ALL</span></span><br><span class="line">    <span class="comment">// 也就是卸载所有用户中的该app</span></span><br><span class="line">    <span class="keyword">boolean</span> ret = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (isSystemApp(ps)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Removing system package:"</span> + ps.name);</span><br><span class="line"></span><br><span class="line">        ret = deleteSystemPackageLI(ps, allUserHandles, perUserInstalled,</span><br><span class="line">                flags, outInfo, writeSettings);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (DEBUG_REMOVE) Slog.d(TAG, <span class="string">"Removing non-system package:"</span> + ps.name);</span><br><span class="line">        <span class="comment">// 除了删除沙箱目录，/data/app/包名等文件外，还要删除其在PMS中的的数据结构，比如注册的组件等</span></span><br><span class="line">        <span class="comment">// 这是由其内部的removePackageLI()方法完成的</span></span><br><span class="line">        killApplication(packageName, ps.appId, <span class="string">"uninstall pkg"</span>);</span><br><span class="line">        ret = deleteInstalledPackageLI(ps, deleteCodeAndResources, flags,</span><br><span class="line">                allUserHandles, perUserInstalled,</span><br><span class="line">                outInfo, writeSettings);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">    .......</span><br></pre></td></tr></table></figure>
+<p>所谓的卸载apk就是这些内容了，删除文件以及其在PMS中的相关数据结构。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/27/Android_PackageManagerService-9/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android-6.0之PMS安装APK下篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_PackageManagerService-10" data-title="Android-6.0之PMS卸载APK" data-url="http://www.iloveandroid.net/2016/06/29/Android_PackageManagerService-10/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
