@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://www.iloveandroid.net/2016/07/04/Android_ActivityManagerService-1/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="ActivityManagerService是Android提供的一个用于管理Activity以及其他组件运行状态的系统进程，简称AMS.">
-<meta property="og:updated_time" content="2016-07-04T09:21:46.000Z">
+<meta property="og:updated_time" content="2016-07-04T10:56:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之AMS前奏">
 <meta name="twitter:description" content="ActivityManagerService是Android提供的一个用于管理Activity以及其他组件运行状态的系统进程，简称AMS.">
@@ -344,6 +344,9 @@
 <p>-c <category> [-c <category>] …]:指定Intent category，实现原理Intent.addCategory()</category></category></p>
 <p>-p <package>: 指定包名，实现原理Intent.setPackage();</package></p>
 <p>-f <flags>: 添加flags，实现原理Intent.setFlags(int )，紧接着的参数必须是int型</flags></p>
+<h3 id="如何使用AMS">如何使用AMS</h3><p>使用如下代码即可获得AMS的一个代理对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ActivityManager am =(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);</span><br></pre></td></tr></table></figure>
+<p>然后就可以使用AMS提供的各种接口了。</p>
 
       
     </div>
@@ -352,6 +355,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/07/04/Android_ActivityManagerService-2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之AMS数据结构梳理
+        
+      </div>
+    </a>
   
   
     <a href="/2016/06/30/Android_handler/" id="article-nav-older" class="article-nav-link-wrap">

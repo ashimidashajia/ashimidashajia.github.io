@@ -183,6 +183,71 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Android_property_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/26/Android_property_1/" class="article-date">
+  	<time datetime="2015-09-25T16:27:43.000Z" itemprop="datePublished">2015-09-26</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/26/Android_property_1/">Android 5.1 property属性系统分析上篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="简介">简介</h3><p>在”init进程分析”系统文章中,主要介绍了init进程如何处理rc文件,没有过多讲解init进程启动的相关核心服务.例如Android属性系统等,接下来的会逐个讲解init进程启动的核心android服务.</p>
+<p>Android属性系统其实可以理解为键值对:属性名字和属性值;很类似于windows上的注册表.</p>
+<p>我们可以通过在adb shell里敲入getprop命令来获取当前系统的所有属性内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@generic_x86_64:/ <span class="comment"># getprop                                                </span></span><br><span class="line">[ARGH]: [ARGH]</span><br><span class="line">[dalvik.vm.dex2oat-Xms]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.dex2oat-Xmx]: [<span class="number">512</span>m]</span><br><span class="line">[dalvik.vm.heapsize]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.image-dex2oat-Xms]: [<span class="number">64</span>m]</span><br><span class="line">[dalvik.vm.image-dex2oat-Xmx]: [<span class="number">64</span>m]</span><br><span class="line">...................................</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/26/Android_property_1/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Android_init_3" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -739,68 +804,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/19/setupJenkinsEnvironment/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-setupGitlabEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/19/setupGitlabEnvironment/" class="article-date">
-  	<time datetime="2015-09-19T01:41:12.000Z" itemprop="datePublished">2015-09-19</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/19/setupGitlabEnvironment/">持续集成系统搭建之Gitlab篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>公司领导让我搭建一个集代码管理，代码评审，自动化编译测试功能与一身的持续集成系统。现将搭建过程整理了一下，算是做个备份吧。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/19/setupGitlabEnvironment/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
