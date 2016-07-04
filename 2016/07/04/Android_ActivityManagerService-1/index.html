@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之AMS前奏 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="ActivityManagerService是Android提供的一个用于管理Activity以及其他组件运行状态的系统进程，简称AMS.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之AMS前奏">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/07/04/Android_ActivityManagerService-1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="ActivityManagerService是Android提供的一个用于管理Activity以及其他组件运行状态的系统进程，简称AMS.">
+<meta property="og:updated_time" content="2016-07-04T09:21:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之AMS前奏">
+<meta name="twitter:description" content="ActivityManagerService是Android提供的一个用于管理Activity以及其他组件运行状态的系统进程，简称AMS.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_ActivityManagerService-1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/04/Android_ActivityManagerService-1/" class="article-date">
+  	<time datetime="2016-07-04T07:08:37.000Z" itemprop="datePublished">2016-07-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之AMS前奏
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ActivityManagerService是Android提供的一个用于管理Activity以及其他组件运行状态的系统进程，简称AMS.</p>
+<a id="more"></a>
+<p>AMS主要作用：</p>
+<ol>
+<li><p>Activity及其他三大组件的运行状态管理、进程管理、内存管理 (主要)</p>
+</li>
+<li><p>查询组件当前的运行情况</p>
+</li>
+<li><p>提供了系统运行时的查询</p>
+</li>
+</ol>
+<p>通过am命令来实际感知一下AMS给我们提供了哪些功能。</p>
+<h3 id="am_命令">am 命令</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th style="text-align:center">功能</th>
+<th style="text-align:right">实现方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>am start [options] <intent></intent></td>
+<td style="text-align:center">启动Activity</td>
+<td style="text-align:right">startActivityAsUser</td>
+</tr>
+<tr>
+<td>am startservice <intent></intent></td>
+<td style="text-align:center">启动Service</td>
+<td style="text-align:right">startService</td>
+</tr>
+<tr>
+<td>am stopservice <intent></intent></td>
+<td style="text-align:center">停止Service</td>
+<td style="text-align:right">stopService</td>
+</tr>
+<tr>
+<td>am broadcast <intent></intent></td>
+<td style="text-align:center">发送广播</td>
+<td style="text-align:right">broadcastIntent</td>
+</tr>
+<tr>
+<td>am kill <package></package></td>
+<td style="text-align:center">杀指定后台进程</td>
+<td style="text-align:right">killBackgroundProcesses</td>
+</tr>
+<tr>
+<td>am kill-all</td>
+<td style="text-align:center">杀所有后台进程</td>
+<td style="text-align:right">killAllBackgroundProcesses</td>
+</tr>
+<tr>
+<td>am force-stop <package></package></td>
+<td style="text-align:center">强杀进程</td>
+<td style="text-align:right">forceStopPackage</td>
+</tr>
+<tr>
+<td>am hang</td>
+<td style="text-align:center">系统卡住</td>
+<td style="text-align:right">hang</td>
+</tr>
+<tr>
+<td>am restart</td>
+<td style="text-align:center">重启</td>
+<td style="text-align:right">restart</td>
+</tr>
+<tr>
+<td>am bug-report</td>
+<td style="text-align:center">创建bugreport</td>
+<td style="text-align:right">requestBugReport</td>
+</tr>
+<tr>
+<td>am dumpheap <pid> <file></file></pid></td>
+<td style="text-align:center">进程pid的堆信息输出到file</td>
+<td style="text-align:right">dumpheap</td>
+</tr>
+<tr>
+<td>am send-trim-memory <pid></pid></td>
+<td style="text-align:center">收紧进程的内存</td>
+<td style="text-align:right">setProcessMemoryTrimLevel</td>
+</tr>
+<tr>
+<td>am monitor</td>
+<td style="text-align:center">监控</td>
+<td style="text-align:right">MyActivityController.run</td>
+</tr>
+</tbody>
+</table>
+<p>am命令实的实现方式在Am.java，最终几乎都是调用ActivityManagerService相应的方法来完成的，am monitor除外。</p>
+<p>其他am命令<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am restart: restart the user-space system.&#10;&#10;am idle-maintenance: perform idle maintenance now.&#10;&#10;am screen-compat: control screen compatibility mode of &#60;PACKAGE&#62;.&#10;&#10;am package-importance: print current importance of &#60;PACKAGE&#62;.&#10;&#10;am to-uri: print the given Intent specification as a URI.&#10;&#10;am to-intent-uri: print the given Intent specification as an intent: URI.&#10;&#10;am to-app-uri: print the given Intent specification as an android-app: URI.&#10;&#10;am switch-user: switch to put USER_ID in the foreground, starting&#10;  execution of that user if it is currently stopped.&#10;&#10;am start-user: start USER_ID in background if it is currently stopped,&#10;  use switch-user if you want to start the user in foreground.&#10;&#10;am stop-user: stop execution of USER_ID, not allowing it to run any&#10;  code until a later explicit start or switch to it.&#10;  -w: wait for stop-user to complete.&#10;&#10;am stack start: start a new activity on &#60;DISPLAY_ID&#62; using &#60;INTENT&#62;.&#10;&#10;am stack movetask: move &#60;TASK_ID&#62; from its current stack to the top (true) or   bottom (false) of &#60;STACK_ID&#62;.&#10;&#10;am stack resize: change &#60;STACK_ID&#62; size and position to &#60;LEFT,TOP,RIGHT,BOTTOM&#62;.</span><br></pre></td></tr></table></figure></p>
+<h4 id="启动activity">启动activity</h4><p>使用Action方式打开系统设置-输入法设置</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am start -a android.settings.INPUT_METHOD_SETTINGS</span><br></pre></td></tr></table></figure>
+<p>使用组件名方式启动浏览器</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am start -n com.android.browser/com.android.browser.BrowserActivity</span><br></pre></td></tr></table></figure>
+<p>格式：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am start -n &#21253;(package)&#21517;/&#21253;&#21517;.&#27963;&#21160;(activity)&#21517;&#31216;</span><br></pre></td></tr></table></figure>
+<p>打开拨号界面，并传递一个DATA_URI数据给拨号界面</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am start -a android.intent.action.CALL -d tel:10086</span><br></pre></td></tr></table></figure>
+<h4 id="启动service">启动service</h4><p>使用ComponentName 方式启动一个Service</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am startservice com.some.package.name/.YourServiceSubClassName</span><br></pre></td></tr></table></figure>
+<h4 id="关闭指定包名的程序">关闭指定包名的程序</h4><p>强制关闭应用，ps命令中也看不到该应用的信息。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am force-stop com.some.package</span><br></pre></td></tr></table></figure></p>
+<h4 id="杀死进程">杀死进程</h4><p>杀死与应用程序的包名称相关联的所有进程。该命令只会杀死安全的进程，不会影响用户体验。如果包名所示的程序正处在statk最前端，也就是用户正在使用该app,那么kill会无效。</p>
+<p>也就是说只有该包名所示的app处于后台，才生效。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am kill com.some.package</span><br></pre></td></tr></table></figure>
+<p>杀死之后，从任务栈中再次选中该app,该app会重新刷新数据启动。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am kill-all</span><br></pre></td></tr></table></figure>
+<p>杀死所有后台进程</p>
+<h4 id="发送广播">发送广播</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am broadcast -a &#24191;&#25773;&#21517;&#31216;</span><br></pre></td></tr></table></figure>
+<h4 id="启动对测试实例的监视">启动对测试实例的监视</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell am instrument -w com.android.phone.tests/com.android.phone.runners.FunctionalTestRunner</span><br></pre></td></tr></table></figure>
+<h4 id="搜集应用程序的函数调用">搜集应用程序的函数调用</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am profile start app&#21253;&#21517; /data/local/tmp/profile.txt&#10;am profile stop app&#21253;&#21517;</span><br></pre></td></tr></table></figure>
+<p>app包名也可以换成进程号pid。</p>
+<h4 id="显示当前任务栈中的activity">显示当前任务栈中的activity</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am stack list</span><br></pre></td></tr></table></figure>
+<h4 id="收紧内存">收紧内存</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">am send-trim-memory  &#60;pid&#62; &#60;level&#62;</span><br></pre></td></tr></table></figure>
+<p>level取值范围为： HIDDEN、RUNNING_MODERATE、BACKGROUND、RUNNING_LOW、MODERATE、RUNNING_CRITICAL、COMPLETE。</p>
+<h4 id="其他常用参数">其他常用参数</h4><p>-a <action>: 指定Intent action， 实现原理Intent.setAction()；</action></p>
+<p>-n <component>: 指定组件名，格式为{包名}/.{主Activity名}，实现原理Intent.setComponent(）；</component></p>
+<p>-d <data_uri>: 指定Intent data URI</data_uri></p>
+<p>-t <mime_type>: 指定Intent MIME Type</mime_type></p>
+<p>-c <category> [-c <category>] …]:指定Intent category，实现原理Intent.addCategory()</category></category></p>
+<p>-p <package>: 指定包名，实现原理Intent.setPackage();</package></p>
+<p>-f <flags>: 添加flags，实现原理Intent.setFlags(int )，紧接着的参数必须是int型</flags></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/30/Android_handler/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android消息处理机制之Handler</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-1" data-title="Android6.0之AMS前奏" data-url="http://www.iloveandroid.net/2016/07/04/Android_ActivityManagerService-1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iloveandroid.net/2016/07/04/Android_ActivityManagerService-1/</loc>
+    <lastmod>2016-07-04T09:21:46.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2016/06/30/Android_handler/</loc>
     <lastmod>2016-07-01T12:11:55.000Z</lastmod>
   </url>
@@ -72,17 +77,7 @@
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/12/18/DalvikDex-2/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/19/AndroidART-1/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/18/Androguard_study_2/</loc>
+    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-7/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
@@ -127,7 +122,7 @@
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/12/18/DalvikDex/</loc>
+    <loc>http://www.iloveandroid.net/2015/12/19/AndroidART-1/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
@@ -137,7 +132,17 @@
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-7/</loc>
+    <loc>http://www.iloveandroid.net/2015/12/18/DalvikDex-2/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/18/DalvikDex/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/18/Androguard_study_2/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
@@ -292,12 +297,12 @@
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/09/26/Android_property_1/</loc>
+    <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
+    <loc>http://www.iloveandroid.net/2015/09/26/Android_property_1/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
