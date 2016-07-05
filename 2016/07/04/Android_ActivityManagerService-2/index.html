@@ -5,18 +5,18 @@
   
   <title>Android6.0之AMS数据结构梳理 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="正式分析AMS代码之前，还是先搞清楚与AMS相关的数据就够吧。">
+  <meta name="description" content="正式分析AMS代码之前，还是先搞清楚与AMS相关的数据结构吧。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android6.0之AMS数据结构梳理">
 <meta property="og:url" content="http://www.iloveandroid.net/2016/07/04/Android_ActivityManagerService-2/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description" content="正式分析AMS代码之前，还是先搞清楚与AMS相关的数据就够吧。">
+<meta property="og:description" content="正式分析AMS代码之前，还是先搞清楚与AMS相关的数据结构吧。">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-1.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-2.png">
-<meta property="og:updated_time" content="2016-07-04T13:27:23.000Z">
+<meta property="og:updated_time" content="2016-07-04T13:29:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之AMS数据结构梳理">
-<meta name="twitter:description" content="正式分析AMS代码之前，还是先搞清楚与AMS相关的数据就够吧。">
+<meta name="twitter:description" content="正式分析AMS代码之前，还是先搞清楚与AMS相关的数据结构吧。">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -225,7 +225,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>正式分析AMS代码之前，还是先搞清楚与AMS相关的数据就够吧。</p>
+        <p>正式分析AMS代码之前，还是先搞清楚与AMS相关的数据结构吧。</p>
 <a id="more"></a>
 <h3 id="ActivityManager">ActivityManager</h3><p>上一篇中提到上层开发中使用如下代码获得AMS的一个代理：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ActivityManager am =(ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);</span><br></pre></td></tr></table></figure>
@@ -273,6 +273,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/07/05/Android_ActivityManagerService-3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之AMS启动
+        
+      </div>
+    </a>
   
   
     <a href="/2016/07/04/Android_ActivityManagerService-1/" id="article-nav-older" class="article-nav-link-wrap">
