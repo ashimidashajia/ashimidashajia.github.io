@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之Intent使用与源码分析 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在一个Android应用中，主要是由四种组件组成的。而这四种组件是独立的，它们之间可以互相调用，协调工作，最终组成一个真正的Android应用。在这些组件之间的通讯中，主要是由Intent协助完成的。鉴于Intent的特殊地位，有必要首先分析其机制，这样有利于后续分析AMS如何管理四大组件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之Intent使用与源码分析">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/07/06/Android_ActivityManagerService-4/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="在一个Android应用中，主要是由四种组件组成的。而这四种组件是独立的，它们之间可以互相调用，协调工作，最终组成一个真正的Android应用。在这些组件之间的通讯中，主要是由Intent协助完成的。鉴于Intent的特殊地位，有必要首先分析其机制，这样有利于后续分析AMS如何管理四大组件。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-6.gif">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-7.gif">
+<meta property="og:updated_time" content="2016-07-07T09:30:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之Intent使用与源码分析">
+<meta name="twitter:description" content="在一个Android应用中，主要是由四种组件组成的。而这四种组件是独立的，它们之间可以互相调用，协调工作，最终组成一个真正的Android应用。在这些组件之间的通讯中，主要是由Intent协助完成的。鉴于Intent的特殊地位，有必要首先分析其机制，这样有利于后续分析AMS如何管理四大组件。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_ActivityManagerService-4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/06/Android_ActivityManagerService-4/" class="article-date">
+  	<time datetime="2016-07-06T03:28:58.000Z" itemprop="datePublished">2016-07-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之Intent使用与源码分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> 在一个Android应用中，主要是由四种组件组成的。而这四种组件是独立的，它们之间可以互相调用，协调工作，最终组成一个真正的Android应用。在这些组件之间的通讯中，主要是由Intent协助完成的。鉴于Intent的特殊地位，有必要首先分析其机制，这样有利于后续分析AMS如何管理四大组件。</p>
+<a id="more"></a>
+<h3 id="intent概述">intent概述</h3><p> Intent负责对应用中一次操作的动作、动作涉及的数据、附加数据进行描述。Android则根据此Intent的描述，负责找到对应的组件，将 Intent传递给调用的组件，并完成组件的调用。因此，Intent在这里起着一个媒体中介的作用，专门提供组件互相调用的相关信息，实现调用者与被调用者之间的解耦。</p>
+<p>例如，在一个联系人维护的应用中，当我们在一个联系人列表屏幕(假设对应的Activity为listActivity)上，点击某个联系人后，希望能够跳出此联系人的详细信息屏幕(假设对应的Activity为detailActivity)为了实现这个目的，listActivity需要构造一个 Intent，这个Intent用于告诉系统，我们要做“查看”动作，此动作对应的查看对象是“某联系人”，然后调用startActivity (Intent intent)，将构造的Intent传入，系统会根据此Intent中的描述，到ManiFest中找到满足此Intent要求的Activity，系统会调用找到的 Activity，即为detailActivity，最终传入Intent，detailActivity则会根据此Intent中的描述，执行相应的操作。</p>
+<p>Android 应用程序中有三大核心组件： Activity, Service, BroadcastReceiver 都是通过被称之为意图的消息运行。</p>
+<ol>
+<li><p>对于Activity</p>
+<p>传递一个Intent对象到 Context.startActivity(intent) 或者 Activity.startActivity ForResult(int) 去运行一个Activity（可以在通过此方式启动后的Activity中调用 Activity.setResult() 设置结果参数，该参数将会在启动当前activity的activity中被接收—可以通过onActivityResult(int requestCode, int resultCode, Intent data) 接收。</p>
+</li>
+<li><p>对于Service</p>
+<p>传递一个Intent对象到 Context.startService(intent) 去启动一个service 或者 传递一个新的指令到正在运行的service中。另外，还可以通过 Context.bindService(intent) 去绑定一个Service。（在调用组件和目标Service 建立一个连接。</p>
+</li>
+<li><p>对于BroadcastReceiver</p>
+<p>传递一个Intent对象到 任何一个broadcast methods （如： Context.sendBroadcast() , Context.sendOrderedBroadcast(),Context.sendStickyBroadcast() ） 该intent将被传递给所有已经被注册的broadcast receiver中。</p>
+</li>
+</ol>
+<p>在以上的三种情况下，当Intent被传递出后，Android系统会找到适合的activity，service,或者是多个broadcast receiver去响应这个intent。,这三种情况不会存在重叠的部分，它们相互独立，互不干扰。（调用Context.startActivity()后 intent只会被相应的activity接收到.</p>
+<h3 id="intent类">intent类</h3><p>一个Intent对象是一个信息包。它包含了要接收此Intent的组件需要的信息（例如需要的动作和动作需要的信息）和 android 系统需要的信息（要处理此Intent的组件的类别和怎样启动它）</p>
+<p>总的来说，Intent Object 主要包括以下信息。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">component&#65306;&#30446;&#26631;&#32452;&#20214;&#30340;&#31867;&#21517;&#65307;&#10;&#10;action&#65306;&#25152;&#35201;&#25191;&#34892;&#30340;&#21160;&#20316;&#65307;&#65288;&#20363;&#22914;&#65306;ACTION_CALL&#21019;&#24314;&#25171;&#30005;&#35805;Activity&#65307;ACTION_BATTERY_LOW &#21457;&#20986;&#24191;&#25773;&#35686;&#21578;&#30005;&#27744;&#30005;&#37327;&#20302;&#65292;&#65289;&#10;&#10;data: &#35201;&#20351;&#29992;&#30340;&#25968;&#25454;&#65288;Uri&#65289;&#65307;&#10;&#10;category&#65306;&#20851;&#20110;&#30446;&#26631;&#32452;&#20214;&#30340;&#20449;&#24687;&#65307;&#10;&#10;extras &#65306;&#36825;&#26159;Bundle&#25968;&#25454;&#12290;&#10;&#10;flags&#65306;&#26631;&#24535;</span><br></pre></td></tr></table></figure>
+<h4 id="component">component</h4><p>处理Intent 的组件名称。此字段是一个 ComponentName object—它是目标的组件的完整限定名（包名+类名） 例如： “com.android.test.TestActivity”.</p>
+<p>ComponentName类定义节选如下，主要有两个属性成员，其余都是方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ComponentName</span> <span class="keyword">implements</span> <span class="title">Parcelable</span>, <span class="title">Cloneable</span>, <span class="title">Comparable</span>&lt;<span class="title">ComponentName</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String mPackage;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String mClass;</span><br><span class="line">...........</span><br></pre></td></tr></table></figure></p>
+<p>该字段是可选的。如果设置了此字段，那么 Intent Object 将会被传递到这个组件名所对应的类的实例中。 如果没有设置，Android 会用 Intent object 中的其它信息去定位到一个合适的目标组件中。这个过程称为intent解析。</p>
+<p>设置Component name 可以通过 setComponent() , setClass() 或者 setClassName()进行设置。 可以通过 getComponent() 进行读取.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Intent <span class="title">setComponent</span><span class="params">(ComponentName component)</span> </span>&#123;</span><br><span class="line">        mComponent = component;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Intent <span class="title">setClass</span><span class="params">(Context packageContext, Class&lt;?&gt; cls)</span> </span>&#123;</span><br><span class="line">       mComponent = <span class="keyword">new</span> ComponentName(packageContext, cls);</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">   &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Intent <span class="title">setClassName</span><span class="params">(Context packageContext, String className)</span> </span>&#123;</span><br><span class="line">   mComponent = <span class="keyword">new</span> ComponentName(packageContext, className);</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Intent <span class="title">setClassName</span><span class="params">(String packageName, String className)</span> </span>&#123;</span><br><span class="line">      mComponent = <span class="keyword">new</span> ComponentName(packageName, className);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="action">action</h4><p>一个字符串，代表要执行的动作。 – 或者，对于 broadcase intents 来说，表示正在发生，并且被报告的动作。Intent 类中 定义了许多动作常量。</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-6.gif" alt=""></p>
+<p>也可以定义自己的 action strings 来激活组件。自定义的action 应该包含包名作为前缀： 例如”com.example.project.SHOW_COLOR”.</p>
+<p>Action 很大程度上决定 Intent余下部分的结构。 —- 特别是：data 和 extras 两个字段。就像一个方法的方法名通常决定了方法的参数和返回值。 基于这个原因，应该给action 命名一个尽可能明确的名字。 可以通过 setAction() 设置action，通过 getAction() 进行获取.</p>
+<h4 id="data和type">data和type</h4><p>Data属性有两部分构成： 数据URI 和 数据MIME type 。</p>
+<p>action的定义往往决定了data该如何定义。</p>
+<p>例如： 如果 一个Intent的 action 为 ACTION_EDIT 那么它对应的data 应该包含待编辑的数据的URI . 如果一个action 为：ACTION_CALL ，那么data 应该为 tel: 电话号码的URI . 类似的， 如果action 为 ACTION_VIEW 那么data 应该为： http: URI ， 接收到的activity 将会下载并显示相应的数据。</p>
+<p>当一个Intent 和 有能力处理此Intent的组件进行匹配时， 除了 data的URI以外，了解data的类型（MIME Type）也很重要。 例如： 一个显示图片的组件 不应该去播放声音文件。</p>
+<p>许多情况下，data type 可以从URI中推测出。 尤其是： URI = content: URIs这时候数据通常是位于本设备上而且是由某个content provider来控制的。即便如此，我们仍然可以明确的在 Intent object上设置一个 data type. setData() 方法只能设置URI, setType() 设置MIME type, setDataAndType() 可以对二者都进行设置， 获取URI 和 data type 可分别调用 getData() 和 getType() 方法。</p>
+<p>解析类型最好使用下面的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">resolveType</span><span class="params">(ContentResolver resolver)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (mType != <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> mType;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">if</span> (mData != <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">if</span> (<span class="string">"content"</span>.equals(mData.getScheme())) &#123;</span><br><span class="line">               <span class="keyword">return</span> resolver.getType(mData);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>如果用Intent.setType(String)显式的设置了type，那么返回该type；这个时候就等同于Intent.getType()方法。</p>
+<p>否则，会从intent的uri中，也就是Intent.setData(Uri)设置进来的uri来解析，而且必须schema为content才会有type，其余情况都会返回空。</p>
+<p>因为content会有非常多的类型，而像tel,mailto,smsto,imto等，类型都非常单一，一般IntentFilter中只写这些schema就好了。</p>
+<p>如果是content类型，一般IntentFilter中写action为Intent.ACTION_VIEW，然后写几组mimeType。</p>
+<p>如联系人列表中点击联系人进入联系人详情和联系人详情点击邮政地址都是Intent.ACTION_VIEW和一个schema为content的Uri，只是mimeType不一样，点击邮政地址进入地图查看位置，发出的mimeType就必须用resolveType()解析出来，用getType()得到的会是null.</p>
+<p>综上所述，从intent中取得mimeType，最好的方法就是用resolveType()。</p>
+<h4 id="Category">Category</h4><p>一个字符串， 包含了处理该Intent的组件的种类信息, 起着对action的补充说明作用.</p>
+<p> 一个Intent对象可以有任意多个 category。和action 一样， 在Intent class 中也定义了几个 category 常量. 如下：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-7.gif" alt=""></p>
+<p>addCategory() 添加一个 category</p>
+<p>removeCategory() 删除一个 category</p>
+<p>getCategorys() 获取所有的category</p>
+<h4 id="Extras">Extras</h4><p>为键-值对形式的附加信息. 例如ACTION_TIMEZONE_CHANGED的intent有一个”time-zone”附加信息来指明新的时区, 而ACTION_HEADSET_PLUG有一个”state”附加信息来指示耳机是被插入还是被拔出.</p>
+<p>intent对象有一系列put…()和set…()方法来设定和获取附加信息. 这些方法和Bundle对象很像. 事实上附加信息可以使用putExtras()和getExtras()作为Bundle来读和写.</p>
+<h4 id="Flags">Flags</h4><p>有各种各样的标志，许多指示Android系统如何去启动一个活动（例如，活动应该属于那个任务）和启动之后如何对待它（例如，它是否属于最近的活动列表）。所有这些标志都定义在Intent类中。</p>
+<h3 id="Intent解析">Intent解析</h3><ol>
+<li>显示Intent</li>
+</ol>
+<p>显式的设定目标组件的component名称。不过有时开发者不知道其他应用的component名称。显式方式常用于自己应用内部的消息传递，比如应用中一个activity启动一个相关的service或者启动一个姐妹activity；</p>
+<ol>
+<li>隐式Intent</li>
+</ol>
+<p>component名称为空的情况。这种方式往往用于激活其他应用中的组件。</p>
+<p>android投递一个显式的intent，只需找到对应名称的组件即可。</p>
+<p>隐式的intent需要用到不同的策略。android需要找到处理这个intent的最合适组件（集合）。要通过intent filter，比较intent对象和组件关联结构。filter根据组件的能力决定他们能处理哪些intent。android系统打开合适的组件处理相应的隐式intent。</p>
+<p>如果组件不包含任何intent filter，那只能接收显式的intent。带filter的组件既可接收隐式intent也可接收显式的。</p>
+<p>Intent有三个方面可用于intent filter：</p>
+<ol>
+<li><p>action</p>
+</li>
+<li><p>data，包括URI部分和数据类型部分</p>
+</li>
+<li><p>category</p>
+</li>
+</ol>
+<p>extra和flag在这方面不起作用。</p>
+<h3 id="intentfilter">intentfilter</h3><p>为了能支持隐式intent，activity、service和broadcast receiver会包含1到多个intent filter。每个intent filter描述组件的可接收一组intent的能力。在intent filter中，说明了可接受的类型，以及不想要的intent。</p>
+<p>隐式的intent要想投递到一个组件，只需通过组件的一个filter即可。</p>
+<p>组件把filter分成多个，是为了针对具体不同的任务。</p>
+<p> 一个intent filter是一个IntentFilter类的实例。但是，android系统必须在组件未启动的情况下就知道它的能力，因此intent filter一般不会在java代码中设置，而是在应用的manifest文件中作为<intent-filter>元素的方式声明。</intent-filter></p>
+<p> 一个例外是，为broadcast receiver注册动态的filter，可以调用Context.registerReceiver()方法，通过直接实例化IntentFilter对象创建。</p>
+<p>filter有三个平等的部分：action、data和category。隐式intent将测试这三个部分。一个intent要想投递到一个组件，那么这三个测试都要通过才行。当然如果组件有多个intent filter，可能一个intent没有通过，但是通过了另外的一个，这样也可以把intent投递到组件。</p>
+<p>如果一个Intent 可以通过多个activity或者filter的filter，那么用户将会被询问需要激活哪个组件。 如果一个都没有的话，将会抛出异常。</p>
+<h4 id="action测试">action测试</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">intent-filter</span> <span class="attribute">.</span> <span class="attribute">.</span> <span class="attribute">.</span> &gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"com.example.project.SHOW_CURRENT"</span> /&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"com.example.project.SHOW_RECENT"</span> /&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"com.example.project.SHOW_PENDING"</span> /&gt;</span>  </span><br><span class="line">    . . .  </span><br><span class="line"><span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>一个intent对象只能命名一个单一的action，一个过滤器则可以列出多个action。这个列表也可以是空的， 一个过滤器必须包含一个 <action> element ,否则它将阻止所有的intents要通过这个测试，在intent被指定的action必须匹配在过滤器中所列的action的其中之一。如果一个intent对象或者过滤器没有指定action。 结果如下 :</action></p>
+<p>如果一个filter 没有指定任何action ,那么则没有任何intent会被匹配(显示intent除外)。所以，所有的intent将不会通过此测试。</p>
+<p>另一方面，如果一个intent对象没有指定任何action，那么将自动通过此测试——只要这个过滤器中有至少一个action.</p>
+<h4 id="Category测试">Category测试</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">intent-filter</span> <span class="attribute">.</span> <span class="attribute">.</span> <span class="attribute">.</span> &gt;</span>   </span><br><span class="line"><span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.category.DEFAULT"</span> /&gt;</span>   </span><br><span class="line"><span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.category.BROWSABLE"</span> /&gt;</span>   </span><br><span class="line">    . . .   </span><br><span class="line"><span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>要通过category测试， Intent对象中包含的每个category必须匹配filter中的一个。Filter可以列出额外的category，但是不能漏掉 intent 对象包含的任意一个category。</p>
+<p>原则上，一个没有任何categorys的 Intent object 将总是通过此测试。大多数情况下是正确的。然而，也有例外，android对待所有传入 startActivity()中的隐式视图，都认为它们至少包含了一个 category — “android.intent.category.DEFAULT”.因此，希望接收这些隐式意图的activities必须在在它们的 intent filters 中包含”android.intent.category.DEFAULT” .</p>
+<p>对于含”android.intent.action.MAIN” and “android.intent.category.LAUNCHER”的filter 则是例外。因为它们标记了此activity开启了一个新的task 和 将出现在 launcher screen。它们也可以包含“com.intent.category.DEFAULT”,但没必要.一般的，app的主Activity都具备这两个属性。</p>
+<h4 id="data测试">data测试</h4><p>类似于action, categories, data也是 intent filter 中的一个子节点， 可以设置多个 data节点，也可以一个不设置。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">intent-filter</span> <span class="attribute">.</span> <span class="attribute">.</span> <span class="attribute">.</span> &gt;</span>   </span><br><span class="line"><span class="tag">&lt;<span class="title">data</span> <span class="attribute">android:mimeType</span>=<span class="value">"video/mpeg"</span> <span class="attribute">android:scheme</span>=<span class="value">"http"</span> <span class="attribute">.</span> <span class="attribute">.</span> <span class="attribute">.</span> /&gt;</span>   </span><br><span class="line"><span class="tag">&lt;<span class="title">data</span> <span class="attribute">android:mimeType</span>=<span class="value">"audio/mpeg"</span> <span class="attribute">android:scheme</span>=<span class="value">"http"</span> <span class="attribute">.</span> <span class="attribute">.</span> <span class="attribute">.</span> /&gt;</span>   </span><br><span class="line">    . . .   </span><br><span class="line"><span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>每个<data> 元素可以指定一个 URI 和 一个 data type (MIME media type) . URI 有以下几个属性组成 :</data></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">schema,host,port,path&#10;&#10;Schema://host:port/path</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">content://com.example.project:200/folder/subfolder/etc</span><br></pre></td></tr></table></figure>
+<p>在上例中</p>
+<p>schema:content</p>
+<p>host: com.example.project</p>
+<p>Port: 200</p>
+<p>Path: folder/subfolder/etc</p>
+<p>主机 host 和 port 一起组成了URI authority，如果没有指定 host,那么port将被忽略。</p>
+<p> <data>节点中的属性都是可选的，但它们并非相互独立。要使一个authority 有意义，必须要指定 scheme 。 要是 path 有意义， scheme 和 authority（host:port） 必须指定。</data></p>
+<p>当Intent对象中的URI 和 intent filter 进行比较时，它只会进行部门比较。 例如： 如果一个 filter 只指定了一个scheme , 那么所有包含该scheme的URI都会匹配。 如果一个filter只指定了 scheme 和 authority ，没有path, 那么所有包含此scheme 和 authority 将会匹配。如果一个filter指定了一个scheme,authority, 和一个path, 那么只有包含同样的 scheme,authoritym,path会匹配。 但是，对于path，我们可以使用通配符进行部门匹配。</p>
+<p><data>节点的 type 属性指定了 data的MIME type。 它比在filter中的URI 更常见 intent对象和filter都可以使用 “*” 通配符作为子类型 – 例如： “text/×” ， “audio/×” 表示所有子类型都匹配。</data></p>
+<p>data test 会将 intent对象中的URI 和 data type 与filter指定的都进行比较。 规则如下：</p>
+<p>a) 如果一个intent 没有指定URI 和 data type , 那么如果filter中也是同样，则通过测试。</p>
+<p>b) 如果一个intent 有URI 但是没有 data type(或者是data type不能从uri中推断出来 ) 只能通过这样的filter: uri匹配, 并且不指定类型. 这种情况限于类似mailto:和tel:这样的不指定实际数据的uri.</p>
+<p>c) 如果一个intent 包含 data type 但是没有 uri ,那么 filter中列出相同的data type 并且没有指定URI 则通过测试。</p>
+<p>d) 如果一个intent包含一个URI 和data type （或者data type 可以从URI中推断出来），那么filter列出的有相同data type ，intent对象的uri要么和filter中的uri匹配，要么intent的uri为 content: or file: 并且filter不指定uri。</p>
+<p>如果一个Intent 可以通过多个activity或者filter的filter，那么用户将会被询问需要激活哪个组件。 如果一个都没有的话，将会抛出异常。</p>
+<p>Intents对照着Intent过滤器匹配，不仅去发现一个目标组件去激活，而且去发现设备上的组件的其他信息。例如，Android系统填充应用程序启动列表，最高层屏幕显示用户能够启动的应用程序：是通过查找所有的包含指定了”android.intent.action.MAIN”的动作和”android.intent.category.LAUNCHER”种类的过滤器的Activity，然后在启动列表中显示这些Activity的图标和标签。类似的，它通过查找有”android.intent.category.HOME”过滤器的Activity发掘主菜单。</p>
+<h3 id="intent不能直接传递对象而要通过序列化机制间接传递对象">intent不能直接传递对象而要通过序列化机制间接传递对象</h3><p>Intent在启动其他组件时，会离开当前应用程序进程，进入AMS进程，这也就意味着，Intent所携带的数据要能够在不同进程间传输。首先我们知道，Android是基于Linux系统，不同进程之间的java对象是无法传输，所以我们此处要对对象进行序列化，从而实现对象在 应用程序进程 和 AMS进程之间传输。</p>
+<p>在不同进程之间，常规数据类型可以直接传递，如整数，以传递字符串为例，要从A进程传递到B进程，只需在B进程的内存区开辟一样大小的空间，然后复制过去即可。<br>但是，对象却不能直接跨进程传递。即使成员变量值能传递过去，成员方法是无法传递过去的，此时如果B进程要调用成员方法则出错。</p>
+<p>具体传递对象的方法：</p>
+<ol>
+<li><p>在进程Ａ中把类中的非默认值的属性和类的唯一标志打成包（这就叫序列化）；</p>
+</li>
+<li><p>把这个包传递到进程Ｂ；</p>
+</li>
+<li><p>进程Ｂ接收到包后，根据类的唯一标志把类创建出来（java反射机制）；</p>
+</li>
+<li><p>然后把传来的属性更新到类对象中。</p>
+</li>
+</ol>
+<p>这样进程Ａ和进程Ｂ中就包含了两个完全一样的类对象。</p>
+<p>Intent如何实现对象传递？</p>
+<p>Parcelable接口：这是Android提供的用作封装数据的容器，封装后的数据可以通过Intent或IPC来传递。只有基本类型和实现了Parcelable接口的类才能被放入Parcel中。</p>
+<h3 id="intent过滤源码解析">intent过滤源码解析</h3><p>一个指定了data但没有指定type的intent也是有可能推测出其type的，这个方法是intent类中的resolveTypeIfNeed()方法。</p>
+<p>源码路径：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/core/java/android/content/Intent.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">resolveTypeIfNeeded</span><span class="params">(ContentResolver resolver)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 如果指定了组件名字，也就说明这是一个显示intent了，那也就没必要关心type了</span></span><br><span class="line">    <span class="keyword">if</span> (mComponent != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> mType;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 接下来就是解析隐式intent了</span></span><br><span class="line">    <span class="keyword">return</span> resolveType(resolver);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">resolveType</span><span class="params">(ContentResolver resolver)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 如果指定了type，那就返回显示指定的type</span></span><br><span class="line">    <span class="keyword">if</span> (mType != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> mType;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没有指明type，但有data的话，尝试从data推测除type</span></span><br><span class="line">    <span class="keyword">if</span> (mData != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 说明只有data中的Scheme为content的时候才依据data去推测type，否则返回null</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"content"</span>.equals(mData.getScheme())) &#123;</span><br><span class="line">          <span class="comment">// 调用ContentResolver类中的getType继续解析type</span></span><br><span class="line">            <span class="keyword">return</span> resolver.getType(mData);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>resolver.getType()方法返回content url的MIME TYPE.</p>
+<p>源码路径：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/core/java/android/content/ContentResolver.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="annotation">@Nullable</span> <span class="function">String <span class="title">getType</span><span class="params">(@NonNull Uri url)</span> </span>&#123;</span><br><span class="line">    Preconditions.checkNotNull(url, <span class="string">"url"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 看看是否能找到一个与url匹配的provider，存在的话使用这个provider中的getType来解析</span></span><br><span class="line">    IContentProvider provider = acquireExistingProvider(url);</span><br><span class="line">    <span class="keyword">if</span> (provider != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> provider.getType(url);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (java.lang.Exception e) &#123;</span><br><span class="line">            Log.w(TAG, <span class="string">"Failed to get type for: "</span> + url + <span class="string">" ("</span> + e.getMessage() + <span class="string">")"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            releaseProvider(provider);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!SCHEME_CONTENT.equals(url.getScheme())) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 借助AMS来解析</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        String type = ActivityManagerNative.getDefault().getProviderMimeType(</span><br><span class="line">                ContentProvider.getUriWithoutUserId(url), resolveUserId(url));</span><br><span class="line">        <span class="keyword">return</span> type;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        <span class="comment">// Arbitrary and not worth documenting, as Activity</span></span><br><span class="line">        <span class="comment">// Manager will kill this process shortly anyway.</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (java.lang.Exception e) &#123;</span><br><span class="line">        Log.w(TAG, <span class="string">"Failed to get type for: "</span> + url + <span class="string">" ("</span> + e.getMessage() + <span class="string">")"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里说明了一个很重要的问题：每个provider在实现的时候，必须实现getType()，否则当获取type时，会返回null.</p>
+<p>没找到这样一个provider的时候，会通过AMS分析type，AMS最后也会通过PMS来解析。</p>
+<p>PackageManager有一组query…()方法返回能够接收特定intent的所有组件，一组resolve…()方法决定最适合的组件响应intent。</p>
+<p>例如，queryIntentActivities()返回一组能够给执行指定的intent参数的所有activity，类似的queryIntentServices()返回一组服务。这两个方法都不激活组件，它们仅列出所有能够响应的组件。对应广播接收者也有类似的方法——queryBroadcastReceivers()。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/07/Android_ActivityManagerService-5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之AMS如何启动app上篇
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/05/Android_ActivityManagerService-3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之AMS启动</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-4" data-title="Android6.0之Intent使用与源码分析" data-url="http://www.iloveandroid.net/2016/07/06/Android_ActivityManagerService-4/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之AMS如何启动app上篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面简单介绍了AMS的启动过程。现在从启动一个APP开始分析AMS在这个过程中究竟做了哪些事情，从而找出AMS中重要的数据结构。启动App，通常是启动该App的一个Activity,一般是主Activity.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之AMS如何启动app上篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-5/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面简单介绍了AMS的启动过程。现在从启动一个APP开始分析AMS在这个过程中究竟做了哪些事情，从而找出AMS中重要的数据结构。启动App，通常是启动该App的一个Activity,一般是主Activity.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-3.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-4.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-5.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-8.png">
+<meta property="og:updated_time" content="2016-07-07T11:32:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之AMS如何启动app上篇">
+<meta name="twitter:description" content="前面简单介绍了AMS的启动过程。现在从启动一个APP开始分析AMS在这个过程中究竟做了哪些事情，从而找出AMS中重要的数据结构。启动App，通常是启动该App的一个Activity,一般是主Activity.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_ActivityManagerService-5" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/07/Android_ActivityManagerService-5/" class="article-date">
+  	<time datetime="2016-07-07T09:11:50.000Z" itemprop="datePublished">2016-07-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之AMS如何启动app上篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面简单介绍了AMS的启动过程。现在从启动一个APP开始分析AMS在这个过程中究竟做了哪些事情，从而找出AMS中重要的数据结构。启动App，通常是启动该App的一个Activity,一般是主Activity.</p>
+<a id="more"></a>
+<p>用户从Launcher程序点击应用图标可启动应用的入口Activity，Activity启动时需要多个进程之间的交互，如下图所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-3.png" alt=""></p>
+<p>其中AMS进程实际上是SystemServer进程，因为AMS只是SystemServer启动的一个服务而已，运行在SystemServer的某个线程中。</p>
+<p>用户在Launcher程序里点击应用图标时，会通知ActivityManagerService启动应用的主Activity，ActivityManagerService发现这个应用还未启动，则会通知Zygote进程孵化出应用进程，然后在这个新孵化的应用进程里执行ActivityThread的main方法。应用进程接下来通知ActivityManagerService应用进程已启动，ActivityManagerService保存应用进程的一个代理对象，这样ActivityManagerService可以通过这个代理对象控制应用进程，然后ActivityManagerService通知应用进程创建主Activity的实例，并执行它的生命周期方法，也就是诸如OnCreadte()等方法。</p>
+<h3 id="Launcher启动app的真正入口点">Launcher启动app的真正入口点</h3><p>Launcher 使用一个带有 Intent.FLAG_ACTIVITY_NEW_TASK flag 的 Intent，调用 startActivity 方法来启动App.</p>
+<p>源码路径：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java&#10;Android-6/packages/apps/Launcher3/src/com/android/launcher3/AppInfo.java</span><br></pre></td></tr></table></figure>
+<p>launcher上显示的每一个app都创建了一个用来启动他的intent，是一个显示的intent。组件名字是要启动的app的主activity名字。flag在后面会在添加一个标志。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Intent <span class="title">makeLaunchIntent</span><span class="params">(Context context, LauncherActivityInfoCompat info,</span><br><span class="line">            UserHandleCompat user)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Intent(Intent.ACTION_MAIN)</span><br><span class="line">            .addCategory(Intent.CATEGORY_LAUNCHER)</span><br><span class="line">            .setComponent(info.getComponentName())</span><br><span class="line">            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)</span><br><span class="line">            .putExtra(EXTRA_PROFILE, serialNumber);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>当在launcher点击一个app的图标时的一个简要调用流程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">     * Launches the intent referred by the clicked shortcut.</span><br><span class="line">     *</span><br><span class="line">     * <span class="doctag">@param</span> v The view representing the clicked shortcut.</span><br><span class="line">     */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">      ............</span><br><span class="line">      Object tag = v.getTag();</span><br><span class="line">      <span class="keyword">if</span> (tag <span class="keyword">instanceof</span> ShortcutInfo) &#123;</span><br><span class="line">          onClickAppShortcut(v);</span><br><span class="line">      &#125;</span><br><span class="line">       ...........</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onClickAppShortcut</span><span class="params">(<span class="keyword">final</span> View v)</span> </span>&#123;</span><br><span class="line">......</span><br><span class="line">      <span class="comment">// Start activities</span></span><br><span class="line">      startAppShortcutOrInfoActivity(v);</span><br><span class="line">.......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">startAppShortcutOrInfoActivity</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">............</span><br><span class="line">        <span class="comment">// 得到launcher提供的启动这个app主activity的intent</span></span><br><span class="line">        intent = shortcut.intent;</span><br><span class="line">...........</span><br><span class="line">        <span class="keyword">boolean</span> success = startActivitySafely(v, intent, tag);</span><br><span class="line">............</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">boolean</span> <span class="title">startActivitySafely</span><span class="params">(View v, Intent intent, Object tag)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  ...................      </span><br><span class="line">  success = startActivity(v, intent, tag);</span><br><span class="line">  ...................</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">startActivity</span><span class="params">(View v, Intent intent, Object tag)</span> </span>&#123;</span><br><span class="line">       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);</span><br><span class="line">        ...........</span><br><span class="line">        startActivity(intent, optsBundle);</span><br><span class="line">        ...............</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从以上代码流程可知当Launcher启动一个app时，会在自己的startActivity()方法中为Intent中添加一个FLAG_ACTIVITY_NEW_TASK flag，然后调用继承自Activity的startActivity()方法来进一步启动app.</p>
+<p>这样就找到了launcher启动一个app时的真正入口点了：Activity类的startActivity()方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent, @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>, options);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        startActivityForResult(intent, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Activity向AMS发起请求启动App">Activity向AMS发起请求启动App</h3><p>这个过程调用时序图如下所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-4.png" alt=""></p>
+<p>Instrumentation和Activity有点类似，只不过Activity是需要一个界面的，而Instrumentation并不是这样的，我们可以将它理解为一种没有图形界面的，具有启动能力的，用于监控其他类(用Target Package声明)的工具类。在Android系统中常用来监控应用程序和系统交互。在App开发中可以用来编写测试用例。</p>
+<p>另外两个类ActivityManagerNative和ActivityManagerProxy,在前面的文章已经介绍过了。这里就是获取AMS的一个代理对象，然后调用代理对象的startActivity(),实际上就是调用AMS的startActivity()方法来启动app。</p>
+<p>这里要还要重点注意一下execStartActivity的第二个参数IBinder contextThread：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(</span><br><span class="line">        Context who, IBinder contextThread, IBinder token, Activity target,</span><br><span class="line">        Intent intent, <span class="keyword">int</span> requestCode, Bundle options)</span> </span>&#123;</span><br><span class="line">    IApplicationThread whoThread = (IApplicationThread) contextThread;</span><br><span class="line">    Uri referrer = target != <span class="keyword">null</span> ? target.onProvideReferrer() : <span class="keyword">null</span>;</span><br><span class="line">    ....................</span><br></pre></td></tr></table></figure>
+<p>它是Activity类的startActivityForResult()方法中以下面代码所示的方法传入的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(Intent intent, <span class="keyword">int</span> requestCode, @Nullable Bundle options)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mParent == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Instrumentation.ActivityResult ar =</span><br><span class="line">            <span class="comment">//注意第二个参数</span></span><br><span class="line">            mInstrumentation.execStartActivity(</span><br><span class="line">            <span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>,</span><br><span class="line">            intent, requestCode, options);</span><br><span class="line">            .................</span><br></pre></td></tr></table></figure></p>
+<p>变量mMainThread是Activity类中ActivityThread类型的成员。</p>
+<p>ActivityThread类是Android应用进程的核心类，这个类包含了应用框架中其他重要的类。</p>
+<p>源码路径：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/core/java/android/app/ActivityThread.java</span><br></pre></td></tr></table></figure></p>
+<p>节选定义如下，先看源码对其的注释，就知道这个类的重要性了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * This manages the execution of the main thread in an</span><br><span class="line"> * application process, scheduling and executing activities,</span><br><span class="line"> * broadcasts, and other operations on it as the activity</span><br><span class="line"> * manager requests.</span><br><span class="line"> *</span><br><span class="line"> * &#123;<span class="doctag">@hide</span>&#125;</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityThread</span> </span>&#123;</span><br><span class="line">........</span><br><span class="line"><span class="keyword">private</span> ContextImpl mSystemContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> IPackageManager sPackageManager;</span><br><span class="line"><span class="comment">// 保存该app中所有的Activity</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;IBinder, ActivityClientRecord&gt; mActivities = <span class="keyword">new</span> ArrayMap&lt;&gt;();</span><br><span class="line"><span class="comment">// 保存该app中所有的service</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;IBinder, Service&gt; mServices = <span class="keyword">new</span> ArrayMap&lt;&gt;();</span><br><span class="line"><span class="comment">// 保存该app中所有的provider</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;ProviderKey, ProviderClientRecord&gt; mProviderMap</span><br><span class="line">        = <span class="keyword">new</span> ArrayMap&lt;ProviderKey, ProviderClientRecord&gt;();</span><br><span class="line"><span class="comment">//管理应用的资源</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ResourcesManager mResourcesManager;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 存储包含代码，即dex文件的apk文件保存在该变量中</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;String, WeakReference&lt;LoadedApk&gt;&gt; mPackages</span><br><span class="line">        = <span class="keyword">new</span> ArrayMap&lt;String, WeakReference&lt;LoadedApk&gt;&gt;();</span><br><span class="line"><span class="comment">// 不包含代码，紧紧包含资源的apk放在该变量中</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;String, WeakReference&lt;LoadedApk&gt;&gt; mResourcePackages</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果app中自己实现了Application的子类，并在清单文件中声明了，那么该变量就指向自己实现的那个子类对象</span></span><br><span class="line">Application mInitialApplication;</span><br><span class="line"></span><br><span class="line">AppBindData mBoundApplication;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用于binder通信，AMS通过它来调用应用的接口</span></span><br><span class="line"><span class="keyword">final</span> ApplicationThread mAppThread = <span class="keyword">new</span> ApplicationThread();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主线程中的Handler</span></span><br><span class="line"><span class="keyword">static</span> Handler sMainThreadHandler;  <span class="comment">// set once in main()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> Looper mLooper = Looper.myLooper();</span><br><span class="line"></span><br><span class="line"><span class="comment">// H继承自Handler,mH用来发送和处理ApplicationThread通过binder接受的AMS请求</span></span><br><span class="line"><span class="keyword">final</span> H mH = <span class="keyword">new</span> H();</span><br><span class="line"></span><br><span class="line">.........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ActivityThread类中没有定义数据结构来存储BroadcastReceiver对象，因为BroadcastReceiver对象生命周期很短暂，属于调用一次运行一次的类型，因此不需要保存其对象。</p>
+<p>AppBindData类为ActivityThread的内部类，定义如下，记录了与之绑定的app的相关数据。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">AppBindData</span> </span>&#123;</span><br><span class="line">    LoadedApk info;</span><br><span class="line">    String processName;</span><br><span class="line">    ApplicationInfo appInfo;</span><br><span class="line">    List&lt;ProviderInfo&gt; providers;</span><br><span class="line">    ComponentName instrumentationName;</span><br><span class="line">    Bundle instrumentationArgs;</span><br><span class="line">    IInstrumentationWatcher instrumentationWatcher;</span><br><span class="line">    IUiAutomationConnection instrumentationUiAutomationConnection;</span><br><span class="line">    <span class="keyword">int</span> debugMode;</span><br><span class="line">    <span class="keyword">boolean</span> enableOpenGlTrace;</span><br><span class="line">    <span class="keyword">boolean</span> restrictedBackupMode;</span><br><span class="line">    <span class="keyword">boolean</span> persistent;</span><br><span class="line">    Configuration config;</span><br><span class="line">    CompatibilityInfo compatInfo;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Initial values for &#123;<span class="doctag">@link</span> Profiler&#125;. */</span></span><br><span class="line">    ProfilerInfo initProfilerInfo;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"AppBindData&#123;appInfo="</span> + appInfo + <span class="string">"&#125;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中 ApplicationThread类型的变量mAppThread用于AMS所在app的接口，应用进程需要调用AMS提供的功能，而AMS也需要主动调用应用进程以控制应用进程并完成指定操作。这样AMS就需要应用进程的一个Binder代理对象。</p>
+<p>如下图所示</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-5.png" alt=""></p>
+<p>AMS通过IApplicationThread接口管理应用进程，ApplicationThread类实现了IApplicationThread接口，实现了管理应用的操作，ApplicationThread对象运行在应用进程里。ApplicationThreadProxy对象是ApplicationThread对象在AMS线程 (AMS线程运行在system_server进程)内的代理对象，AMS通过ApplicationThreadProxy对象调用ApplicationThread提供的功能，比如让应用进程启动某个Activity。</p>
+<p>ApplicationThread中的scheduleDestroyActivity方法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">scheduleDestroyActivity</span><span class="params">(IBinder token, <span class="keyword">boolean</span> finishing,</span><br><span class="line">               <span class="keyword">int</span> configChanges)</span> </span>&#123;</span><br><span class="line">           sendMessage(H.DESTROY_ACTIVITY, token, finishing ? <span class="number">1</span> : <span class="number">0</span>,</span><br><span class="line">                   configChanges);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>作为Binder服务端的方法实际上是调用ActivityThread类的下面两个方法完成的。（ApplicationThread是ActivityThread内部类）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="keyword">int</span> what, Object obj, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2)</span> </span>&#123;</span><br><span class="line">    sendMessage(what, obj, arg1, arg2, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="keyword">int</span> what, Object obj, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, <span class="keyword">boolean</span> async)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (DEBUG_MESSAGES) Slog.v(</span><br><span class="line">        TAG, <span class="string">"SCHEDULE "</span> + what + <span class="string">" "</span> + mH.codeToString(what)</span><br><span class="line">        + <span class="string">": "</span> + arg1 + <span class="string">" / "</span> + obj);</span><br><span class="line">    Message msg = Message.obtain();</span><br><span class="line">    msg.what = what;</span><br><span class="line">    msg.obj = obj;</span><br><span class="line">    msg.arg1 = arg1;</span><br><span class="line">    msg.arg2 = arg2;</span><br><span class="line">    <span class="keyword">if</span> (async) &#123;</span><br><span class="line">        msg.setAsynchronous(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mH.sendMessage(msg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么在ActivityThread类中内部类H（继承自Handler，mH就是H的对象），中肯定义了处理消息的handleMessage()方法，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> DESTROY_ACTIVITY:</span><br><span class="line">                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityDestroy"</span>);</span><br><span class="line">                    handleDestroyActivity((IBinder)msg.obj, msg.arg1 != <span class="number">0</span>,</span><br><span class="line">                            msg.arg2, <span class="keyword">false</span>);</span><br><span class="line">                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+<p>handleDestroyActivity是ActivityThread类中定义的方法。也就是说实际的处理都是在ActivityThread类中完成的，ActivityThread类仅仅负责通信而已。</p>
+<p>这里利用Handler机制，很巧妙的以异步方式执行了binder的请求。理解了这个过程后，在分析ApplicationThread类中的接口时，就不用再关心消息传递过程了，直接在ActivityThread类查找对应的方法。</p>
+<p>binder中定义的方法以”schedule”开头，与之对应的ActivityThread类中的处理方法以”handle”开头。</p>
+<h3 id="AMS启动app">AMS启动app</h3><p>前面分析到开始调用AMS的startActivity方法了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivity</span><span class="params">(IApplicationThread caller, String callingPackage,</span><br><span class="line">          Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</span><br><span class="line">          <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> startActivityAsUser(caller, callingPackage, intent, resolvedType, resultTo,</span><br><span class="line">          resultWho, requestCode, startFlags, profilerInfo, options,</span><br><span class="line">          UserHandle.getCallingUserId());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivityAsUser</span><span class="params">(IApplicationThread caller, String callingPackage,</span><br><span class="line">            Intent intent, String resolvedType, IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode,</span><br><span class="line">            <span class="keyword">int</span> startFlags, ProfilerInfo profilerInfo, Bundle options, <span class="keyword">int</span> userId)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 如果是隔离的应用的话，不允许其打开其他app的activity</span></span><br><span class="line">        <span class="comment">//  appid是99000-99999之间的属于隔离app</span></span><br><span class="line">        enforceNotIsolatedCaller(<span class="string">"startActivity"</span>);</span><br><span class="line">        userId = handleIncomingUser(Binder.getCallingPid(), Binder.getCallingUid(), userId,</span><br><span class="line">                <span class="keyword">false</span>, ALLOW_FULL_ONLY, <span class="string">"startActivity"</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> Switch to user app stacks here.</span></span><br><span class="line">        <span class="keyword">return</span> mStackSupervisor.startActivityMayWait(caller, -<span class="number">1</span>, callingPackage, intent,</span><br><span class="line">                resolvedType, <span class="keyword">null</span>, <span class="keyword">null</span>, resultTo, resultWho, requestCode, startFlags,</span><br><span class="line">                profilerInfo, <span class="keyword">null</span>, <span class="keyword">null</span>, options, <span class="keyword">false</span>, userId, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>判断发起者是否是隔离的app，不允许隔离的app调用其他app。然后调用ActivityStackSupervisor类中的startActivityMayWait方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivityMayWait</span><span class="params">(IApplicationThread caller, <span class="keyword">int</span> callingUid,</span><br><span class="line">            String callingPackage, Intent intent, String resolvedType,</span><br><span class="line">            IVoiceInteractionSession voiceSession, IVoiceInteractor voiceInteractor,</span><br><span class="line">            IBinder resultTo, String resultWho, <span class="keyword">int</span> requestCode, <span class="keyword">int</span> startFlags,</span><br><span class="line">            ProfilerInfo profilerInfo, WaitResult outResult, Configuration config,</span><br><span class="line">            Bundle options, <span class="keyword">boolean</span> ignoreTargetSecurity, <span class="keyword">int</span> userId,</span><br><span class="line">            IActivityContainer iContainer, TaskRecord inTask)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Refuse possible leaked file descriptors</span></span><br><span class="line">        <span class="keyword">if</span> (intent != <span class="keyword">null</span> &amp;&amp; intent.hasFileDescriptors()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"File descriptors passed in Intent"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 当启动一个app时 ，launcher会构造一个intent，前面已经介绍了，是一个显示的intent</span></span><br><span class="line">        <span class="comment">// 所以这里为true，</span></span><br><span class="line">        <span class="keyword">boolean</span> componentSpecified = intent.getComponent() != <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Don't modify the client's object!</span></span><br><span class="line">        <span class="comment">// 创建一个新的intent，方便改动</span></span><br><span class="line">        intent = <span class="keyword">new</span> Intent(intent);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 收集 要启动的app的主activity的信息</span></span><br><span class="line">        ActivityInfo aInfo =</span><br><span class="line">                resolveActivity(intent, resolvedType, startFlags, profilerInfo, userId);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 传入的该参数为null</span></span><br><span class="line">        ActivityContainer container = (ActivityContainer)iContainer;</span><br><span class="line">        <span class="keyword">synchronized</span> (mService) &#123;</span><br><span class="line">            <span class="keyword">if</span> (container != <span class="keyword">null</span> &amp;&amp; container.mParentActivity != <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">                    container.mParentActivity.state != RESUMED) &#123;</span><br><span class="line">                <span class="comment">// Cannot start a child activity if the parent is not resumed.</span></span><br><span class="line">                <span class="keyword">return</span> ActivityManager.START_CANCELED;</span><br><span class="line">            &#125;</span><br><span class="line">        ....................................</span><br><span class="line">            <span class="keyword">final</span> ActivityStack stack;</span><br><span class="line">            <span class="keyword">if</span> (container == <span class="keyword">null</span> || container.mStack.isOnHomeDisplay()) &#123;</span><br><span class="line">                stack = mFocusedStack;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                stack = container.mStack;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 传入的config为null</span></span><br><span class="line">            stack.mConfigWillChange = config != <span class="keyword">null</span> &amp;&amp; mService.mConfiguration.diff(config) != <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">if</span> (DEBUG_CONFIGURATION) Slog.v(TAG_CONFIGURATION,</span><br><span class="line">                    <span class="string">"Starting activity when config will change = "</span> + stack.mConfigWillChange);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">long</span> origId = Binder.clearCallingIdentity();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (aInfo != <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">                    (aInfo.applicationInfo.privateFlags</span><br><span class="line">                            &amp;ApplicationInfo.PRIVATE_FLAG_CANT_SAVE_STATE) != <span class="number">0</span>) &#123;</span><br><span class="line">              .......................</span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">int</span> res = startActivityLocked(caller, intent, resolvedType, aInfo,</span><br><span class="line">                    voiceSession, voiceInteractor, resultTo, resultWho,</span><br><span class="line">                    requestCode, callingPid, callingUid, callingPackage,</span><br><span class="line">                    realCallingPid, realCallingUid, startFlags, options, ignoreTargetSecurity,</span><br><span class="line">                    componentSpecified, <span class="keyword">null</span>, container, inTask);</span><br><span class="line"></span><br><span class="line">            Binder.restoreCallingIdentity(origId);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (stack.mConfigWillChange) &#123;</span><br><span class="line">              .............</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 传入的为null</span></span><br><span class="line">            <span class="keyword">if</span> (outResult != <span class="keyword">null</span>) &#123;</span><br><span class="line">              .......................</span><br><span class="line">                 mService.wait(); <span class="comment">//等待应用进程的activity启动完成</span></span><br><span class="line">             ...........</span><br><span class="line">            &#125;</span><br><span class="line">            .............</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>startActivityAsUser()方法最主要的目地是进行权限检查，检查发起者是否被隔离，是的话，是不允许调用别的app的activity的。然后就是检查调用者的是否有权限执行启动app的操作.</p>
+<p>startActivityMayWait()方法主要是利用传入的intent去向PMS搜集要启动的APP的信息,储存到aInfo中.名字中有wait字眼,预示着该方法可能导致线程等待.不过在我们这个场景中不会出现这种情况.因为wait出现在对结果的处理中,我们这个场景中是不需要处理结果的.</p>
+<p>接下去就调用startActivityLocked进一步处理了。</p>
+<p>到这里为止的时序图如下所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-8.png" alt=""></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/07/06/Android_ActivityManagerService-4/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之Intent使用与源码分析</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-5" data-title="Android6.0之AMS如何启动app上篇" data-url="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-5/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

@@ -183,6 +183,134 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-setupPhabricatorEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/20/setupPhabricatorEnvironment/" class="article-date">
+  	<time datetime="2015-09-20T07:43:13.000Z" itemprop="datePublished">2015-09-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/20/setupPhabricatorEnvironment/">持续集成系统搭建之Phabricator篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>现在开始搭建代码评审环境，Phabricator是FaceBook的一个开源工具，非常流行，支持代码提交前审阅和代码提交后审阅。</p>
+<h3 id="phab安装">phab安装</h3><p>Phab依赖的组件较多，有： APache（nginx、lighttpd）、MYSQL、PHP（&gt;5.2）、git、PHP的扩展。一个一个安装的比较麻烦，幸好官方也提供了一键安装脚本。<br>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/20/setupPhabricatorEnvironment/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-setupJenkinsEnvironment_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/09/19/setupJenkinsEnvironment_2/" class="article-date">
+  	<time datetime="2015-09-19T07:42:41.000Z" itemprop="datePublished">2015-09-19</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/19/setupJenkinsEnvironment_2/">持续集成系统搭建之利用Tomact搭建Jenkins篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前搭建的Jenkins是利用其安装包自带的jetty运行的,由于最初安装的时候没有配置JENKINS_HOMES环境变量,导致其默认目录在/var/lib/jenkins下面,这样备份不方便,有时候也会有权限的问题,所以向重新配置其工作目录,但是修改后发现不能启动了.</p>
+<p>官方推荐的都是安装在tomcat上面,所以我也就重新安装一遍吧.首先卸载之前安装的jenkins</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -P jenkins</span><br></pre></td></tr></table></figure>
+<p>这样就会卸载我们上次安装的jenkins了.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码管理/">代码管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/项目管理/">项目管理</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/09/19/setupJenkinsEnvironment_2/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-setupJenkinsEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -674,132 +802,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/15/GradleStudy/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-利用清华大学开源镜像下载 Android5.1 源码" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/15/利用清华大学开源镜像下载 Android5.1 源码/" class="article-date">
-  	<time datetime="2015-09-15T07:36:23.000Z" itemprop="datePublished">2015-09-15</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/15/利用清华大学开源镜像下载 Android5.1 源码/">利用清华大学开源镜像下载 Android5.1 源码</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<p>以前都是从Google的站点下载同步更新的，但是现在有了国内的镜像站点就好多了<br>清华大学不愧为国内第一名校，我等程序猿也能沾沾光，再也不愁为下载android源码而苦恼了！！<br>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android底层/">Android底层</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/15/利用清华大学开源镜像下载 Android5.1 源码/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-linux下批量替换文件内容" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/14/linux下批量替换文件内容/" class="article-date">
-  	<time datetime="2015-09-14T08:35:30.000Z" itemprop="datePublished">2015-09-14</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/14/linux下批量替换文件内容/">linux下批量替换文件内容</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<h2 id="demo">demo</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> `grep 查找字段 -rl 路径`</span><br><span class="line">sed -i <span class="string">"s/查找字段/替换字段/g"</span> ./*</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux常用命令/">linux常用命令</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/linux基础/">linux基础</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/14/linux下批量替换文件内容/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
