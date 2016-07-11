@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之AMS如何启动app中篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之AMS如何启动app中篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-6/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-9.png">
+<meta property="og:updated_time" content="2016-07-11T11:13:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之AMS如何启动app中篇">
+<meta name="twitter:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_ActivityManagerService-6" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/07/Android_ActivityManagerService-6/" class="article-date">
+  	<time datetime="2016-07-07T09:11:50.000Z" itemprop="datePublished">2016-07-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之AMS如何启动app中篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.</p>
+<a id="more"></a>
+<h3 id="ProcessRecord">ProcessRecord</h3><p>源码路径:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/ProcessRecord.java</span><br></pre></td></tr></table></figure>
+<p>一个APK文件运行时会对应一个进程，当然，多个APK文件也可以运行在同一个进程中。ProcessRecord正是AMS记录一个进程中相关信息的类，该类中内部变量可分为三个部分:</p>
+<h4 id="进程文件信息">进程文件信息</h4><p>也就是与该进程对应的APK文件的内部信息.比如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ApplicationInfo info;</span><br><span class="line"></span><br><span class="line">String processName;</span><br><span class="line"></span><br><span class="line"><span class="comment">//保存该进程中的所有APK文件包名</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;String, ProcessStats.ProcessStateHolder&gt; pkgList = <span class="keyword">new</span> ArrayMap&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>其中ApplicationInfo类定义节选如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationInfo</span> <span class="keyword">extends</span> <span class="title">PackageItemInfo</span> <span class="keyword">implements</span> <span class="title">Parcelable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String taskAffinity;<span class="comment">// 任务栈名称</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String permission;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String processName;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String className;</span><br><span class="line">    ...........</span><br><span class="line">    <span class="keyword">public</span> String sourceDir;</span><br><span class="line">..................</span><br><span class="line">   <span class="keyword">public</span> String[] resourceDirs;</span><br><span class="line">.....................</span><br><span class="line">   <span class="keyword">public</span> String[] sharedLibraryFiles;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> String dataDir;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> String nativeLibraryDir;</span><br><span class="line">   .....................</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> String primaryCpuAbi;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> String secondaryCpuAbi;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span> uid;</span><br><span class="line">  .............</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span> targetSdkVersion;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span> versionCode;</span><br></pre></td></tr></table></figure>
+<h4 id="进程的内存状态信息">进程的内存状态信息</h4><p>这些信息将用于Linux系统的Out Of Memory(OOM)情况的处理，当发生系统内部不够用时，Linux系统会根据进程的内存状态信息，杀掉优先级比较低的进程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> maxAdj;</span><br><span class="line"><span class="keyword">int</span> curAdj;</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 是否是被AMS主动杀掉的，而不是因为内存不足而被杀掉</span></span><br><span class="line"><span class="keyword">boolean</span> killedByAm;         <span class="comment">// True when proc has been killed by activity manager, not for RAM</span></span><br><span class="line"><span class="comment">// 是否被杀掉</span></span><br><span class="line"><span class="keyword">boolean</span> killed;             <span class="comment">// True once we know the process has been killed</span></span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+<p>变量中adj的含义是adjustment，即“调整值”</p>
+<h4 id="进程中包含的Activity,Provider,Service等">进程中包含的Activity,Provider,Service等</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// all activities running in the process</span></span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;ActivityRecord&gt; activities = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="comment">// all ServiceRecord running in this process</span></span><br><span class="line"><span class="keyword">final</span> ArraySet&lt;ServiceRecord&gt; services = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line"><span class="comment">// services that are currently executing code (need to remain foreground).</span></span><br><span class="line"><span class="keyword">final</span> ArraySet&lt;ServiceRecord&gt; executingServices = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line"><span class="comment">// All ConnectionRecord this process holds</span></span><br><span class="line"><span class="keyword">final</span> ArraySet&lt;ConnectionRecord&gt; connections = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line"><span class="comment">// all IIntentReceivers that are registered from this process.</span></span><br><span class="line"><span class="keyword">final</span> ArraySet&lt;ReceiverList&gt; receivers = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line"><span class="comment">// class (String) -&gt; ContentProviderRecord</span></span><br><span class="line"><span class="keyword">final</span> ArrayMap&lt;String, ContentProviderRecord&gt; pubProviders = <span class="keyword">new</span> ArrayMap&lt;&gt;();</span><br><span class="line"><span class="comment">// All ContentProviderRecord process is using</span></span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;ContentProviderConnection&gt; conProviders = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<h3 id="Task">Task</h3><p>Task是一个栈，它的作用是以先进后退的方式组织Activity。</p>
+<p>Android把用户一次操作相关的Activity按照先后顺序保存在一个Task中,这样当用户按back键时,就能按照相反的顺序退回去.</p>
+<p>系统运行时内存中可能存在多个Task,当我们按Recent键(android手机中的菜单键,或者多任务键)时,会弹出一个列表让你选择,这个列表就是系统中存在的Task集合.选择一个Task时,将把它所包含的所有Activity作为一个成体带到前台.Task中的Activity的顺序通常是不能改变的,只能是入栈或出栈.</p>
+<p>AMS中使用TaskRecord类来表示Task.</p>
+<p>源码路径:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/TaskRecord.java</span><br></pre></td></tr></table></figure>
+<p>类定义节选如下,可以参考代码注释来理解.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">TaskRecord</span> </span>&#123;</span><br><span class="line">  ...........</span><br><span class="line">  <span class="keyword">final</span> <span class="keyword">int</span> taskId;       <span class="comment">// Unique identifier for this task.</span></span><br><span class="line">  <span class="keyword">int</span> mAffiliatedTaskId; <span class="comment">// taskId of parent affiliation or self if no parent.</span></span><br><span class="line">  <span class="comment">// 可以理解为当前task的name</span></span><br><span class="line">  String affinity;        <span class="comment">// The affinity name for this task, or null; may change identity.</span></span><br><span class="line">  <span class="comment">// 启动这个task的intent</span></span><br><span class="line">  Intent intent;          <span class="comment">// The original intent that started the task.</span></span><br><span class="line">  <span class="keyword">long</span> firstActiveTime;   <span class="comment">// First time this task was active.</span></span><br><span class="line">  <span class="keyword">long</span> lastActiveTime;    <span class="comment">// Last time this task was active, including sleep.</span></span><br><span class="line">  <span class="keyword">boolean</span> inRecents;      <span class="comment">// Actually in the recents list?</span></span><br><span class="line">  <span class="keyword">boolean</span> isAvailable;    <span class="comment">// Is the activity available to be launched?</span></span><br><span class="line">  <span class="comment">// task模式</span></span><br><span class="line">  <span class="keyword">int</span> mLockTaskMode;      <span class="comment">// Which tasklock mode to launch this task in. One of</span></span><br><span class="line">                           <span class="comment">// ActivityManager.LOCK_TASK_LAUNCH_MODE_*</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/** List of all activities in the task arranged in history order */</span></span><br><span class="line">  <span class="comment">// 该Task中所有的Activity</span></span><br><span class="line">  <span class="keyword">final</span> ArrayList&lt;ActivityRecord&gt; mActivities;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** Current stack */</span></span><br><span class="line">  <span class="comment">// 该Task所在的ActivityStack</span></span><br><span class="line">  ActivityStack stack;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 最近列表中,可以看到当前Task的缩略图</span></span><br><span class="line">  <span class="keyword">private</span> Bitmap mLastThumbnail; <span class="comment">// Last thumbnail captured for this item.</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> File mLastThumbnailFile; <span class="comment">// File containing last thumbnail.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line">  ..........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>变量affinity是这个Task的名字,affinity在AMS中是唯一的,AMS查找一个Task,优先比较它的affinity.</p>
+<p>task是该Activity所在的Task,可以在AndroidManifest.xml中以下面的形式指出该activity的所在task的名字.</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;activity android:name=".Activity1"</span><br><span class="line"></span><br><span class="line">  android:taskAffinity="****task名字***"</span><br><span class="line"></span><br><span class="line">&lt;/activity&gt;</span><br></pre></td></tr></table></figure>
+<p>一个Task的affinity只有在其被创建的时候才有用.以后加入这个task的Activity,即使他们通过taskAffinity指定了了一个不同的字符串,也不会改变task的名称.</p>
+<p>通常不会主动去设置一个Activity的taskAffinity属性,如果不设置的话,继承<application>标签中的taskAffinity属性值.如果<application>中也没有指定taskAffinity,那么缺省使用包名.</application></application></p>
+<p>正因为如此,应用中的所有Activity的taskAffinity属性值缺省状态下是相同的,都是包名.所以在应用中使用FLAG_ACTIVITY_NEW_TASK标志去启动一个本应用中的一个activity,也不会创建一个新的task,除非这个activity额外指定了不同的taskAffinity属性值.</p>
+<h3 id="ActivityRecord">ActivityRecord</h3><p>一个Activity在AMS中是使用类ActivityRecord表示的.</p>
+<p>源码路径:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/ActivityRecord.java</span><br></pre></td></tr></table></figure>
+<p>节选定义如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityRecord</span> </span>&#123;</span><br><span class="line">  ..................</span><br><span class="line">  <span class="keyword">final</span> ActivityManagerService service; <span class="comment">// owner</span></span><br><span class="line">  <span class="keyword">final</span> IApplicationToken.Stub appToken; <span class="comment">// window manager token\</span></span><br><span class="line">  <span class="comment">//从AndroidManifest.xml中得到的该activity的基本信息</span></span><br><span class="line">  <span class="keyword">final</span> ActivityInfo info; <span class="comment">// all about me</span></span><br><span class="line">  <span class="keyword">final</span> ApplicationInfo appInfo; <span class="comment">// information about activity's app</span></span><br><span class="line">  <span class="keyword">final</span> Intent intent;    <span class="comment">// the original intent that generated us</span></span><br><span class="line">  <span class="keyword">final</span> String processName; <span class="comment">// process where this component wants to run</span></span><br><span class="line">  <span class="comment">// 所在task名字</span></span><br><span class="line">  <span class="keyword">final</span> String taskAffinity; <span class="comment">// as per ActivityInfo.taskAffinity</span></span><br><span class="line">  <span class="keyword">int</span> icon;               <span class="comment">// resource identifier of activity's icon.</span></span><br><span class="line">  <span class="keyword">int</span> logo;               <span class="comment">// resource identifier of activity's logo.</span></span><br><span class="line">  <span class="keyword">int</span> theme;              <span class="comment">// resource identifier of activity's theme.</span></span><br><span class="line">  <span class="comment">// 这个activity所在的Task</span></span><br><span class="line">  TaskRecord task;        <span class="comment">// the task this is in.</span></span><br><span class="line">  <span class="comment">// 这个Activity运行所在的进程</span></span><br><span class="line">  ProcessRecord app;      <span class="comment">// if non-null, hosting application</span></span><br><span class="line">  ActivityState state;    <span class="comment">// current state we are in</span></span><br><span class="line">  PersistableBundle persistentState; <span class="comment">// last persistently saved activity state</span></span><br><span class="line">  <span class="keyword">boolean</span> frontOfTask;    <span class="comment">// is this the root activity of its task?</span></span><br><span class="line">  <span class="comment">// Activity启动模式</span></span><br><span class="line">  <span class="keyword">int</span> launchMode;         <span class="comment">// the launch mode activity attribute.</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> inHistory;  <span class="comment">// are we in the history stack?</span></span><br><span class="line">  <span class="keyword">final</span> ActivityStackSupervisor mStackSupervisor;</span><br><span class="line">  ..................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ActivityStack">ActivityStack</h3><p>AMS中使用ActivityStack类来管理Task.</p>
+<p>源码路径:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/ActivityStack.java</span><br></pre></td></tr></table></figure>
+<p>节选定义如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityStack</span> </span>&#123;</span><br><span class="line">  ..................</span><br><span class="line">  <span class="comment">// Activity生命周期状态</span></span><br><span class="line">  <span class="keyword">enum</span> ActivityState &#123;</span><br><span class="line">    INITIALIZING,<span class="comment">//正在初始化</span></span><br><span class="line">    RESUMED,<span class="comment">//恢复</span></span><br><span class="line">    PAUSING,<span class="comment">//正在暂停</span></span><br><span class="line">    PAUSED,<span class="comment">//已经暂停</span></span><br><span class="line">    STOPPING,<span class="comment">//正在停止</span></span><br><span class="line">    STOPPED,<span class="comment">//已经停止</span></span><br><span class="line">    FINISHING,<span class="comment">//正在完成</span></span><br><span class="line">    DESTROYING,<span class="comment">//正在销毁</span></span><br><span class="line">    DESTROYED<span class="comment">//已经销毁</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line"><span class="keyword">final</span> WindowManagerService mWindowManager;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> RecentTasks mRecentTasks;</span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * The back history of all previous (and possibly still</span><br><span class="line"> * running) activities.  It contains #TaskRecord objects.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">private</span> ArrayList&lt;TaskRecord&gt; mTaskHistory = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * List of running activities, sorted by recent usage.</span><br><span class="line"> * The first entry in the list is the least recently used.</span><br><span class="line"> * It contains HistoryRecord objects.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">final</span> ArrayList&lt;ActivityRecord&gt; mLRUActivities = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">..........................</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>mTaskHistory是一个列表,存储的是ActivityStack中的所有TaskRecord对象,TaskRecord中的mActivities变量存储了该task中所有的Activity.也就是说mTaskHistory间接管理了ActivityStack中所有的activity.</p>
+<p>mLRUActivities也是一个列表,存储的是ActivityStack中按照最近使用情况所有运行的activity.</p>
+<p>ActivityStack可以使用findActivityLocked()方法在mTaskHistory中查找一个Activity:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ActivityRecord <span class="title">findActivityLocked</span><span class="params">(Intent intent, ActivityInfo info)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 得到activity的名字:包名+类名</span></span><br><span class="line">     ComponentName cls = intent.getComponent();</span><br><span class="line">     <span class="keyword">if</span> (info.targetActivity != <span class="keyword">null</span>) &#123;</span><br><span class="line">         cls = <span class="keyword">new</span> ComponentName(info.packageName, info.targetActivity);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">final</span> <span class="keyword">int</span> userId = UserHandle.getUserId(info.applicationInfo.uid);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> taskNdx = mTaskHistory.size() - <span class="number">1</span>; taskNdx &gt;= <span class="number">0</span>; --taskNdx) &#123;</span><br><span class="line">         <span class="keyword">final</span> TaskRecord task = mTaskHistory.get(taskNdx);</span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">boolean</span> notCurrentUserTask =</span><br><span class="line">                 !mStackSupervisor.isCurrentProfileLocked(task.userId);</span><br><span class="line">         <span class="keyword">final</span> ArrayList&lt;ActivityRecord&gt; activities = task.mActivities;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">for</span> (<span class="keyword">int</span> activityNdx = activities.size() - <span class="number">1</span>; activityNdx &gt;= <span class="number">0</span>; --activityNdx) &#123;</span><br><span class="line">             ActivityRecord r = activities.get(activityNdx);</span><br><span class="line">             <span class="keyword">if</span> (notCurrentUserTask &amp;&amp; (r.info.flags &amp; FLAG_SHOW_FOR_ALL_USERS) == <span class="number">0</span>) &#123;</span><br><span class="line">                 <span class="keyword">continue</span>;</span><br><span class="line">             &#125;</span><br><span class="line">             <span class="keyword">if</span> (!r.finishing &amp;&amp; r.intent.getComponent().equals(cls) &amp;&amp; r.userId == userId) &#123;</span><br><span class="line">                 <span class="keyword">return</span> r;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>查找的方法很简单,就是遍历mTaskHistory中每个task中的所有的activity,从而找到找到想要的Activity.</p>
+<p>ActivityStack可以使用findTaskLocked()方法在mTaskHistory中查找一个Task.</p>
+<h3 id="ActivityStackSupervisor">ActivityStackSupervisor</h3><p>正如这个类的名字一样,是ActivityStack的超级总管,管理着系统中的三个ActivityStack.</p>
+<p>源码路径:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/ActivityStackSupervisor.java</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityStackSupervisor</span> <span class="keyword">implements</span> <span class="title">DisplayListener</span> </span>&#123;</span><br><span class="line">  ............</span><br><span class="line">  <span class="comment">/** The stack containing the launcher app. Assumed to always be attached to</span><br><span class="line">  * Display.DEFAULT_DISPLAY. */</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mHomeStack;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** The stack currently receiving input or launching the next activity. */</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mFocusedStack;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** If this is the same as mFocusedStack then the activity on the top of the focused stack has</span><br><span class="line">  * been resumed. If stacks are changing position this will hold the old stack until the new</span><br><span class="line">  * stack becomes resumed after which it will be set to mFocusedStack. */</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mLastFocusedStack;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** All of the stacks on this display. Order matters, topmost stack is in front of all other</span><br><span class="line">   * stacks, bottommost behind. Accessed directly by ActivityManager package classes */</span></span><br><span class="line">  <span class="keyword">final</span> ArrayList&lt;ActivityStack&gt; mStacks = <span class="keyword">new</span> ArrayList&lt;ActivityStack&gt;();</span><br><span class="line">...................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>管理AMS管理activity,如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-9.png" alt=""></p>
+<p>这里要指出一点的是,一个task中的activity并非全部来自同一个app,可以是多个app中的activity.</p>
+<p>比如通过联系人应用点击短信编辑，这两个activity是在不同的应用进程中，但是看起来这两个又像是一部分一样，因为你在短信编辑页面返回又可以回到联系人详情页面，虽然这两个activity可能来自不同的应用，但通过把它们放入同一个task，将会得到更好的用户体验。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/07/07/Android_ActivityManagerService-5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之AMS如何启动app上篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-6" data-title="Android6.0之AMS如何启动app中篇" data-url="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-6/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
