@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之AMS如何启动app中篇 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,现在接着分析.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之AMS如何启动app中篇">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/07/11/Android_ActivityManagerService-7/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,现在接着分析.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-12.gif">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-13.gif">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-10.png">
+<meta property="og:updated_time" content="2016-07-13T02:59:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之AMS如何启动app中篇">
+<meta name="twitter:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,现在接着分析.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_ActivityManagerService-7" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/11/Android_ActivityManagerService-7/" class="article-date">
+  	<time datetime="2016-07-11T11:21:53.000Z" itemprop="datePublished">2016-07-11</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之AMS如何启动app中篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,现在接着分析.</p>
+<a id="more"></a>
+<h3 id="startActivityLocked">startActivityLocked</h3><p>利用传入的IApplicationThread caller,从AMS中得到调用者进程信息,也就是Launcher进程的信息.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">startActivityLocked</span><span class="params">(</span><br><span class="line">           IApplicationThread caller,//AMS通过这个参数可以和发起者进行交互</span><br><span class="line">           Intent intent,// 启动activity的intent</span><br><span class="line">           String resolvedType, // intent的类型,也就是MIME type</span><br><span class="line">           ActivityInfo aInfo,//要启动的activity的信息</span><br><span class="line">           IVoiceInteractionSession voiceSession,</span><br><span class="line">           IVoiceInteractor voiceInteractor,</span><br><span class="line">           IBinder resultTo,//用于接收startActivityForResult的结果,launcher启动app这种情景下没有用,为<span class="keyword">null</span></span><br><span class="line">           String resultWho,</span><br><span class="line">           <span class="keyword">int</span> requestCode,// 传入的-<span class="number">1</span></span><br><span class="line">           <span class="keyword">int</span> callingPid,</span><br><span class="line">           <span class="keyword">int</span> callingUid,</span><br><span class="line">           String callingPackage,</span><br><span class="line">           <span class="keyword">int</span> realCallingPid,</span><br><span class="line">           <span class="keyword">int</span> realCallingUid,</span><br><span class="line">           <span class="keyword">int</span> startFlags,</span><br><span class="line">           Bundle options,</span><br><span class="line">           <span class="keyword">boolean</span> ignoreTargetSecurity, <span class="keyword">boolean</span> componentSpecified, ActivityRecord[] outActivity,</span><br><span class="line">           ActivityContainer container, TaskRecord inTask)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> err = ActivityManager.START_SUCCESS;</span><br><span class="line"></span><br><span class="line">       ProcessRecord callerApp = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">if</span> (caller != <span class="keyword">null</span>) &#123;</span><br><span class="line">           callerApp = mService.getRecordForAppLocked(caller);</span><br><span class="line">          ................</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里顺便简单的对startActivityLocked方法的几个关键的参数根据代码做一个解释。<br>IApplicationThread caller :请求启动当前Activity的应用方，IApplicationThread 类型是AMS IPC调用ActivityThread的IBinder接口,如下图所示:<br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-12.gif" alt=""></p>
+<p> IBinder resultTo: 调用方Activity的ActivityRecord，每个Activity在启动之后，AMS均会将这个Activity的ActivityRecord的IBinder再传递给Activity，作为其在AMS中的标识。因此此时的resultTo经过2次IPC传递之后，已经不再是接口了，回到AMS之后就会再次变为ActivityRecord。这个参数后面会详解.</p>
+<p> callingPid和callingUid: 如果caller为空，其为请求启动Activity的进程的PID和UID；caller不为空，为caller activity所在的进程的PID和UID，基本上是一码事。这个PID和UID为了权限检查用的，检查当前的请求方是否有权限启动这个Activity。</p>
+<h4 id="接着从intent中拿到启动activity的flag-">接着从intent中拿到启动activity的flag.</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ActivityRecord sourceRecord = <span class="keyword">null</span>;</span><br><span class="line">ActivityRecord resultRecord = <span class="keyword">null</span>;</span><br><span class="line"><span class="comment">// 启动app时,传入为null</span></span><br><span class="line"><span class="keyword">if</span> (resultTo != <span class="keyword">null</span>) &#123;</span><br><span class="line">    sourceRecord = isInAnyStackLocked(resultTo);</span><br><span class="line">    <span class="keyword">if</span> (DEBUG_RESULTS) Slog.v(TAG_RESULTS,</span><br><span class="line">            <span class="string">"Will send result to "</span> + resultTo + <span class="string">" "</span> + sourceRecord);</span><br><span class="line">    <span class="keyword">if</span> (sourceRecord != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (requestCode &gt;= <span class="number">0</span> &amp;&amp; !sourceRecord.finishing) &#123;</span><br><span class="line">            resultRecord = sourceRecord;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 从intent中拿到启动activity的flag</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">int</span> launchFlags = intent.getFlags();</span><br><span class="line"><span class="comment">//因为sourceRecord为null,所以不走这段代码</span></span><br><span class="line"><span class="keyword">if</span> ((launchFlags &amp; Intent.FLAG_ACTIVITY_FORWARD_RESULT) != <span class="number">0</span> &amp;&amp; sourceRecord != <span class="keyword">null</span>) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里还要确定sourceRecord和resultRecord,这两个变量均为ActivityRecord类型，前者代表请求启动当前activity的activity；后者表示当前的activity在启动之后需要返回结果的ActivityRecord，一般情况下，如果sourceRecord的activity使用startActivityForResult()启动当前activity并且requestCode&gt;=0时，则resultRecord不为空，且resultRecord=sourceRecord。</p>
+<p>只不过当从launcher启动app时,requestCode为-1.</p>
+<p>还有一种特殊的情况，当启动一个activity时，启动的Intent设置了Intent.FLAG_ACTIVITY_FORWARD_RESULT标志，在这种情况resultRecord并不指向sourceRecord，而是指向sourceRecord的sourceRecord.</p>
+<p>如下图所示:<br><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-13.gif" alt=""></p>
+<p>Activity A 启动了Activity B，Activity B又启动了C，A–&gt;B–&gt;C, 这种情况下，A启动B要求B返回result给A，但是如果B在启动C时，Intent设置了Intent.FLAG_ACTIVITY_FORWARD_RESULT标志，那么此时将会交由C向A setResult。为了避免冲突，B启动C时不得指定resultRecord&gt;=0。</p>
+<h4 id="接着是检查权限:">接着是检查权限:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">int</span> startAnyPerm = mService.checkPermission(</span><br><span class="line">    START_ANY_ACTIVITY, callingPid, callingUid);</span><br></pre></td></tr></table></figure>
+<p>检查权限的规则:</p>
+<ol>
+<li><p>Root uid(0), System Server uid (Process.SYSTEM_UID), own process(MY_PID),将授权permission</p>
+</li>
+<li><p>如果发起者是被隔离的app,那么拒绝授权permission</p>
+</li>
+<li><p>如果请求启动的activity的属性android:exported=false， 并且请求的callingUid不等于请求启动的activity的UID，不允许启动；</p>
+</li>
+<li><p>请求启动的activity没有设定permission，只有当activity的permission和其所在的application的android:permission均没有设置时才为null，设置了application未设置activity，那么activity的permission与application相同。activity的permission为空，将授权permission</p>
+</li>
+<li><p>请求启动的activity设定了permission，那么检查请求方的activity中是否声明了使用这个permission，如果声明，授权。</p>
+</li>
+</ol>
+<p>intent防火墙规则检查,看是否防火墙屏蔽了启动这个app的intent:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">abort |= !mService.mIntentFirewall.checkStartActivity(intent, callingUid,</span><br><span class="line">                callingPid, resolvedType, aInfo.applicationInfo);</span><br></pre></td></tr></table></figure>
+<p>防火墙规则目录在</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/system/ifw</span><br></pre></td></tr></table></figure>
+<p>这个文件夹中,可以设置系统禁止某些intent.</p>
+<p>接着将Activity启动的消息通知监听Activity变动的的接口IActivityController,AMS有任何动静都将回调该监听者.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mService.mController != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">              <span class="comment">// The Intent we give to the watcher has the extra data</span></span><br><span class="line">              <span class="comment">// stripped off, since it can contain private information.</span></span><br><span class="line">              Intent watchIntent = intent.cloneFilter();</span><br><span class="line">              abort |= !mService.mController.activityStarting(watchIntent,</span><br><span class="line">                      aInfo.applicationInfo.packageName);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">              mService.mController = <span class="keyword">null</span>;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<p>一般情况下是不会设置这个监听者的,只有当debug时才会设置.例如在进行Monkey测试的时候，Monkey会设置该回调对象。这样，Monkey就能根据AMS反馈的情况进行相应处理了.</p>
+<h4 id="接着是为启动的App的主activity创建ActivityRecord对象:">接着是为启动的App的主activity创建ActivityRecord对象:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ActivityRecord r = <span class="keyword">new</span> ActivityRecord(mService, callerApp, callingUid, callingPackage,</span><br><span class="line">             intent, resolvedType, aInfo, mService.mConfiguration, resultRecord, resultWho,</span><br><span class="line">             requestCode, componentSpecified, voiceSession != <span class="keyword">null</span>, <span class="keyword">this</span>, container, options);</span><br></pre></td></tr></table></figure>
+<h4 id="接着是获取恰当的ActivityStack:">接着是获取恰当的ActivityStack:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> ActivityStack stack = mFocusedStack;</span><br></pre></td></tr></table></figure>
+<p>其中mFocusedStack前面已经介绍了,也是ActivityStackSupervisor类中的定义的:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** The stack currently receiving input or launching the next activity. */</span></span><br><span class="line"><span class="keyword">private</span> ActivityStack mFocusedStack;</span><br></pre></td></tr></table></figure></p>
+<h4 id="接着检查启动activity是否会引起进程切换，如果需要的话，还要检查Android系统目前是否允许切换。">接着检查启动activity是否会引起进程切换，如果需要的话，还要检查Android系统目前是否允许切换。</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> ActivityStack stack = mFocusedStack;</span><br><span class="line">     <span class="keyword">if</span> (voiceSession == <span class="keyword">null</span> &amp;&amp; (stack.mResumedActivity == <span class="keyword">null</span></span><br><span class="line">             || stack.mResumedActivity.info.applicationInfo.uid != callingUid)) &#123;</span><br><span class="line">         <span class="keyword">if</span> (!mService.checkAppSwitchAllowedLocked(callingPid, callingUid,</span><br><span class="line">                 realCallingPid, realCallingUid, <span class="string">"Activity start"</span>)) &#123;</span><br><span class="line">             PendingActivityLaunch pal =</span><br><span class="line">                     <span class="keyword">new</span> PendingActivityLaunch(r, sourceRecord, startFlags, stack);</span><br><span class="line">             mPendingActivityLaunches.add(pal);</span><br><span class="line">             ActivityOptions.abort(options);</span><br><span class="line">             <span class="keyword">return</span> ActivityManager.START_SWITCHES_CANCELED;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+<p>什么情况不允许切换呢？最常见的例子就是打电话的时候，如果是位于通话界面的话，可以通过AMS的stopAppSwitches来禁止切换掉当前进程，这个方法会使其他Task的Activity无法显示在前端，但同一个Task中的Activity则不受制约.电话结束后再调用resumeAppSwitches来恢复切换。为了防止使用者不调用resumeAppSwitches，系统设置了一个超时时间（5s），超时则自动resume。需要注意的是，这个接口一般的普通的app是不能调用的，因此这个操作一定是系统app操作的。</p>
+<p>如果没有则储存起来，有机会再启动它。将保存到mPendingActivityLaunchers中.</p>
+<p>如果允许进程切换的话:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">doPendingActivityLaunchesLocked(<span class="keyword">false</span>);</span><br></pre></td></tr></table></figure>
+<p>启动处于Pending状态的Activity，即之前由于上一步被禁止切换而保存起来的请求。它将先于本次需要启动的Activity处理.</p>
+<p>然后再调用startActivityUncheckedLocked方法继续处理当前方法继续处理当前的activity。(其实处理Pending状态的Activity,也是调用startActivityUncheckedLocked方法)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">err = startActivityUncheckedLocked(r, sourceRecord, voiceSession, voiceInteractor,</span><br><span class="line">              startFlags, <span class="keyword">true</span>, options, inTask);</span><br></pre></td></tr></table></figure>
+<p>整个startActivityLocked方法主要调用时序图如下所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-10.png" alt=""></p>
+<h3 id="startActivityUncheckedLocked">startActivityUncheckedLocked</h3><p>接下来分析startActivityUncheckedLocked,这个方法代码很长,分为若干阶段. 该方法主要负责task的管理,也可以理解为task的调度.</p>
+<p>获取Activity的启动模式:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> launchSingleTop = r.launchMode == ActivityInfo.LAUNCH_SINGLE_TOP;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> launchSingleInstance = r.launchMode == ActivityInfo.LAUNCH_SINGLE_INSTANCE;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> launchSingleTask = r.launchMode == ActivityInfo.LAUNCH_SINGLE_TASK;</span><br></pre></td></tr></table></figure>
+<p>接着获取启动Activity的flag:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> launchFlags = intent.getFlags();</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/07/07/Android_ActivityManagerService-5/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之AMS如何启动app上篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-7" data-title="Android6.0之AMS如何启动app中篇" data-url="http://www.iloveandroid.net/2016/07/11/Android_ActivityManagerService-7/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

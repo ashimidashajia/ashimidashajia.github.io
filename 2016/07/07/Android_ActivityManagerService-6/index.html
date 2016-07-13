@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Android6.0之AMS如何启动app中篇 | 码农故事</title>
+  <title>Android6.0之Activity的管理与启动模式 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android6.0之AMS如何启动app中篇">
+<meta property="og:title" content="Android6.0之Activity的管理与启动模式">
 <meta property="og:url" content="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-6/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
-<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-9.png">
-<meta property="og:updated_time" content="2016-07-11T11:13:07.000Z">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-11.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-13.png">
+<meta property="og:updated_time" content="2016-07-13T12:04:33.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android6.0之AMS如何启动app中篇">
+<meta name="twitter:title" content="Android6.0之Activity的管理与启动模式">
 <meta name="twitter:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
@@ -200,7 +201,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Android6.0之AMS如何启动app中篇
+      Android6.0之Activity的管理与启动模式
     </h1>
   
 
@@ -243,7 +244,7 @@
 <p>AMS中使用TaskRecord类来表示Task.</p>
 <p>源码路径:</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/TaskRecord.java</span><br></pre></td></tr></table></figure>
-<p>类定义节选如下,可以参考代码注释来理解.</p>
+<p>默认模式，可以不用写配置。在这个模式下，都会默认创建一个新的实例。因此，在这种模式下，可以有多个相同的实例，也允许多个相同Activity叠加<br>类定义节选如下,可以参考代码注释来理解.</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">TaskRecord</span> </span>&#123;</span><br><span class="line">  ...........</span><br><span class="line">  <span class="keyword">final</span> <span class="keyword">int</span> taskId;       <span class="comment">// Unique identifier for this task.</span></span><br><span class="line">  <span class="keyword">int</span> mAffiliatedTaskId; <span class="comment">// taskId of parent affiliation or self if no parent.</span></span><br><span class="line">  <span class="comment">// 可以理解为当前task的name</span></span><br><span class="line">  String affinity;        <span class="comment">// The affinity name for this task, or null; may change identity.</span></span><br><span class="line">  <span class="comment">// 启动这个task的intent</span></span><br><span class="line">  Intent intent;          <span class="comment">// The original intent that started the task.</span></span><br><span class="line">  <span class="keyword">long</span> firstActiveTime;   <span class="comment">// First time this task was active.</span></span><br><span class="line">  <span class="keyword">long</span> lastActiveTime;    <span class="comment">// Last time this task was active, including sleep.</span></span><br><span class="line">  <span class="keyword">boolean</span> inRecents;      <span class="comment">// Actually in the recents list?</span></span><br><span class="line">  <span class="keyword">boolean</span> isAvailable;    <span class="comment">// Is the activity available to be launched?</span></span><br><span class="line">  <span class="comment">// task模式</span></span><br><span class="line">  <span class="keyword">int</span> mLockTaskMode;      <span class="comment">// Which tasklock mode to launch this task in. One of</span></span><br><span class="line">                           <span class="comment">// ActivityManager.LOCK_TASK_LAUNCH_MODE_*</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/** List of all activities in the task arranged in history order */</span></span><br><span class="line">  <span class="comment">// 该Task中所有的Activity</span></span><br><span class="line">  <span class="keyword">final</span> ArrayList&lt;ActivityRecord&gt; mActivities;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** Current stack */</span></span><br><span class="line">  <span class="comment">// 该Task所在的ActivityStack</span></span><br><span class="line">  ActivityStack stack;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 最近列表中,可以看到当前Task的缩略图</span></span><br><span class="line">  <span class="keyword">private</span> Bitmap mLastThumbnail; <span class="comment">// Last thumbnail captured for this item.</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> File mLastThumbnailFile; <span class="comment">// File containing last thumbnail.</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line">  ..........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>变量affinity是这个Task的名字,affinity在AMS中是唯一的,AMS查找一个Task,优先比较它的affinity.</p>
 <p>task是该Activity所在的Task,可以在AndroidManifest.xml中以下面的形式指出该activity的所在task的名字.</p>
@@ -270,11 +271,114 @@
 <h3 id="ActivityStackSupervisor">ActivityStackSupervisor</h3><p>正如这个类的名字一样,是ActivityStack的超级总管,管理着系统中的三个ActivityStack.</p>
 <p>源码路径:</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Android-6/frameworks/base/services/core/java/com/android/server/am/ActivityStackSupervisor.java</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityStackSupervisor</span> <span class="keyword">implements</span> <span class="title">DisplayListener</span> </span>&#123;</span><br><span class="line">  ............</span><br><span class="line">  <span class="comment">/** The stack containing the launcher app. Assumed to always be attached to</span><br><span class="line">  * Display.DEFAULT_DISPLAY. */</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mHomeStack;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** The stack currently receiving input or launching the next activity. */</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mFocusedStack;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** If this is the same as mFocusedStack then the activity on the top of the focused stack has</span><br><span class="line">  * been resumed. If stacks are changing position this will hold the old stack until the new</span><br><span class="line">  * stack becomes resumed after which it will be set to mFocusedStack. */</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mLastFocusedStack;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** All of the stacks on this display. Order matters, topmost stack is in front of all other</span><br><span class="line">   * stacks, bottommost behind. Accessed directly by ActivityManager package classes */</span></span><br><span class="line">  <span class="keyword">final</span> ArrayList&lt;ActivityStack&gt; mStacks = <span class="keyword">new</span> ArrayList&lt;ActivityStack&gt;();</span><br><span class="line">...................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>管理AMS管理activity,如下图所示:</p>
-<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-9.png" alt=""></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityStackSupervisor</span> <span class="keyword">implements</span> <span class="title">DisplayListener</span> </span>&#123;</span><br><span class="line">  ............</span><br><span class="line">  <span class="comment">/** The stack containing the launcher app. Assumed to always be attached to</span><br><span class="line">  * Display.DEFAULT_DISPLAY. */</span></span><br><span class="line">  <span class="comment">// launcher的ActivityStack</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mHomeStack;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** The stack currently receiving input or launching the next activity. */</span></span><br><span class="line"> <span class="comment">// 指向系统中位于前台的ActivityStack</span></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mFocusedStack;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** If this is the same as mFocusedStack then the activity on the top of the focused stack has</span><br><span class="line">  * been resumed. If stacks are changing position this will hold the old stack until the new</span><br><span class="line">  * stack becomes resumed after which it will be set to mFocusedStack. */</span></span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span> ActivityStack mLastFocusedStack;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** All of the stacks on this display. Order matters, topmost stack is in front of all other</span><br><span class="line">   * stacks, bottommost behind. Accessed directly by ActivityManager package classes */</span></span><br><span class="line">   <span class="comment">// 当前所有的Activity栈</span></span><br><span class="line">  <span class="keyword">final</span> ArrayList&lt;ActivityStack&gt; mStacks = <span class="keyword">new</span> ArrayList&lt;ActivityStack&gt;();</span><br><span class="line">...................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AMS管理activity,如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-11.png" alt=""></p>
+<h3 id="如何理解Task">如何理解Task</h3><p>Task，是一种用来放置Activity实例的容器，他是以栈的形式进行盛放，也就是所谓的先进后出，主要有2个基本操作：压栈和出栈，其所存放的Activity是不支持重新排序的，只能根据压栈和出栈操作更改Activity的顺序。</p>
+<p>Task从用户角度出发，它就是一些activity的组合，它们组合起来是为了让用户完成某一件工作。</p>
+<p>启动一个Application的时候，系统会为它默认创建一个对应的Task，用来放置root Activity。除非特殊设置,否则Activity会放在同一个Task中，新启动的Activity会被压入启动它的那个Activity的栈中，并且显示它。当用户按下回退键时，这个Activity就会被弹出栈，按下Home键回到桌面，再启动另一个应用，这时候之前那个Task就被移到后台，成为后台任务栈，而刚启动的那个Task就被调到前台，成为前台任务栈，Android系统显示的就是前台任务栈中的Top实例Activity。</p>
+<p>以往基于应用（application）的程序开发中，程序具有明确的边界，一个程序就是一个应用，一个应用为了实现功能可以采用开辟新线程甚至新进程来辅助，但是应用与应用之间不能复用资源和功能。而Android引入了基于组件开发的软件架构，虽然我们开发android程序，仍然使用一个apk工程一个Application的开发形式，但是对于Aplication的开发就用到了Activity、service等四大组件，其中的每一个组件，都是可以被跨应用复用的，这就是android的神奇之处。虽然组件可以跨应用被调用，但是一个组件所在的进程必须是在组件所在的Aplication进程中。由于android强化了组件概念，弱化了Aplication的概念，所以在android程序开发中，A应用的A组件想要使用拍照或录像的功能就可以不用去针对Camera类进行开发，直接调用系统自带的摄像头应用（称其B应用）中的组件（称其B组件）就可以了，但是这就引发了一个新问题，A组件运行在A应用中，B组件运行在B应用中，自然都不在同一个进程中，那么从B组件中返回的时候，如何实现正确返回到A组件呢？Task就是来负责实现这个功能的，它是从用户角度来理解应用而建立的一个抽象概念。因为用户所能看到的组件就是Activity，所以Task可以理解为实现一个功能而负责管理所有用到的Activity实例的栈。</p>
+<p>Task的root activity是指如果一个activity启动时创建的了一个新的task，那么这个activity是task的root activity.</p>
+<p>Task的affinity是指root activity的affinity,affinity可以理解为Task的名字.</p>
+<p>Task的intent是指启动root activity的Intent.</p>
+<p>Task的affinityIntent是指activity在进行了TaskReparenting之后，AMS为activity分配了新的task，该task的affinityIntent则是启动该activity时的Intent，此时task.intent==null。</p>
+<p>TaskReparenting操作举例说明一下，假如有2个activity拥有不同的affinity，且自Activity A中启动Activity B，假如Activity A是所在task的root activity.</p>
+<p>假如Activity B设置了ActivityInfo.FLAG_ALLOW_TASK_REPARENTING，那么如果此时另外一个application启动了Activity B并要求其在新的task中，那么此时的Activity B将被从Task A中移动到新的task中.这个过程就称之为TaskReparenting.</p>
 <p>这里要指出一点的是,一个task中的activity并非全部来自同一个app,可以是多个app中的activity.</p>
 <p>比如通过联系人应用点击短信编辑，这两个activity是在不同的应用进程中，但是看起来这两个又像是一部分一样，因为你在短信编辑页面返回又可以回到联系人详情页面，虽然这两个activity可能来自不同的应用，但通过把它们放入同一个task，将会得到更好的用户体验。</p>
+<p>当用户启动新的 Task 或者通过按下 Home 键来返回主屏幕时，原来的 Task 进入后台。一旦进入后台， Task 中的所有 Activity 被停止，但是 Task 的后退栈中是完整的，只是失去了焦点。一个 Task 可以重新回到前台以便用户打开。多个 Task 可以同时被维持在后台。但如果用户同时运行太多的后台任务，系统会为了回收内存而销毁后台的 Activity ，这会引起 Activity 状态的丢失。</p>
+<p>当 Activity 被停止时，系统的默认行为会保留其状态,例如保留文本框内容,滚动条位置等。当用户导航回到之前的 Activity 时，将展示之前离开时留下的界面。</p>
+<p>当系统停止某个 Activity 时，如果需要恢复系统的内存，系统将完全的销毁 Activity 。这种情况下， Activity 状态相关的信息便丢失了。但系统依然知道在后退栈中有 Activity 的一个位置，当 Activity 被带到前台时系统需要重建它，而不是恢复它。为了避免丢失用户以完成的工作，需要在 Activity 中通过实现 onSaveInstanceState() 方法来主动保持状态。</p>
+<h3 id="Activity启动模式">Activity启动模式</h3><p>Activity启动模式定义了Activity启动的规则，它决定着Activity的实例创建与重用与否.Activity的启动模式在menifest.xml中的<activity>标签中设置,属性为launchMode.</activity></p>
+<p>Activity的启动模式分为四类： standard 、 singleTop 、 singleTask 、 singleInstance.</p>
+<h4 id="standard模式">standard模式</h4><p>standard是android:launchMode的默认值，无论是android:launchMode=”standard”，还是没有设置android:launchMode属性，Activity都是以standard模式启动的。</p>
+<p>在该模式下，Activity可以拥有多个实例，纵然是同一个Activity,只要调用,就会创建一个Activity实例,而不会复用已经创建的Activity实例.并且这些实例既可以位于同一个task，也可以位于不同的task。</p>
+<p>另外网上其他教程指出Android 5.0之后跨应用启动activity,会新建一个task.我在6.0上测试结果是同样在同一个task中.</p>
+<p>App1中启动App2中的Main2Activity测试代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        <span class="keyword">int</span> taskId = getTaskId();</span><br><span class="line">        Log.i(<span class="string">"shajia"</span>,<span class="string">"--&gt;test mode taskid:"</span>+taskId);</span><br><span class="line">        Intent intent = <span class="keyword">new</span> Intent();</span><br><span class="line">        intent.setClassName(<span class="string">"com.godin.modetest"</span>,<span class="string">"com.godin.modetest.Main2Activity"</span>);</span><br><span class="line">        startActivity(intent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>App2中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main2Activity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main2);</span><br><span class="line">        <span class="keyword">int</span> taskId = getTaskId();</span><br><span class="line">        Log.i(<span class="string">"shajia"</span>,<span class="string">"------&gt;mode test taskid:"</span>+taskId);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实验结果两者显示taskid一致.</p>
+<h4 id="singleTop模式">singleTop模式</h4><p>android:launchMode=”singleTop”</p>
+<p>singleTop模式下，在同一个task中，如果存在该Activity的实例，并且该Activity实例位于栈顶(即，该Activity位于前端)，则调用startActivity()时，不再创建该Activity的实例；而仅仅只是调用Activity的onNewIntent()。否则的话，则新建该Activity的实例，并将其置于栈顶。即栈顶复用.</p>
+<p>该模式下,Activity也有可能被实例化多次，每个实例可以属于不同的 Task .</p>
+<p>例如，假设一个 Task 的后退栈包含根 Activity A ， Activity B ， Activity C 以及 Activity D 在顶部。一个意图到达 Activity D 。如果 D 的启动模式为 “standard” ，新的类实例将被启动，堆栈变成 A-B-C-D-D 。如果 D 的启动模式为 “singleTop” ，已经存在的 D 实例将通过 onNewIntent() 接收意图，一次它还在栈顶，而栈依然是 A-B-C-D 。如果一个意图到达 B ，新的 B 的实例被添加到堆栈中，A-B-C-D-B.</p>
+<p>当新的 Activity 实例被创建，用户可以按下返回按钮来返回到之前的 Activity 。但是当已经存在的 Activity 实例处理了新的 Intent ，用户无法按下返回键返回到通过 onNewIntent() 到来新的 Intent 前的 Activity 状态。</p>
+<h4 id="singleTask模式">singleTask模式</h4><p>android:launchMode=”singleTask”</p>
+<p>该模式为栈内复用模式.</p>
+<p>系统创建新的 Task 并在新的 Task 的根实例化 Activity 。如果已经有 Activity 的实例存在于另一个独立的 Task 中，系统通过调用 onNewIntent() 将 Intent 传递到已存在的实例，而不是创建一个新的实例。每次只能有一个 Activity 的实例存在。</p>
+<p>该模式下,在创建Activity实例的时候,首先会去寻找这个Activity需要的Task.</p>
+<p>前面说过了,每个Activity可以通过指定android:taskAffinity指定其task的名字,没有指明的话,默认就是其app包名.</p>
+<p>假如一个app中有A,B,C,D四个Activity,而且都没有指定android:taskAffinity.</p>
+<ol>
+<li><p>task中的已经有了这个App三个Activity: A-B-C.A为根Activity.此时以singleTask模式启动同一个app的Activity D.那么创建的D实例,也会放到这个task中,而不会为D重新创建task.因为D所需要的task,已经存在了.此时task中A-B-C-D.</p>
+</li>
+<li><p>task中已经这个App四个Activity:A-B-D-C. 此时以singleTask模式启动同一个app的Activity D. 因为D在这个栈内已经有了,所以直接将其放到栈顶,然后调用onNewIntent()方法.要注意的是, singleTask模式具备clearTop的效果,会导致栈内所有在D上面的Activity全部出栈.所以此时:A-B-D</p>
+</li>
+</ol>
+<p>假如 Activity D 设置了android:taskAffinity,并且其值不是app包名,那么当这个Activity D 被调用的时候,就首先检查他所需的task是否存在,存在的话,看该task中是否存在D的实例,不存在的创建D的实例,放在该task的栈顶.如果存在的话,将D实例前面的所有Activity实例出栈,然后调用onNewIntent()方法.如果D所需的task不存在,那么就先创建这个task,然后将D的实例放入到这个task中.</p>
+<p>另外该模式下,还要注意一个关于回退栈的问题:</p>
+<p>App1的task:A-B-C,而且ABC都是App1的Activity.</p>
+<p>App2的task:D-E-F-G.DEFG都是App2的Activity,而且F的启动模式为singleTask.</p>
+<p>如果App1此时调用App2的F,那么就会导致App2的task变成前端task,而且G出栈.此时App2 task:D-E-F.</p>
+<p>此时按返回键,会先回退到App2的task中的E,在按返回键,返回到D.在按返回键,才会返回到App1 task中的栈顶C.</p>
+<h4 id="singleInstance模式">singleInstance模式</h4><p>android:launchMode=”singleInstance”</p>
+<p>该模式为加强版栈内复用模式.</p>
+<p>它和singleTask一样，只会存在一个这样的Activity。唯一不同的是，存放singleInstance Activity的Task只能存放一个该模式的Activity实例 。如果从singleInstance Activity启动另一个Activity，那么这个Activity会放入其他的Task中；如果singleInstance Activity被别的Activity启动，它也会放入不同于调用Activity的Task中。</p>
+<p>该模式下通常要设置taskAffinity.应用场景：呼叫来电界面。</p>
+<p>这四种启动模式简要总结如下:</p>
+<p>相同点：目标Activity均须置顶</p>
+<p>不同点： Standard 每次都新建Activity实例</p>
+<pre><code>SingleTop/SingleTask则先检查是否存在该Activity，存在则复用
+
+SingleTop由于栈顶操作，不须置顶；SingleTask须出栈置顶
+
+SingleTop/SingleTask都是实现栈内单例
+
+SingleInstance则是实现系统单例
+
+当已经存在的activity实例处理新的intent时候，会调用<span class="function"><span class="title">onNewIntent</span><span class="params">()</span></span>方法      
+</code></pre><h3 id="启动Activity时intent的flag">启动Activity时intent的flag</h3><p>除了可以在manifest.xml文件中，指定Activity的launchMode外,还可以在启动Activity的intent中通过flag来设置启动模式,而且此种方式具备更高的优先级.也就是当flag与manifest.xml文件中指定的launchMode冲突时,以flag为主.</p>
+<p>可以用来修改默认行为的 flag 包括：</p>
+<h4 id="FLAG_ACTIVITY_NEW_TASK">FLAG_ACTIVITY_NEW_TASK</h4><p>在新的 Task 中启动 Activity 。如果要启动的 Activity 已经有在运行的 Task ， Task 将带着最后被保存的状态到前台， Activity 在 onNewIntent() 中接收新的意图。也就是说,是否创建新的task,还要取决于taskAffinity.</p>
+<p>在google的官方文档中介绍，它与launchMode=”singleTask”具有相同的行为。实际上，并不是完全相同！</p>
+<p>我理解的是,这个标志负责是否创建新的task.要想达到singleTask效果,需要结合FLAG_ACTIVITY_CLEAR_TOP仪器使用才可以.</p>
+<p>很少单独使用FLAG_ACTIVITY_NEW_TASK，通常与FLAG_ACTIVITY_CLEAR_TASK或FLAG_ACTIVITY_CLEAR_TOP联合使用。因为单独使用该属性会导致奇怪的现象，通常launcher启动app的时候,肯定要添加这个flag.</p>
+<h4 id="FLAG_ACTIVITY_SINGLE_TOP">FLAG_ACTIVITY_SINGLE_TOP</h4><p>如果要被开启的activity是当前的activity，已经存在的实例通过onNewIntent()接收一个调用，然后处理该intent，而非重新创建一个新的实例。这与”singleTop”模式有相同的行为。</p>
+<h4 id="FLAG_ACTIVITY_CLEAR_TOP">FLAG_ACTIVITY_CLEAR_TOP</h4><p>如果设置了这个标志，并且待启动的Activity已经存在于当前的task中，那就不会再给这个activity新起一个实例，而是将task中在它之上的其它activity全部关闭，然后把Intent作为一个新的Intent传给这个Activity（当前已在栈顶）。这个intent通过 onNewIntent()被传递给该重新运行的activity的实例.manifest中没有相对应的属性。</p>
+<p>FLAG_ACTIVITY_CLEAR_TOP经常和FLAG_ACTIVITY_NEW_TASK一起使用.当一起使用时，这些标志可以确定一个存在的activity在另一个task中的位置，并且将其放置于可以响应intent的位置（FLAG_ACTIVITY_NEW_TASK确定该activity所在的task，然后FLAG_ACTIVITY_CLEAR_TOP销毁顶部其他的activity）。能达到和launchMode=”singleTask”一样的效果！</p>
+<p>它们俩个组合还可以用来启动一个task的root activity，它会将这个task调到前台，然后将task清空至只有根Activity的状态。</p>
+<p>另外当使用此标记启动的activity,在当前task中已经存在,而且存在的实例,是以standard模式启动的,那么连同这个实例在内,以及这个实例之上的所有activity都要出栈销毁.会冲新创建一个该activity的实例.如果想复用这个已经存在的实例,可以再加一个flag:FLAG_ACTIVITY_SINGLE_TOP.</p>
+<h4 id="FLAG_ACTIVITY_CLEAR_TASK">FLAG_ACTIVITY_CLEAR_TASK</h4><p>使用FLAG_ACTIVITY_CLEAR_TASK时，通常会包含FLAG_ACTIVITY_NEW_TASK。这样做的目的是启动Activity时，清除之前已经存在的Activity实例所在的task；这自然也就清除了之前存在的Activity实例！</p>
+<h4 id="FLAG_ACTIVITY_REORDER_TO_FRONT">FLAG_ACTIVITY_REORDER_TO_FRONT</h4><p>如果已经启动了四个Activity：A-B-C-D，在D Activity里，想再启动一个Actvity B，但不变成A-B-C-D-B，而是希望是A-C-D-B，则可以使用该flag可以达到这个效果.这个时候,纵然activity是以standard模式启动,也不会在重新创建该activity实例.如果当前task,不包含该activity实例,则会新建.</p>
+<p>如果使用了标志 FLAG_ACTIVITY_CLEAR_TOP，那这个FLAG_ACTIVITY_REORDER_TO_FRONT标志会被忽略。</p>
+<h4 id="FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS">FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS</h4><p>如果设置这个标志，这个Activity就不会在近期任务中显示。</p>
+<h4 id="FLAG_ACTIVITY_MULTIPLE_TASK">FLAG_ACTIVITY_MULTIPLE_TASK</h4><p>除非你实现了自己的顶级应用启动器，否则不要使用这个标志。与 FLAG_ACTIVITY_NEW_TASK 一起使用可以不再把已存在的任务唤起到前台。 当被设置时，系统总会为Intent的Activity启动一个新的task，而不管是否已经有已存在的任务在做同样的事情。</p>
+<p>因为默认系统不包含图形化的任务管理功能，所以除非你给用户提供了返回到已启动任务的方法，否则就不要用这个标志。</p>
+<p>如果FLAG_ACTIVITY_NEW_TASK没有设置，则这个标志也被忽略。</p>
+<p>也经常和FLAG_ACTIVITY_NEW_DOCUMENT一起使用.</p>
+<h4 id="FLAG_ACTIVITY_RESET_TASK_IF_NEEDED">FLAG_ACTIVITY_RESET_TASK_IF_NEEDED</h4><p>这个标记在创建新task或将现有task激活到前台时有效。这种情况下，task会被重置，意味着Task Affinities会被重新应用（Activities会移入或移除task）并且设置了FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET标记的Activity会被清理。但是从android L开始FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET已经废弃,取而代之的是FLAG_ACTIVITY_NEW_DOCUMENT.</p>
+<p>一般为系统使用,比如要把一个应用从后台移到前台,有两种方式:从多任务列表中恢复(不包含该flag);从launcher中点击icon恢复(包含该flag);需结合FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | FLAG_ACTIVITY_NEW_DOCUMENT (API21)理解.</p>
+<h4 id="FLAG_ACTIVITY_NEW_DOCUMENT">FLAG_ACTIVITY_NEW_DOCUMENT</h4><p>这个flag的在Api 21以前是FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET. 主要作用就是当Activity所在的Task被reset之后, 使用此Flag 发送Intent的Activity实例之上的所有Activity都会被销毁(包括这个activity本身). 一个很典型的例子就是当我们从launcher界面重新启动一个位于后台的App的时候, 会自动加上FLAG_ACTIVITY_RESET_TASK_IF_NEEDED, 意味着必要时重置Task, 而如果从Recent app list 中回到位于后台的App的时候, 就不会加上这个flag.</p>
+<p>应用场景:<br>比如我们在应用主界面要选择一个图片，然后我们启动了图片浏览界面，但是把这个应用从后台恢复到前台时，为了避免让用户感到困惑，我们希望用户仍然看到主界面，而不是图片浏览界面，这个时候我们就要在转到图片浏览界面时的Intent中加入此标记</p>
+<p>5.0之前,Activity1用该flag启动Activity2在OverviewScreen中是没有分开的.也就是说如果back到后台后,再通过launcher中点击app的icon进入,将直接进入Activity1,并且无法回到activity2的界面.</p>
+<p>5.0之后,OverviewScreen中,会将两个activity分开.可以返回指定想要的activity.</p>
+<p>也就是说从5.0之后,使用FLAG_ACTIVITY_NEW_DOCUMENT打开的activity，系统就会将创建的Activity 作为一个新的task显示在 overview screen中.</p>
+<p>所谓的overview screen就是指最近画面，最近任务表，或者是最近app，它是一个显示最近使用的activitys和tasks的系统级UI。用户可以通过它进行应用导航，或者是选择一个task 进行 resume，当然也可以将一个task或者是activity从该列表中移除.如下图所示:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-13.png" alt=""></p>
+<h3 id="Activity常用的标签">Activity常用的标签</h3><p>在AndroidManifest.xml中常用的activity标签</p>
+<p>taskAffinity</p>
+<p>launchMode</p>
+<p>allowTaskReparenting</p>
+<p>clearTaskOnLaunch</p>
+<p>alwaysRetainTaskState</p>
+<p>finishOnTaskLaunch</p>
+<p>前三个前面都已经介绍了,现在说说最后三个.</p>
+<p>如果用户离开一个task一段比较长的时间，系统会清除task中除了根部activity之外的其他activity。当用户再次回到该task，只能看到根部activity的状态被保存了。系统这样做是因为超出了某个时间长度之后，用户可能已经不要他们之前操作留下的状态，而将重新进行其他的操作。</p>
+<p>以上将的这个系统的特点，可以通过activity的属性进行修改定制</p>
+<h4 id="alwaysRetainTaskState">alwaysRetainTaskState</h4><p>如果一个task中的根部activity的这个属性被设置为”true”，则上面描述的系统默认设定将不会发挥作用。即时离开了task很长的时间，其中的activity也将被保存状态</p>
+<h4 id="clearTaskOnLaunch">clearTaskOnLaunch</h4><p>如果task中的根部activity的这个属性被设置为“true”，则无论用户离开task的时间是短还是长，task中根部activity以上的activity都将被清除。这恰恰好和alwaysRetainTaskState相反</p>
+<h4 id="finishOnTaskLaunch">finishOnTaskLaunch</h4><p>这个属性有点像clearTaskOnLaunch，但是它的作用对象是某个activity，而非整个task。当某个activity的finishOnTaskLaunch属性被设置为“true”，则每当用户离开该task再回来，该activity都将被销毁</p>
 
       
     </div>
@@ -284,9 +388,18 @@
     
 <nav id="article-nav">
   
+    <a href="/2016/07/07/Android_ActivityManagerService-5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之AMS如何启动app上篇
+        
+      </div>
+    </a>
   
-    <a href="/2016/07/07/Android_ActivityManagerService-5/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Android6.0之AMS如何启动app上篇</div>
+  
+    <a href="/2016/07/06/Android_ActivityManagerService-4/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之Intent使用与源码分析</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -315,7 +428,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-6" data-title="Android6.0之AMS如何启动app中篇" data-url="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-6/"></div>
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-6" data-title="Android6.0之Activity的管理与启动模式" data-url="http://www.iloveandroid.net/2016/07/07/Android_ActivityManagerService-6/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
