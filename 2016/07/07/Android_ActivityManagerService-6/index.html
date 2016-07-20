@@ -13,7 +13,8 @@
 <meta property="og:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-11.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-13.png">
-<meta property="og:updated_time" content="2016-07-13T12:04:33.000Z">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-16.png">
+<meta property="og:updated_time" content="2016-07-19T06:41:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之Activity的管理与启动模式">
 <meta name="twitter:description" content="前面分析到了ActivityStackSupervisor类中的startActivityLocked方法,在分析这个方法前,先介绍一些关于Activity的知识,以方便我们理解代码.">
@@ -338,7 +339,7 @@ SingleTop/SingleTask都是实现栈内单例
 SingleInstance则是实现系统单例
 
 当已经存在的activity实例处理新的intent时候，会调用<span class="function"><span class="title">onNewIntent</span><span class="params">()</span></span>方法      
-</code></pre><h3 id="启动Activity时intent的flag">启动Activity时intent的flag</h3><p>除了可以在manifest.xml文件中，指定Activity的launchMode外,还可以在启动Activity的intent中通过flag来设置启动模式,而且此种方式具备更高的优先级.也就是当flag与manifest.xml文件中指定的launchMode冲突时,以flag为主.</p>
+</code></pre><h3 id="启动Activity时intent的flag">启动Activity时intent的flag</h3><p>除了可以在manifest.xml文件中，指定Activity的launchMode外,还可以在启动Activity的intent中通过flag来设置启动模式,而且此种方式具备更高的优先级.也就是当flag与manifest.xml文件中指定的launchMode冲突时,以flag为主,但并非所有的时候都是这样的.可以参考下一篇文章对startActivityUncheckedLocked()方法的分析.</p>
 <p>可以用来修改默认行为的 flag 包括：</p>
 <h4 id="FLAG_ACTIVITY_NEW_TASK">FLAG_ACTIVITY_NEW_TASK</h4><p>在新的 Task 中启动 Activity 。如果要启动的 Activity 已经有在运行的 Task ， Task 将带着最后被保存的状态到前台， Activity 在 onNewIntent() 中接收新的意图。也就是说,是否创建新的task,还要取决于taskAffinity.</p>
 <p>在google的官方文档中介绍，它与launchMode=”singleTask”具有相同的行为。实际上，并不是完全相同！</p>
@@ -349,7 +350,7 @@ SingleInstance则是实现系统单例
 <p>FLAG_ACTIVITY_CLEAR_TOP经常和FLAG_ACTIVITY_NEW_TASK一起使用.当一起使用时，这些标志可以确定一个存在的activity在另一个task中的位置，并且将其放置于可以响应intent的位置（FLAG_ACTIVITY_NEW_TASK确定该activity所在的task，然后FLAG_ACTIVITY_CLEAR_TOP销毁顶部其他的activity）。能达到和launchMode=”singleTask”一样的效果！</p>
 <p>它们俩个组合还可以用来启动一个task的root activity，它会将这个task调到前台，然后将task清空至只有根Activity的状态。</p>
 <p>另外当使用此标记启动的activity,在当前task中已经存在,而且存在的实例,是以standard模式启动的,那么连同这个实例在内,以及这个实例之上的所有activity都要出栈销毁.会冲新创建一个该activity的实例.如果想复用这个已经存在的实例,可以再加一个flag:FLAG_ACTIVITY_SINGLE_TOP.</p>
-<h4 id="FLAG_ACTIVITY_CLEAR_TASK">FLAG_ACTIVITY_CLEAR_TASK</h4><p>使用FLAG_ACTIVITY_CLEAR_TASK时，通常会包含FLAG_ACTIVITY_NEW_TASK。这样做的目的是启动Activity时，清除之前已经存在的Activity实例所在的task；这自然也就清除了之前存在的Activity实例！</p>
+<h4 id="FLAG_ACTIVITY_CLEAR_TASK">FLAG_ACTIVITY_CLEAR_TASK</h4><p>使用FLAG_ACTIVITY_CLEAR_TASK时，通常会包含FLAG_ACTIVITY_NEW_TASK。这样做的目的是启动Activity时，清楚task中所有的activity实例,新启动的activity成为新 root activity .</p>
 <h4 id="FLAG_ACTIVITY_REORDER_TO_FRONT">FLAG_ACTIVITY_REORDER_TO_FRONT</h4><p>如果已经启动了四个Activity：A-B-C-D，在D Activity里，想再启动一个Actvity B，但不变成A-B-C-D-B，而是希望是A-C-D-B，则可以使用该flag可以达到这个效果.这个时候,纵然activity是以standard模式启动,也不会在重新创建该activity实例.如果当前task,不包含该activity实例,则会新建.</p>
 <p>如果使用了标志 FLAG_ACTIVITY_CLEAR_TOP，那这个FLAG_ACTIVITY_REORDER_TO_FRONT标志会被忽略。</p>
 <h4 id="FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS">FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS</h4><p>如果设置这个标志，这个Activity就不会在近期任务中显示。</p>
@@ -360,10 +361,10 @@ SingleInstance则是实现系统单例
 <h4 id="FLAG_ACTIVITY_RESET_TASK_IF_NEEDED">FLAG_ACTIVITY_RESET_TASK_IF_NEEDED</h4><p>这个标记在创建新task或将现有task激活到前台时有效。这种情况下，task会被重置，意味着Task Affinities会被重新应用（Activities会移入或移除task）并且设置了FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET标记的Activity会被清理。但是从android L开始FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET已经废弃,取而代之的是FLAG_ACTIVITY_NEW_DOCUMENT.</p>
 <p>一般为系统使用,比如要把一个应用从后台移到前台,有两种方式:从多任务列表中恢复(不包含该flag);从launcher中点击icon恢复(包含该flag);需结合FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | FLAG_ACTIVITY_NEW_DOCUMENT (API21)理解.</p>
 <h4 id="FLAG_ACTIVITY_NEW_DOCUMENT">FLAG_ACTIVITY_NEW_DOCUMENT</h4><p>这个flag的在Api 21以前是FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET. 主要作用就是当Activity所在的Task被reset之后, 使用此Flag 发送Intent的Activity实例之上的所有Activity都会被销毁(包括这个activity本身). 一个很典型的例子就是当我们从launcher界面重新启动一个位于后台的App的时候, 会自动加上FLAG_ACTIVITY_RESET_TASK_IF_NEEDED, 意味着必要时重置Task, 而如果从Recent app list 中回到位于后台的App的时候, 就不会加上这个flag.</p>
-<p>应用场景:<br>比如我们在应用主界面要选择一个图片，然后我们启动了图片浏览界面，但是把这个应用从后台恢复到前台时，为了避免让用户感到困惑，我们希望用户仍然看到主界面，而不是图片浏览界面，这个时候我们就要在转到图片浏览界面时的Intent中加入此标记</p>
+<p>应用场景:<br>比如我们在应用主界面要选择一个图片，然后我们启动了图片浏览界面，但是把这个应用从后台恢复到前台时，为了避免让用户感到困惑，我们希望用户仍然看到主界面，而不是图片浏览界面，这个时候我们就要在转到图片浏览界面时的Intent中加入此标记.</p>
 <p>5.0之前,Activity1用该flag启动Activity2在OverviewScreen中是没有分开的.也就是说如果back到后台后,再通过launcher中点击app的icon进入,将直接进入Activity1,并且无法回到activity2的界面.</p>
 <p>5.0之后,OverviewScreen中,会将两个activity分开.可以返回指定想要的activity.</p>
-<p>也就是说从5.0之后,使用FLAG_ACTIVITY_NEW_DOCUMENT打开的activity，系统就会将创建的Activity 作为一个新的task显示在 overview screen中.</p>
+<p>也就是说从5.0之后,使用FLAG_ACTIVITY_NEW_DOCUMENT打开的activity，系统就会将创建的Activity 作为一个新的task显示在 overview screen中.(前提这个activity是standard启动模式或者SingleTop模式)</p>
 <p>所谓的overview screen就是指最近画面，最近任务表，或者是最近app，它是一个显示最近使用的activitys和tasks的系统级UI。用户可以通过它进行应用导航，或者是选择一个task 进行 resume，当然也可以将一个task或者是activity从该列表中移除.如下图所示:</p>
 <p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-13.png" alt=""></p>
 <h3 id="Activity常用的标签">Activity常用的标签</h3><p>在AndroidManifest.xml中常用的activity标签</p>
@@ -373,12 +374,31 @@ SingleInstance则是实现系统单例
 <p>clearTaskOnLaunch</p>
 <p>alwaysRetainTaskState</p>
 <p>finishOnTaskLaunch</p>
-<p>前三个前面都已经介绍了,现在说说最后三个.</p>
+<p>documentLaunchMode</p>
+<p>前两个个前面都已经介绍了,现在说说其他的.</p>
+<h4 id="allowTaskReparenting">allowTaskReparenting</h4><p>用来标记Activity能否从启动他的Task移动到和这个分activity有着相同affinity的Task（当这个Task进入到前台时）——“true”，表示能移动，“false”，表示它必须呆在启动时呆在的那个Task里。</p>
+<p>如果这个特性没有被设定，设定到<application>元素上的allowTaskReparenting特性的值会应用到Activity上。默认值为“false”。</application></p>
+<p>一般来说，当Activity启动后，它就与启动它的Task关联，并且在那里耗尽它的整个生命周期。当当前的Task不再显示时，你可以使用这个特性来强制Activity移动到有着affinity的Task中。(需结合一起FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)</p>
+<p>典型用法是：把一个应用程序的Activity移到另一个应用程序的主Task中。</p>
+<p>例如，如果e－mail中包含一个web页的链接，点击它就会启动一个Activity来显示这个页面。这个Activity是由Browser应用程序定义的，但是，现在它作为e－mail Task的一部分。如果它重新宿主到Browser Task里，当Browser下一次进入到前台时，它就能被看见，并且，当e－mail Task再次进入前台时，就看不到它了。</p>
+<p>重新宿主只能限于“standard”和“singleTop”模式。</p>
 <p>如果用户离开一个task一段比较长的时间，系统会清除task中除了根部activity之外的其他activity。当用户再次回到该task，只能看到根部activity的状态被保存了。系统这样做是因为超出了某个时间长度之后，用户可能已经不要他们之前操作留下的状态，而将重新进行其他的操作。</p>
-<p>以上将的这个系统的特点，可以通过activity的属性进行修改定制</p>
+<p>以上这个系统的特点，可以通过activity的属性进行修改定制</p>
 <h4 id="alwaysRetainTaskState">alwaysRetainTaskState</h4><p>如果一个task中的根部activity的这个属性被设置为”true”，则上面描述的系统默认设定将不会发挥作用。即时离开了task很长的时间，其中的activity也将被保存状态</p>
 <h4 id="clearTaskOnLaunch">clearTaskOnLaunch</h4><p>如果task中的根部activity的这个属性被设置为“true”，则无论用户离开task的时间是短还是长，task中根部activity以上的activity都将被清除。这恰恰好和alwaysRetainTaskState相反</p>
 <h4 id="finishOnTaskLaunch">finishOnTaskLaunch</h4><p>这个属性有点像clearTaskOnLaunch，但是它的作用对象是某个activity，而非整个task。当某个activity的finishOnTaskLaunch属性被设置为“true”，则每当用户离开该task再回来，该activity都将被销毁</p>
+<h4 id="documentLaunchMode">documentLaunchMode</h4><p>在一个activity在mainfest文件中添加 属性：android:documentLaunchMode 时，该activity被启动时永远会创建一个新的task。该属性有4个值，用户在应用中打开一个document时会有不同的效果：</p>
+<p>intoExisting：</p>
+<p>activity 会为该document请求一个已经存在的task，这与 设置FLAG_ACTIVITY_NEW_DOCUMENT 且不设置 FLAG_ACTIVITY_MULTIPLE_TASK 有相同的效果</p>
+<p>always：</p>
+<p>activity 会为该document创建一个新的task，即使该document已经被打开了，这与设置 FLAG_ACTIVITY_NEW_DOCUMENT 且设置 FLAG_ACTIVITY_MULTIPLE_TASK 有相同的效果</p>
+<p>none：</p>
+<p>默认值,只有当设置了FLAG_ACTIVITY_NEW_DOCUMENT ,才会为其创建一个新task.(5.0之后)</p>
+<p>never：</p>
+<p>此activity永远不会被当做一个document.</p>
+<p>注意： none 或 nerver 使用时，activity必须设置为 launchMode=”standard” ，如果该属性没有设置，documentLaunchMode=”none” 属性就会被使用</p>
+<p>原文档如下:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-16.png" alt=""></p>
 
       
     </div>
