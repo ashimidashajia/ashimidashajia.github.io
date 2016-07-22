@@ -183,6 +183,68 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-Android_ActivityManagerService-8" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/22/Android_ActivityManagerService-8/" class="article-date">
+  	<time datetime="2016-07-22T12:31:23.000Z" itemprop="datePublished">2016-07-22</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/22/Android_ActivityManagerService-8/">Android6.0之AMS启动app中篇之创建app进程</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面分析到了ActivityStackSupervisor类中的startActivityUncheckedLocked方法,该方法主要是为要启动的activity准备一个task:有可复用的task,就直接使用;没有的话,就先寻找一个合适的ActivityStack,移动到前台后创建一个新的Task.紧接着调用ActivityStack的startActivityLocked()方法继续启动.</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/07/22/Android_ActivityManagerService-8/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Android_ActivityManagerService-7" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -291,68 +353,6 @@
       
         <p class="article-more-link">
           <a  href="/2016/07/07/Android_ActivityManagerService-5/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Android_ActivityManagerService-8" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/07/07/Android_ActivityManagerService-8/" class="article-date">
-  	<time datetime="2016-07-07T09:11:50.000Z" itemprop="datePublished">2016-07-07</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/07/Android_ActivityManagerService-8/">Android6.0之AMS启动app中篇之创建app进程</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面分析到了ActivityStackSupervisor类中的startActivityUncheckedLocked方法,该方法主要是为要启动的activity准备一个task:有可复用的task,就直接使用;没有的话,就先寻找一个合适的ActivityStack,移动到前台后创建一个新的Task.紧接着调用ActivityStack的startActivityLocked()方法继续启动.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/07/07/Android_ActivityManagerService-8/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
