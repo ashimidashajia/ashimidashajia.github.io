@@ -3,17 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2016 | 码农故事</title>
+  <title>Android6.0之AMS管理Service前奏 | 码农故事</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="码农故事">
-<meta property="og:url" content="http://www.iloveandroid.net/archives/2016/page/3/index.html">
+  <meta name="description" content="前面分析了AMS使如何启动一个Activity的，现在开始分析AMS如何启动一个service。那么在分析AMS管理Service的源码之前，先要知道在App有哪些使用Service的方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之AMS管理Service前奏">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/07/27/Android_ActivityManagerService-10/index.html">
 <meta property="og:site_name" content="码农故事">
-<meta property="og:description">
+<meta property="og:description" content="前面分析了AMS使如何启动一个Activity的，现在开始分析AMS如何启动一个service。那么在分析AMS管理Service的源码之前，先要知道在App有哪些使用Service的方法。">
+<meta property="og:updated_time" content="2016-07-27T13:57:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="码农故事">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Android6.0之AMS管理Service前奏">
+<meta name="twitter:description" content="前面分析了AMS使如何启动一个Activity的，现在开始分析AMS如何启动一个service。那么在分析AMS管理Service的源码之前，先要知道在App有哪些使用Service的方法。">
   
     <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
   
@@ -181,166 +182,134 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap">
+      <div class="body-wrap"><article id="post-Android_ActivityManagerService-10" class="article article-type-post" itemscope itemprop="blogPost">
   
+    <div class="article-meta">
+      <a href="/2016/07/27/Android_ActivityManagerService-10/" class="article-date">
+  	<time datetime="2016-07-27T11:57:23.000Z" itemprop="datePublished">2016-07-27</time>
+</a>
+    </div>
   
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之AMS管理Service前奏
+    </h1>
+  
+
+      </header>
       
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/06/21/Android_PackageManagerService-3/" class="archive-article-date">
-  	<time datetime="2016-06-21T03:41:55.000Z" itemprop="datePublished">Jun 21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/06/21/Android_PackageManagerService-3/">Android-6.0之PMS解析上篇</a>
-    </h1>
-  
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前面分析了AMS使如何启动一个Activity的，现在开始分析AMS如何启动一个service。那么在分析AMS管理Service的源码之前，先要知道在App有哪些使用Service的方法。</p>
+<a id="more"></a>
+<h3 id="概述">概述</h3><p>Service是Android中实现程序后台运行的解决方案，非常适合用于去执行哪些不需要和用户交互而且还要求长期运行的任务。</p>
+<p>一般情况下，service和activity都是运行在ui主线程的，所以service中不能处理太耗时的逻辑，否则容易引起ANR异常。可以通过android:process属性指定service运行在一个独立的进程中。</p>
+<p>大多数情况下使用的service都是只能在后台运行，但也有前台Service，此时service将会在通知栏中显示。例如，一个从service播放音乐的音乐播放器，应被设置为前台运行，因为用户会明确地注意它的运行。</p>
+<p>要知道在App开发中如何定义一个Service，如何启动一个Service，如何停止一个Service和service的生命周期。</p>
+<h3 id="Service种类">Service种类</h3><p>Service按照使用场景分为两类：Local Service和remote service。</p>
+<h4 id="Local_Service:">Local Service:</h4><p>Client跟Service 一般不能相互反馈，一般也在同一个进程中，如果在统一进程中，那么service运行在主线程中。当然也可以运行在一个独立进程中。</p>
+<p>通过调用应用程序组件(例如Activity)的startService()方法来启动一个服务.一旦启动,服务就会在后台一直运行,即使应用程序组件此时被关闭.通常,已经启动的服务会处理一些单一功能,并且也不需要返回结果给调用者.例如,在网络上下载或上传文件.当服务的工作处理结束,才会自己关闭服务。也可调用stopService()结束service。</p>
+<p>这类服务有个特点，就是它主要用于为某一个组件，比如Activity提供单独的后台服务，Client 和 Service是不能相互沟通的。</p>
+<p>如果Service运行在app进程中，也就是没有在独立进程中，那么就运行在主线程中，所以考虑引起ANR异常的问题。</p>
+<h3 id="Remote_Service">Remote Service</h3><p>Client跟Service可以不在同一个进程.</p>
+<p>通过调用应用程序组件的bindService()方法来绑定一个服务.已绑定的服务会提供一个客户端-服务端交互接口.该接口主要用来与应用程序交互,发送请求,获取结果,甚至通过IPC来访问进程.只要一个程序组件绑定服务，就会运行绑定服务,多个应用程序组件可以同时时间绑定一个服务.当所有的应用程序组件都解除绑定,该绑定服务器就会被销毁.</p>
+<p>这类服务有个特点，就是它会定义一些接口并把接口暴露出来，以便其他应用进行操作。Client 和 Service 能相互沟通的。</p>
+<p>Service按照是否需要和用户交互，可分为两大类：前台Service 和 后台Service。</p>
+<h4 id="后台Service">后台Service</h4><p>Service一般都是后台运行的Service（无需与用户交互）；因为Service的系统优先级还是比较低的，当系统出现内存不足情况时，就有可能会回收掉正在后台运行的Service。</p>
+<h4 id="前台Service">前台Service</h4><p>需要和用户交互的Service，它会一直有一个正在运行的图标在系统的状态栏显示，下拉状态栏后可以看到更加详细的信息，非常类似于通知的效果。</p>
+<p>###</p>
+<p><a href="http://www.cnblogs.com/smyhvae/p/4070518.html" target="_blank" rel="external">http://www.cnblogs.com/smyhvae/p/4070518.html</a></p>
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/05/context_service/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之App获取系统service的过程.
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/24/Android_ActivityManagerService-9/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之AMS启动App下篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/06/20/Android_PackageManagerService-2/" class="archive-article-date">
-  	<time datetime="2016-06-20T07:44:17.000Z" itemprop="datePublished">Jun 20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/06/20/Android_PackageManagerService-2/">PMS运行时的一些规则</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
-
-          
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/06/20/Android_PackageManagerService-1/" class="archive-article-date">
-  	<time datetime="2016-06-20T03:38:50.000Z" itemprop="datePublished">Jun 20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/06/20/Android_PackageManagerService-1/">初探Android的PMS服务</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_ActivityManagerService-10" data-title="Android6.0之AMS管理Service前奏" data-url="http://www.iloveandroid.net/2016/07/27/Android_ActivityManagerService-10/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/02/01/Android-partitions/" class="archive-article-date">
-  	<time datetime="2016-02-01T06:17:27.000Z" itemprop="datePublished">Feb 1</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/02/01/Android-partitions/">查看Android系统分区</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android刷机/">Android刷机</a></li></ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/archives/2016/page/2/">&laquo; Prev</a><a class="page-number" href="/archives/2016/">1</a><a class="page-number" href="/archives/2016/page/2/">2</a><span class="page-number current">3</span>
-    </nav>
-  
 
 </div>
       <footer id="footer">
@@ -370,8 +339,8 @@
 		mathjax: true,
 		animate: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false

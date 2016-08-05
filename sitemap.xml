@@ -2,8 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iloveandroid.net/2016/08/05/Android_context/</loc>
+    <lastmod>2016-08-05T10:01:09.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2016/08/05/context_service/</loc>
+    <lastmod>2016-08-05T07:33:38.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2016/07/27/Android_ActivityManagerService-10/</loc>
+    <lastmod>2016-07-27T13:57:55.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2016/07/24/Android_ActivityManagerService-9/</loc>
-    <lastmod>2016-07-27T11:34:55.000Z</lastmod>
+    <lastmod>2016-07-27T11:40:02.000Z</lastmod>
   </url>
   
   <url>
@@ -112,47 +127,12 @@
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/12/18/Androguard_study_2/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.iloveandroid.net/2015/12/16/AndroguardEnvironment/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/12/06/jvm%E6%8C%87%E4%BB%A4%E9%9B%86/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-8/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-6/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/19/AndroidART-5/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-7/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://www.iloveandroid.net/2015/12/19/AndroidART-1/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/17/Androguard_study_1/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
@@ -172,12 +152,47 @@
   </url>
   
   <url>
+    <loc>http://www.iloveandroid.net/2015/12/19/AndroidART-5/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-6/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-7/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-8/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/06/jvm%E6%8C%87%E4%BB%A4%E9%9B%86/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/18/Androguard_study_2/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2015/12/18/DalvikDex/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://www.iloveandroid.net/2015/12/18/DalvikDex-2/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://www.iloveandroid.net/2015/12/17/Androguard_study_1/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
@@ -337,12 +352,12 @@
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
+    <loc>http://www.iloveandroid.net/2015/09/26/Android_property_2/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://www.iloveandroid.net/2015/09/26/Android_property_2/</loc>
+    <loc>http://www.iloveandroid.net/2015/09/25/Android_init_3/</loc>
     <lastmod>2015-09-28T05:53:55.000Z</lastmod>
   </url>
   

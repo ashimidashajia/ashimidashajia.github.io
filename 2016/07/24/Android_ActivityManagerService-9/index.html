@@ -15,7 +15,8 @@
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-24.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-23.png">
 <meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-25.png">
-<meta property="og:updated_time" content="2016-07-27T11:34:55.000Z">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-21.png">
+<meta property="og:updated_time" content="2016-07-27T11:40:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之AMS启动App下篇">
 <meta name="twitter:description" content="前面已经分析App启动的时候，进程是如何创建的了。也知道了App进程创建之后，首先执行的是ActivityThread类中的main方法。也就是说ActivityThread.main方法是App执行代码的总入口点。">
@@ -335,7 +336,7 @@
 <p>如下是执行过程：</p>
 <p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-25.png" alt=""></p>
 <p>执行完上面的过程后，返回AMS的attachApplicationLocked方法中，开始启动运行在这个进程中的service。以及执行sendPendingBroadcastsLocked()，这些内容后续单独分析。</p>
-<p>！<a href="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-21.png" target="_blank" rel="external"></a></p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-21.png" alt=""></p>
 
       
     </div>
@@ -344,6 +345,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/07/27/Android_ActivityManagerService-10/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之AMS管理Service前奏
+        
+      </div>
+    </a>
   
   
     <a href="/2016/07/11/Android_ActivityManagerService-7/" id="article-nav-older" class="article-nav-link-wrap">

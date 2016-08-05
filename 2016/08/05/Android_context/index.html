@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之Context解析 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Context在Android扮演者巨大的作用,获取系统service,获取资源等等.所以要知道context在一个app究竟有几个,何时创建的.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之Context解析">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/05/Android_context/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Context在Android扮演者巨大的作用,获取系统service,获取资源等等.所以要知道context在一个app究竟有几个,何时创建的.">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-26.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-28.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-29.png">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-27.gif">
+<meta property="og:updated_time" content="2016-08-05T10:01:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之Context解析">
+<meta name="twitter:description" content="Context在Android扮演者巨大的作用,获取系统service,获取资源等等.所以要知道context在一个app究竟有几个,何时创建的.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Android_context" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/05/Android_context/" class="article-date">
+  	<time datetime="2016-08-05T10:01:07.000Z" itemprop="datePublished">2016-08-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之Context解析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Context在Android扮演者巨大的作用,获取系统service,获取资源等等.所以要知道context在一个app究竟有几个,何时创建的.</p>
+<a id="more"></a>
+<h3 id="什么是context">什么是context</h3><p>一个Context意味着一个场景，一个场景就是我们和软件进行交互的一个过程。比如当你使用微信的时候，场景包括聊天界面、通讯录、朋友圈，以及背后的一些数据。</p>
+<p>那么从程序的角度来看，Context是什么？其实一个Activity就是一个Context，一个Service也是一个Context。</p>
+<p>一个应用程序可以认为是一个工作环境，用户在这个工作环境中会切换到不同的场景，这就像一个助理，他可能需要接待客人，可能还要打印文件，还可能接听电话，而这些就称之为不同的场景，助理可称之为一个应用程序。</p>
+<p>Activity类的确是基于Context，而Service类也是基于Context。Activity除了基于Context类外，还实现了一些其他重要的接口，从架构设计的角度看，interface仅仅是某些功能，而extends才是类的本质，即Activity的本质是一个Context，其所实现的其他接口只是为了扩充Context的功能而已，扩充后的类称之为一个Activity或Service。</p>
+<p>Context封装了很多重要的操作，比如startActivity()、sendBroadcast()等，几乎是开发者对应用操作的统一入口。</p>
+<h3 id="context使用的设计模式">context使用的设计模式</h3><p>context在整体设计中采用了设计模式中的:外观模式</p>
+<h4 id="模式介绍:">模式介绍:</h4><p>外观模式(也成为门面模式)要求一个子系统的外部与其内部的通信必须通过一个统一的对象进行。它提供一个高层次的接口，使得子系统更易于使用。</p>
+<h4 id="模式的使用场景:">模式的使用场景:</h4><ol>
+<li><p>在设计初期阶段，将不同的两个层分离；</p>
+</li>
+<li><p>在开发阶段，子系统往往因为不断的重构演化而变得越来越复杂，大多数的模式使用时也都会产生很多很小的类，这本是好事，但也给外部调用它们的用户程序带来了使用上的困难，增加外观Facade可以提供一个简单的接口，减少它们之间的依赖。</p>
+</li>
+<li><p>在维护一个遗留的大型系统时，可能这个系统已经非常难以维护和扩展了，但因为它包含非常重要的功能，新的需求开发必须依赖于它。</p>
+</li>
+</ol>
+<h4 id="UML类图:">UML类图:</h4><p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-26.png" alt=""></p>
+<p>角色介绍:</p>
+<p>Client : 客户端程序。</p>
+<p>Facade : 对外的统一入口,即外观对象。</p>
+<p>SubSystemA : 子系统A。</p>
+<p>SubSystemB : 子系统B。</p>
+<p>SubSystemC : 子系统C。</p>
+<p>SubSystemD : 子系统D。</p>
+<h4 id="不使用外观模式">不使用外观模式</h4><p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-28.png" alt=""></p>
+<p>如上述所说，门面模式提供一个高层次的接口，使得子系统更易于使用。因此在不使用该模式的情况下，客户端程序使用相关功能的成本就会比较的复杂，需要和各个子系统进行交互 ( 如上图 )，这样就使得系统的稳定性受到影响，用户的使用成本也相对较高。</p>
+<h4 id="context">context</h4><p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-29.png" alt=""></p>
+<p>ContextImpl内部有很多xxxManager类的对象，也就是我们上文所说的各种子系统的角色。ContextImpl内部封装了一些系统级别的操作，有的子系统功能虽然没有实现，但是也提供了访问该子系统的接口，比如获取ActivityManager的getActivityManager方法。</p>
+<p>外观模式非常的简单，只是封装了子系统的操作，并且暴露接口让用户使用，避免了用户需要与多个子系统进行交互，降低了系统的耦合度、复杂度。如果没有外观模式的封装，那么用户就必须知道各个子系统的相关细节，子系统之间的交互必然造成纠缠不清的关系，影响系统的稳定性、复杂度</p>
+<h3 id="context源码设计">context源码设计</h3><p>context源码中设计类以及继承关系:</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-27.gif" alt=""></p>
+<p>Context类本身是一个纯abstract类。</p>
+<p>ContextImpl类真正实现了Context中所有的函数，我们所调用的各种Context类的方法其实实现均来自于该类。前面也说了ContextImpl内部封装了一些系统级别的操作,例如获取service,startActivity等.</p>
+<p>为了使用方便,有设计了ContextWrapper类,其内聚了ContextImpl对象的引用.而App中直接使用的context都是继承子ContextWrapper.</p>
+<p>这样虽然ContextWrapper对象可以有很多个,可能引用的是同一个ContextImpl.</p>
+<p>ContextThemeWrapper内部包含了与主题相关的接口，这里的主题就是指在AndroidManifest.xml中通过Android：theme为Application或者Activity指定的主题。Activit中的context就是这个.</p>
+<p>只有Activity才需要主题，Service不需要主题的，所以Service直接继承与ContextWrapper。</p>
+<h4 id="ContextImpl">ContextImpl</h4><p>该类是Context的真正实现类.其中提供了很多用于创建context的方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> ContextImpl <span class="title">createAppContext</span><span class="params">(ActivityThread mainThread, LoadedApk packageInfo)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> ContextImpl <span class="title">createActivityContext</span><span class="params">(ActivityThread mainThread,</span><br><span class="line">              LoadedApk packageInfo, <span class="keyword">int</span> displayId, Configuration overrideConfiguration)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">createApplicationContext</span><span class="params">(ApplicationInfo application, <span class="keyword">int</span> flags)</span></span><br><span class="line">                            <span class="keyword">throws</span> NameNotFoundException </span>&#123;&#125;      </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 下面的context在app是没法直接创建使用的</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">createPackageContext</span><span class="params">(String packageName, <span class="keyword">int</span> flags)</span></span><br><span class="line">                                    <span class="keyword">throws</span> NameNotFoundException </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">createPackageContextAsUser</span><span class="params">(String packageName, <span class="keyword">int</span> flags, UserHandle user)</span></span><br><span class="line">                                                  <span class="keyword">throws</span> NameNotFoundException </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">createConfigurationContext</span><span class="params">(Configuration overrideConfiguration)</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">createDisplayContext</span><span class="params">(Display display)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> ContextImpl <span class="title">createSystemContext</span><span class="params">(ActivityThread mainThread)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>这些方法中都是紧接着就调用ContextImpl的构造方法,只是传入的参数不同.</p>
+<h4 id="创建context">创建context</h4><p>通过前面对AMS的分析可知,ActivityThread.main是一个app进程创建之后,代码执行的入口点.</p>
+<p>创建Context对象也是在该类中完成，ActivityThread创建context的函数:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">handleBindApplication()</span><br><span class="line"></span><br><span class="line">Loadedapk.makeApplication()</span><br><span class="line"></span><br><span class="line">performLaunchActivity()</span><br><span class="line"></span><br><span class="line">handleCreateService()</span><br><span class="line"></span><br><span class="line">handleCreateBackupAgent()</span><br></pre></td></tr></table></figure>
+<p>handleBindApplication()调用createAppContext创建的context仅仅在这个方法中使用.所以忽略.</p>
+<h4 id="Application中的context-">Application中的context.</h4><p>Application继承自ContextWrapper,而Application对象又是一个app的主activity启动之前被创建的.所以其</p>
+<p>Application对象是一个app启动时,主activity启动前首先调用其对象中的生命周期方法.所以app的第一个context应该是Application中的context.</p>
+<p>重点看Loadedapk.makeApplication()</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Application <span class="title">makeApplication</span><span class="params">(<span class="keyword">boolean</span> forceDefaultAppClass,</span><br><span class="line">            Instrumentation instrumentation)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    Application app = <span class="keyword">null</span>;</span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">// this为App的LoadedApk对象</span></span><br><span class="line">    ContextImpl appContext = ContextImpl.createAppContext(mActivityThread, <span class="keyword">this</span>);</span><br><span class="line">    app = mActivityThread.mInstrumentation.newApplication(</span><br><span class="line">                    cl, appClass, appContext);</span><br><span class="line">    appContext.setOuterContext(app);</span><br><span class="line">    .......            </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法中调用createAppContext()方法创建了一个ContextImpl对象.传入的参数是ActivityThread对象和Loadedapk对象.</p>
+<p>然后通过Instrumentation的newApplication()方法创建Application对象时,调用Application的attach()方法(内部又会调用 attachBaseContext())将其绑定到ContextWrapper对象中.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Application <span class="title">newApplication</span><span class="params">(ClassLoader cl, String className, Context context)</span></span><br><span class="line">        <span class="keyword">throws</span> InstantiationException, IllegalAccessException,</span><br><span class="line">        ClassNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> newApplication(cl.loadClass(className), context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">public</span> Application <span class="title">newApplication</span><span class="params">(Class&lt;?&gt; clazz, Context context)</span></span><br><span class="line">            <span class="keyword">throws</span> InstantiationException, IllegalAccessException,</span><br><span class="line">            ClassNotFoundException </span>&#123;</span><br><span class="line">        Application app = (Application)clazz.newInstance();</span><br><span class="line">        app.attach(context);</span><br><span class="line">        <span class="keyword">return</span> app;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Activity中的context">Activity中的context</h4><p>Activity继承自ContextThemeWrapper.ContextThemeWrapper继承自ContextWrapper.</p>
+<p>启动Activity时，AMS会通过IPC调用到ActivityThread的scheduleLaunchActivity()启动activity,该方法中会发生LAUNCH_ACTIVITY消息,然后ActivityThread.handleLaunchActivity()启动activity.而这个方法又是调用performLaunchActivity()启动activity的.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Activity <span class="title">performLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent)</span></span>&#123;</span><br><span class="line">  .......</span><br><span class="line">  Context appContext = createBaseContextForActivity(r, activity);</span><br><span class="line">  activity.attach(appContext, <span class="keyword">this</span>, getInstrumentation(), r.token,</span><br><span class="line">                        r.ident, app, r.intent, r.activityInfo, title, r.parent,</span><br><span class="line">                        r.embeddedID, r.lastNonConfigurationInstances, config,</span><br><span class="line">                        r.referrer, r.voiceInteractor);</span><br><span class="line">  .......</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Context <span class="title">createBaseContextForActivity</span><span class="params">(ActivityClientRecord r, <span class="keyword">final</span> Activity activity)</span> </span>&#123;</span><br><span class="line">  ..........</span><br><span class="line">  <span class="comment">//  r.packageInfo是其所在的app的LoadedApk</span></span><br><span class="line">  ContextImpl appContext = ContextImpl.createActivityContext(<span class="keyword">this</span>, r.packageInfo, displayId, r.overrideConfig);</span><br><span class="line">  appContext.setOuterContext(activity);</span><br><span class="line">  Context baseContext = appContext;</span><br><span class="line">  ...........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可见Activity的context是通过ContextImpl.createActivityContext()方法创建的.然后通过Activiy.attach()方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span><br><span class="line">            Instrumentation instr, IBinder token, <span class="keyword">int</span> ident,</span><br><span class="line">            Application application, Intent intent, ActivityInfo info,</span><br><span class="line">            CharSequence title, Activity parent, String id,</span><br><span class="line">            NonConfigurationInstances lastNonConfigurationInstances,</span><br><span class="line">            Configuration config, String referrer, IVoiceInteractor voiceInteractor)</span> </span>&#123;</span><br><span class="line">        attachBaseContext(context);</span><br><span class="line">...............</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>也就是通过Activity.attachBaseContext(context)方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">attachBaseContext</span><span class="params">(Context newBase)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.attachBaseContext(newBase);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>也就是ContextWrapper.attachBaseContext()方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">attachBaseContext</span><span class="params">(Context base)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mBase != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Base context already set"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        mBase = base;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>将创建好ContextImpl对象保存在了ContextWrapper中.</p>
+<h4 id="service的context">service的context</h4><p>Service继承自ContextWrapper.</p>
+<p>启动Service时，AMS会通过IPC调用到ActivityThread的scheduleCreateService()方法,与处理Activity很相似,最终</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleCreateService</span><span class="params">(CreateServiceData data)</span> </span>&#123;</span><br><span class="line">...........</span><br><span class="line">LoadedApk packageInfo = getPackageInfoNoCheck(</span><br><span class="line">               data.info.applicationInfo, data.compatInfo);</span><br><span class="line">............               </span><br><span class="line">ContextImpl context = ContextImpl.createAppContext(<span class="keyword">this</span>, packageInfo);</span><br><span class="line">           context.setOuterContext(service);</span><br><span class="line"></span><br><span class="line">           <span class="comment">// makeApplication中会进想判断,如果service所在的app的Application对象已经存在</span></span><br><span class="line">           <span class="comment">// 那么直接返回已经存在的application,不会在创建Application对象,也就不会创建context</span></span><br><span class="line">           Application app = packageInfo.makeApplication(<span class="keyword">false</span>, mInstrumentation);</span><br><span class="line">           service.attach(context, <span class="keyword">this</span>, data.info.name, data.token, app,</span><br><span class="line">                   ActivityManagerNative.getDefault());</span><br><span class="line">           service.onCreate();</span><br><span class="line">...............</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>service.attach()方法中会将创建的context绑定到ContextWrapper中.</p>
+<h3 id="App中Context数量与关系">App中Context数量与关系</h3><p>通过前面分析可知,一个app中context数量:1(Application个数)+Activiy个数+service的个数.</p>
+<p>Application,Activity和Service中都有COntext,那么它们之间有什么关系?</p>
+<p>App中包含多个ContextImpl对象，而内部变量mPackageInfo却指向同一个LoadedApk对象.因为LoadedApk对象代表一个运行的app.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/05/context_service/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App获取系统service的过程.</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android_context" data-title="Android6.0之Context解析" data-url="http://www.iloveandroid.net/2016/08/05/Android_context/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

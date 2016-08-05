@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之App获取系统service的过程. | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android系统中提供了很多Service,如图PMS,AMS.很有必要一个app是如何获得这些service的.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之App获取系统service的过程.">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/05/context_service/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Android系统中提供了很多Service,如图PMS,AMS.很有必要一个app是如何获得这些service的.">
+<meta property="og:updated_time" content="2016-08-05T07:33:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之App获取系统service的过程.">
+<meta name="twitter:description" content="Android系统中提供了很多Service,如图PMS,AMS.很有必要一个app是如何获得这些service的.">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-context_service" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/05/context_service/" class="article-date">
+  	<time datetime="2016-08-05T07:31:28.000Z" itemprop="datePublished">2016-08-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之App获取系统service的过程.
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android系统中提供了很多Service,如图PMS,AMS.很有必要一个app是如何获得这些service的.</p>
+<a id="more"></a>
+<h3 id="app中如何获取Android系统中提供的service">app中如何获取Android系统中提供的service</h3><p>app是通过context来获取的.</p>
+<p>例如获取AMS:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);</span><br></pre></td></tr></table></figure>
+<p>getSystemService()方法是Activity类中定义.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(@ServiceName @NonNull String name)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (getBaseContext() == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                   <span class="string">"System services not available to Activities before onCreate()"</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (WINDOW_SERVICE.equals(name)) &#123;</span><br><span class="line">           <span class="keyword">return</span> mWindowManager;</span><br><span class="line">       &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SEARCH_SERVICE.equals(name)) &#123;</span><br><span class="line">           ensureSearchManager();</span><br><span class="line">           <span class="keyword">return</span> mSearchManager;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">super</span>.getSystemService(name);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>而Activity继承自ContextThemeWrapper:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+--------------+            +----------------------+          +-----------------+         +------------+&#10;|    Activity  +-----------&#62;+  ContextThemeWrapper +---------&#62;+  ContextWrapper +--------&#62;+ context    |&#10;+-----+--------+            +---------+------------+          +--+-----+--------+         +----+-------+&#10;      |                               |                          |     |                       ^&#10;      |                               |                          |     | &#20869;&#32858;                    | &#23454;&#29616;&#31867;&#10;      |                               |                          |     |                       |&#10;      |                               |                          |     |                       |&#10;      |                               |                          |     |                  +----+--------+&#10;      |                               |                          |     +----------------&#62; |ContextImpl  |&#10;      |                               |                          |                        +-----+-------+&#10;      +                               +                          +                              ^&#10;getSystemService()            getSystemService()         getBaseContext()                       |&#10;                                                                                                |&#10;                                                                                                |&#10;                                                                                                |&#10;                                                                                                |&#10;                                                                                                +&#10;                                                         +---------------------------&#62;  getSystemService()&#10;                                                         |&#10;                                                         |&#10;                                                         |&#10;                                     SystemServiceRegistr+.getSystemService()</span><br></pre></td></tr></table></figure>
+<p>ContextThemeWrapper中定义了getSystemService()方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="annotation">@Override</span> <span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (LAYOUT_INFLATER_SERVICE.equals(name)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mInflater == <span class="keyword">null</span>) &#123;</span><br><span class="line">                mInflater = LayoutInflater.from(getBaseContext()).cloneInContext(<span class="keyword">this</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> mInflater;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> getBaseContext().getSystemService(name);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>getBaseContext()方法来自ContextWrapper类:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Context <span class="title">getBaseContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> mBase;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>getSystemService()方法也就是来自ContextImpl:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SystemServiceRegistry.getSystemService(<span class="keyword">this</span>, name);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>SystemServiceRegistry类getSystemService()</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getSystemService</span><span class="params">(ContextImpl ctx, String name)</span> </span>&#123;</span><br><span class="line">        ServiceFetcher&lt;?&gt; fetcher = SYSTEM_SERVICE_FETCHERS.get(name);</span><br><span class="line">        <span class="keyword">return</span> fetcher != <span class="keyword">null</span> ? fetcher.getService(ctx) : <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>SYSTEM_SERVICE_FETCHERS也定义在SystemServiceRegistry类中,是一个hashmap,key是name,value是实现了ServiceFetcher接口的一个对象:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SystemServiceRegistry</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String TAG = <span class="string">"SystemServiceRegistry"</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> HashMap&lt;Class&lt;?&gt;, String&gt; SYSTEM_SERVICE_NAMES =</span><br><span class="line">            <span class="keyword">new</span> HashMap&lt;Class&lt;?&gt;, String&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> HashMap&lt;String, ServiceFetcher&lt;?&gt;&gt; SYSTEM_SERVICE_FETCHERS =</span><br><span class="line">            <span class="keyword">new</span> HashMap&lt;String, ServiceFetcher&lt;?&gt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> sServiceCacheSize;</span><br><span class="line"></span><br><span class="line">....................</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>ServiceFetcher 是一接口:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">interface</span> <span class="title">ServiceFetcher</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">       <span class="function">T <span class="title">getService</span><span class="params">(ContextImpl ctx)</span></span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么现在的问题就是SYSTEM_SERVICE_FETCHERS这个hashmap是什么时候初始化的.</p>
+<p>在SystemServiceRegistry类中只有registerService()这个方法操作了SYSTEM_SERVICE_FETCHERS:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">registerService</span><span class="params">(String serviceName, Class&lt;T&gt; serviceClass,</span><br><span class="line">           ServiceFetcher&lt;T&gt; serviceFetcher)</span> </span>&#123;</span><br><span class="line">       SYSTEM_SERVICE_NAMES.put(serviceClass, serviceName);</span><br><span class="line">       SYSTEM_SERVICE_FETCHERS.put(serviceName, serviceFetcher);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>该方法是一个私有方法,那么看谁调了它:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SystemServiceRegistry</span> </span>&#123;</span><br><span class="line">  .........</span><br><span class="line">    <span class="comment">// Not instantiable.</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">SystemServiceRegistry</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        registerService(Context.ACCESSIBILITY_SERVICE, AccessibilityManager.class,</span><br><span class="line">                <span class="keyword">new</span> CachedServiceFetcher&lt;AccessibilityManager&gt;() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> AccessibilityManager <span class="title">createService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> AccessibilityManager.getInstance(ctx);</span><br><span class="line">            &#125;&#125;);</span><br><span class="line">    ..........</span><br><span class="line">    registerService(Context.ACTIVITY_SERVICE, ActivityManager.class,</span><br><span class="line">              <span class="keyword">new</span> CachedServiceFetcher&lt;ActivityManager&gt;() &#123;</span><br><span class="line">          <span class="annotation">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> ActivityManager <span class="title">createService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">              <span class="keyword">return</span> <span class="keyword">new</span> ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());</span><br><span class="line">          &#125;&#125;);</span><br><span class="line">    ...............</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>SystemServiceRegistry静态代码块中调用了registerService()方法.</p>
+<p>也就是说当SystemServiceRegistry类初始化的时候,就会在其静态代码块中执行registerService()方法,填充SYSTEM_SERVICE_FETCHERS这个hashmap.</p>
+<p>前面执行SystemServiceRegistry.getSystemService()方法时,如果是该类还没初始化,那么就会先进行类初始化.当类初始化完成之后,SYSTEM_SERVICE_FETCHERS这个hashmap中已经被初始化好了,可以通过name直接寻找其对应的value.这个value是模块类CachedServiceFetcher子类的对象.这个对象调用其createService()方法返回name对应的service.</p>
+<p>要彻底搞明白这个过程的话,还需要分析SystemServiceRegistry类的registerService()方法的第三个参数:</p>
+<p>以AMS为例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">registerService(Context.ACTIVITY_SERVICE, ActivityManager.class,</span><br><span class="line">                <span class="keyword">new</span> CachedServiceFetcher&lt;ActivityManager&gt;() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> ActivityManager <span class="title">createService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());</span><br><span class="line">            &#125;&#125;);</span><br></pre></td></tr></table></figure>
+<p>registerService方法:</p>
+<p>第一个参数 service的名字:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String ACTIVITY_SERVICE = <span class="string">"activity"</span>;</span><br></pre></td></tr></table></figure>
+<p>第二个参数:</p>
+<p>AMS代理类:ActivityManager</p>
+<p>第三个参数:是一个实现了serviceFetcher接口的模块类CachedServiceFetcher的子类对象:</p>
+<p>先看类CachedServiceFetcher:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CachedServiceFetcher</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">ServiceFetcher</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> mCacheIndex;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CachedServiceFetcher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        mCacheIndex = sServiceCacheSize++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="annotation">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> T <span class="title">getService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Object[] cache = ctx.mServiceCache;</span><br><span class="line">        <span class="keyword">synchronized</span> (cache) &#123;</span><br><span class="line">            <span class="comment">// Fetch or create the service.</span></span><br><span class="line">            Object service = cache[mCacheIndex];</span><br><span class="line">            <span class="keyword">if</span> (service == <span class="keyword">null</span>) &#123;</span><br><span class="line">                service = createService(ctx);</span><br><span class="line">                cache[mCacheIndex] = service;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (T)service;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> T <span class="title">createService</span><span class="params">(ContextImpl ctx)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于AMS来说,其T为ActivityManager.</p>
+<p>CachedServiceFetcher这个模块类很简单,就是实现了ServiceFetcher接口中getService()方法.</p>
+<p>同时定义了一个抽象方法:T createService().那么其子类要负责实现这个创建Service的方法.</p>
+<p>最终通过registerService()方法,第一个参数作为key将第三个参数存入了SYSTEM_SERVICE_FETCHERS这个hashmap中.</p>
+<p>这样就彻底清晰了.当App中通过下面所示代码获取AMS时:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);</span><br></pre></td></tr></table></figure>
+<p>实际上是传递了两个参数一个是Activity的context,另一个AMS的name.首先以name为key在SystemServiceRegistry.SYSTEM_SERVICE_FETCHERS找到AMS的CachedServiceFetcher<activitymanager>子类对象.</activitymanager></p>
+<p>然后调用这个对象的getService()方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> T <span class="title">getService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Object[] cache = ctx.mServiceCache;</span><br><span class="line">    <span class="keyword">synchronized</span> (cache) &#123;</span><br><span class="line">        <span class="comment">// Fetch or create the service.</span></span><br><span class="line">        Object service = cache[mCacheIndex];</span><br><span class="line">        <span class="keyword">if</span> (service == <span class="keyword">null</span>) &#123;</span><br><span class="line">            service = createService(ctx);</span><br><span class="line">            cache[mCacheIndex] = service;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (T)service;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>传入的ctx就是这个app的一个context.首次获取时从缓存中是查询不到的,所以会调用createService()方法先创建:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ActivityManager <span class="title">createService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());</span><br><span class="line">&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>然后返回给调用者.</p>
+<h3 id="缓存机制">缓存机制</h3><p>当调用这createService()方法创建对象之后,为了下次能快速获取,所以将其缓存起来了.</p>
+<p>将其存储到了App的ContextImpl类的mServiceCache:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The system service cache for the system services that are cached per-ContextImpl.</span></span><br><span class="line"><span class="keyword">final</span> Object[] mServiceCache = SystemServiceRegistry.createServiceCache();</span><br></pre></td></tr></table></figure>
+<p>下次在获取的时候,直接从context的缓存中拿.其中索引mCacheIndex在创建CachedServiceFetcher子类对象的时候的初始化.和其在SystemServiceRegistry静态代码块中注册的顺序一致.</p>
+<p>通过以上分析可以如果想要直到App中通过getSystemService()方法获得到底是什么对象,看SystemServiceRegistry类中的静态代码块便知道了.</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/05/Android_context/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之Context解析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/27/Android_ActivityManagerService-10/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之AMS管理Service前奏</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="context_service" data-title="Android6.0之App获取系统service的过程." data-url="http://www.iloveandroid.net/2016/08/05/context_service/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
