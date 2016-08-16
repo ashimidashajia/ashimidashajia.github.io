@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之App中的资源管理前奏 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一个APK文件中，除了有代码文件之外，还有很多资源文件。这些资源文件是通过Android资源打包工具aapt（Android Asset Package Tool）打包到APK文件里面的。
+那么Android中究竟包含哪些资源，这些资源是如何组织的，如何打包的等就有必要搞清楚了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之App中的资源管理前奏">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/15/android_resource_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="一个APK文件中，除了有代码文件之外，还有很多资源文件。这些资源文件是通过Android资源打包工具aapt（Android Asset Package Tool）打包到APK文件里面的。
+那么Android中究竟包含哪些资源，这些资源是如何组织的，如何打包的等就有必要搞清楚了。">
+<meta property="og:updated_time" content="2016-08-15T16:08:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之App中的资源管理前奏">
+<meta name="twitter:description" content="一个APK文件中，除了有代码文件之外，还有很多资源文件。这些资源文件是通过Android资源打包工具aapt（Android Asset Package Tool）打包到APK文件里面的。
+那么Android中究竟包含哪些资源，这些资源是如何组织的，如何打包的等就有必要搞清楚了。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-android_resource_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/15/android_resource_1/" class="article-date">
+  	<time datetime="2016-08-15T07:49:41.000Z" itemprop="datePublished">2016-08-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之App中的资源管理前奏
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一个APK文件中，除了有代码文件之外，还有很多资源文件。这些资源文件是通过Android资源打包工具aapt（Android Asset Package Tool）打包到APK文件里面的。</p>
+<p>那么Android中究竟包含哪些资源，这些资源是如何组织的，如何打包的等就有必要搞清楚了。</p>
+<a id="more"></a>
+<h3 id="资源独立">资源独立</h3><p>编写良好的代码往往在程序中调用它的资源，而不是直接将其写入代码中，这样做的好处是：</p>
+<ol>
+<li><p>将应用程序资源存储于某个特定的位置更有利于管理他们，而且使得代码更容易阅读与管理。</p>
+</li>
+<li><p>类似字符串这样的外部资源能使得应用程序更容易根据不同的地区和语言来进行本地化处理。</p>
+</li>
+<li><p>不同的资源对于不同的设备而言是很必要的，因为设备的差异性，例如屏幕大小等，要达到最有显示效果，使用的资源也是不一样的。</p>
+</li>
+</ol>
+<h3 id="App资源存储位置">App资源存储位置</h3><p>Android中的Apk存放资源的目录有两个：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">APK&#36319;&#36335;&#24452;/res/&#10;APK&#36319;&#36335;&#24452;/assets/</span><br></pre></td></tr></table></figure>
+<p>这两个目录中的资源最显著的区别在于：</p>
+<p>存放在res文件夹中的资源，系统会分配一个ID,可以使用这个ID快速直接使用该资源，在代码中可以通过R类来访问。</p>
+<p>而存放在assets文件夹中的资源就没有分配ID了，使用资源时，需要AssetManager类通过资源路径来访问。</p>
+<p>另一个区别：</p>
+<p>res目录中的子目录名字是固定的，不能随意创建res的子文件夹，res文件夹中可以有的子目录有：</p>
+<p>– res/animator : 属性动画的XML文件目录, 属性动画就是定义起始结束, 动做, 重复时间等参数齐全的动画;</p>
+<p>– res/anim : 补间动画的XML文件目录, 补间动画是只定义 起始 结束帧, 中间的动作由系统进行计算获取动作过程;</p>
+<p>– res/color : 颜色列表的XML文件目录;</p>
+<p>– res/drawable : 存放真实的位图文件, 也可以存放Drawable对象及子类对象的XML文件;</p>
+<p>– res/layout : 界面布局文件目录;</p>
+<p>– res/menu : 程序中使用的菜单文件目录, 该文件下的XML文件可以应用与 选项菜单, 子菜单, 上下文菜单等;</p>
+<p>– res/raw : 存放原生资源, 与assets目录作用相同, 可以通过调用openRawResource(int)方法获取二进制输入流, 与asstes相似, 使用AssetsManager访问这些资源;</p>
+<p>– res/values : 存放 字符串. 整数, 颜色, 数组 信息的 XML文件的目录, 这些XML文件资源的根元素是resources，可以自定义属性，该文件夹中的xml中的内容供其他文件夹下的xml使用。</p>
+<p>– res/xml : 原生的XML文件, 可以使用 Resource.getXML()方法进行访问;</p>
+<p>而且在以上子目录中不能够在创建其他子目录</p>
+<p>assets目录中可以任意创建子目录，不受限制。</p>
+<h3 id="资源的定义">资源的定义</h3><p>res目录下的子目录中除了values，其他子目录的名字均代表了一种资源类型，如anim,drawable等，所以不能随便定义子文件夹，只能是前面说的那几个子文件夹。</p>
+<p>values目录中的xml文件中resources的子标签代表了一种类型的资源：</p>
+<p>– string标签 : 代表一个字符串;</p>
+<p>– integer标签 : 代表一个整数值标签;</p>
+<p>– bool标签 : 代表一个boolean值;</p>
+<p>– color标签 : 代表一个颜色值;</p>
+<p>– array标签 : 代表数组;</p>
+<p>– string-array标签 : 代表字符串数组;</p>
+<p>– int-array标签 : 代表int数组;</p>
+<p>– style标签 : 代表样式;</p>
+<p>– dimen标签 : 代表一个尺寸</p>
+<p>等等。<br>因为values中的xml文件中定义的资源是以标签的形式存在的，为了便于管理这些资源，通常将同一类标签放在一个xml文件中去。</p>
+<p>– arrays.xml : 存放数组资源;</p>
+<p>– colors.xml : 存放颜色资源;</p>
+<p>– dimens.xml : 存放尺寸值资源;</p>
+<p>– strings.xml : 存放字符串资源;</p>
+<p>– styles.xml : 存放样式资源;</p>
+<p>通过学习几种类型资源的定义来掌握如何定义资源。</p>
+<h4 id="字符串资源">字符串资源</h4><p>以res/values/strings.xml为例，简单说一下如何顶一个字符串资源：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"app_name"</span>&gt;</span>ResourceDemo<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>定义一个类型为string的资源项，资源项名字为name，资源项的值为”ResourceDemo”.</p>
+<p>通俗的解释：定义了一个string类型的变量name，其值为“ResourceDemo”。</p>
+<p>还可以定义格式化字符串：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"format_string"</span>&gt;</span>hello,%1$s,your waiting number is %2$d<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在代码中可以这么来使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String.format(res.getString.format_string,name,number);</span><br></pre></td></tr></table></figure>
+<p>还可以使用:</p>
+<p><b>用于加粗显示；</b></p>
+<p><i>用于斜体显示</i></p>
+<p><u>用于加入下划线</u></p>
+<p>在介绍两种资源，其他资源就不在介绍了。</p>
+<h4 id="id类型的资源">id类型的资源</h4><p>可以像字符串资源那样，在res/values.xml中创建一个ids.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="title">item</span> <span class="attribute">type</span>=<span class="value">"id"</span> <span class="attribute">name</span>=<span class="value">"id_name"</span> /&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这样就定义了一个名字id_name的id资源。aapt会在编译资源文件时，将其赋予一个32位的整数。</p>
+<p>对于id常见的定义场景是：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">TextView</span></span><br><span class="line">       <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">       <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">       <span class="attribute">android:text</span>=<span class="value">"@string/my_app_name"</span></span><br><span class="line">       <span class="attribute">android:id</span>=<span class="value">"@+id/myTv"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>“@+id”中的+号代表没有该资源时，创建它。如果使用已经创建的id，则去掉+</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:<span class="property">id</span>=<span class="string">"@id/id_name"</span></span><br></pre></td></tr></table></figure>
+<h4 id="属性资源">属性资源</h4><p>属性是一中特殊的资源类型，可以用来描述其他资源的行为。分为系统属性和自定义属性。</p>
+<h4 id="系统中定义的属性">系统中定义的属性</h4><p>以一个简单的例子来理解属性是如何描述资源的，在Ansroid studio中快速创建一个默认的app工程，通常这个app包含一个activity，activity中有一个textview，显示”Hello World”</p>
+<p>activity_main.xml是其主activity布局文件,内容如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">RelativeLayout</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span>&gt;</span></span><br><span class="line">  ........</span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">TextView</span></span><br><span class="line">        <span class="attribute">android:layout_width</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:layout_height</span>=<span class="value">"wrap_content"</span></span><br><span class="line">        <span class="attribute">android:text</span>=<span class="value">"Hello World!"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这里只关心textView相关的内容：</p>
+<p>android:layout_width和android:layout_height属性描述了textView的显示行为：根据textView中的文本内容自动扩展控件以适应其大小，使内容全部显示，而android:text属性用来描述控件中要显示的内容。</p>
+<p>这里属性的名字实际上并不包括前面的”android：”，”android:”表示该属性是系统定义的。</p>
+<p>系统属性定义在如下xml文件中的：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AOSP&#28304;&#30721;/frameworks/base/core/res/res/values/attrs.xml</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Text to display. --&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"text"</span> <span class="attribute">format</span>=<span class="value">"string"</span> <span class="attribute">localization</span>=<span class="value">"suggested"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>系统定义的资源的R.java文件放在”android”的包中，Android SDK中的每个Android版本中都会有一个android.jar,系统定义的资源的R.java文件就在这里。</p>
+<h4 id="自定义属性">自定义属性</h4><p>除了使用系统中定义的属性之外，App开发中还可以自定义属性,例如自定义view时。自定义的属性存储在：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apk&#36335;&#24452;/res/values/attrs.xml</span><br></pre></td></tr></table></figure>
+<p>attrs.xml是一个xml文件，所以必须首先符合xml的定义规范。</p>
+<p>下面是一个简单的示例：</p>
+<p>在res/values/创建attrs.xml，内容如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"testAttr"</span> <span class="attribute">format</span>=<span class="value">"integer"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">declare-styleable</span> <span class="attribute">name</span>=<span class="value">"MyView"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"android:text"</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"name"</span> <span class="attribute">format</span>=<span class="value">"reference|string"</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"age"</span> <span class="attribute">format</span>=<span class="value">"integer"</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"textSize"</span> <span class="attribute">format</span>=<span class="value">"dimension"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">declare-styleable</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>该xml文件根标签：resources，表明这是一个资源文件。</p>
+<p>重点关注标签“declare-styleable”中的内容。</p>
+<p>该标签的name为MyView，虽然name可以任意指定，但是原则上为使用这个属性集合的自定义view的类名。</p>
+<p>标签“attr”表示一个属性，当有”format”表明是在定义一个新的属性，没有”format”表明是使用一个已经定义过的属性。</p>
+<p>attr格式：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"[ATTR_NAME]"</span> <span class="attribute">format</span>=<span class="value">"[FORMAT]"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其中format可以使用“|”进行或操作，使得attr具备多个格式。</p>
+<p>format取值有：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reference&#65306;&#24341;&#29992;&#26576;&#19968;&#36164;&#28304;ID&#10;&#10;color&#65306;&#39068;&#33394;&#20540;&#10;&#10;boolean&#65306;&#24067;&#23572;&#20540;&#10;&#10;dimension&#65306;&#23610;&#23544;&#20540;&#10;&#10;float&#65306;&#28014;&#28857;&#20540;&#10;&#10;integer&#65306;&#25972;&#22411;&#20540;&#10;&#10;string&#65306;&#23383;&#31526;&#20018;&#10;&#10;fraction&#65306;&#30334;&#20998;&#25968;&#10;&#10;enum&#65306;&#26522;&#20030;&#20540;&#10;&#10;flag&#65306;&#20301;&#25110;&#36816;&#31639;</span><br></pre></td></tr></table></figure>
+<p>每个”declare-styleable”就是一组attr属性的集合。最明显的特点是在生成的R.java文件中的内部静态类styleable存在一个int[]数组包含了这个属性集合中的所有资源ID.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">styleable</span></span>&#123;</span><br><span class="line">  .........</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span>[] MyView = &#123;</span><br><span class="line">            <span class="number">0x0101014f</span>, <span class="number">0x7f0100a8</span>, <span class="number">0x7f0100a9</span>, <span class="number">0x7f0100aa</span></span><br><span class="line">        &#125;;</span><br><span class="line">  .........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>没有包含在declare-styleable标签内定义的属性，使用起来会比较麻烦，通常定义属性时，都定义在”declare-styleable”中。当要定义的属性是其他集合都会用到的时，可以考虑在”declare-styleable”之外定义。</p>
+<h4 id="属性值">属性值</h4><p>常见的值一般有以下几种：</p>
+<ol>
+<li><p>String，Color，boolean，int类型：在res/values/xxx.xml文件中指定</p>
+</li>
+<li><p>Drawable类型：在res/drawable/xxx中指定</p>
+</li>
+<li><p>layout（布局）：在res/layout/xxx.xml中指定</p>
+</li>
+<li><p>style（样式）：在res/values/xxx.xml中指定</p>
+</li>
+</ol>
+<p>值的类型大致分为两类，一类是基本类型，一类是引用类型。</p>
+<p>基本类型的属性，可以在设置属性值时直接指定；</p>
+<p>引用类型的属性，设置其值时，需要引用一个事先设定好的值。</p>
+<p>后面介绍属性使用时，可以看出两者主要的区别。</p>
+<h3 id="资源的使用">资源的使用</h3><p>属性的使用可以分为两大事情场景：</p>
+<h4 id="xml文件中使用资源">xml文件中使用资源</h4><p>即资源文件中使用，例如在布局文件中使用自定义的属性。</p>
+<p>使用属性时，需要在xml中的跟标签中通过xmlns，引入命名空间，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">RelativeLayout</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">xmlns:tools</span>=<span class="value">"http://schemas.android.com/tools"</span></span><br><span class="line">    <span class="attribute">xmlns:myview</span>=<span class="value">"http://schemas.android.com/apk/res/com.godin.resourcedemo"</span></span><br><span class="line">    <span class="attribute">.........</span></span><br><span class="line">        /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">com.godin.resourcedemo.MyView</span></span><br><span class="line">       <span class="attribute">android:layout_width</span>=<span class="value">"match_parent"</span></span><br><span class="line">       <span class="attribute">android:layout_height</span>=<span class="value">"match_parent"</span></span><br><span class="line">       <span class="attribute">myview:age</span>=<span class="value">"20"</span></span><br><span class="line">       <span class="attribute">myview:name</span>=<span class="value">"shajia"</span></span><br><span class="line">       <span class="attribute">android:text</span>=<span class="value">"hello!!!"</span></span><br><span class="line">       <span class="attribute">myview:testAttr</span>=<span class="value">"100"</span></span><br><span class="line">       /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">RelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>xmlns格式：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xmlns:&#31354;&#38388;&#21517;&#23383;=&#34;http://schemas.android.com/apk/res/[&#36164;&#28304;&#21253;&#21517;]&#34;</span><br></pre></td></tr></table></figure>
+<p>引入之后，就可以通过空间名字使用其中定义的属性并为其设置属性值。</p>
+<p>这里要注意基本类型和引用类型在设置值时的区别。</p>
+<p>对于基本类型的属性，可以直接设置其值，例如age是integer格式，那么可以：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="label">myview:</span>age=<span class="string">"20"</span></span><br></pre></td></tr></table></figure>
+<p>name的format是“reference|string”，除了可以直接：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myview:<span class="property">name</span>=<span class="string">"shajia"</span></span><br></pre></td></tr></table></figure>
+<p>还可以通过引用的方式设置其值。</p>
+<p>首先在res/vaules/strings.xml中添加一个属性为string的名字”myname”的资源，同时其值为shajia.<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"app_name"</span>&gt;</span>ResourceDemo<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"myname"</span>&gt;</span>shajia<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这一步骤可以简单的理解为创建了一个string类型的变量myname,初始化其值为shajia.</p>
+<p>然后就以通过引用的方式使用这个资源了：<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myview:<span class="property">name</span>=<span class="string">"@string/myname"</span></span><br></pre></td></tr></table></figure></p>
+<p>通过引用方式设置属性值是通过“@”符号标识的。引用系统属性时”@android:attr”.</p>
+<h4 id="通过R文件在代码中使用资源">通过R文件在代码中使用资源</h4><p>在res中资源文件，android studio会自动将其编译生成R.java文件，以方便在代码中使用资源属性。</p>
+<p>res_type即为res中子文件夹的名字（values除外），也代表资源类型。</p>
+<ol>
+<li><p>R.res_type.xxx 来访问自定义资源文件</p>
+</li>
+<li><p>android.R.res_type.xxx 来访问系统已经提供的资源文件</p>
+</li>
+</ol>
+<p>通过类Resources来以R.res_type.xxx来索引资源。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String appName =getResources().getString(R.string.app_name);</span><br></pre></td></tr></table></figure>
+<p>这里在介绍一下自定义属性资源的使用,还以前面自定义的view:MyView为例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyView</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">        TypedArray a = context.getTheme().obtainStyledAttributes(</span><br><span class="line">                attrs,</span><br><span class="line">                R.styleable.MyView,</span><br><span class="line">                <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String name  = a.getString(R.styleable.MyView_name);</span><br><span class="line">            <span class="keyword">int</span>  age = a.getInt(R.styleable.MyView_age,<span class="number">0</span>);</span><br><span class="line">            String text = a.getString(R.styleable.MyView_android_text);</span><br><span class="line">            Log.i(<span class="string">"shajia"</span>,<span class="string">"name :"</span>+name);</span><br><span class="line">            Log.i(<span class="string">"shajia"</span>,<span class="string">"age :"</span>+age);</span><br><span class="line">            Log.i(<span class="string">"shajia"</span>,<span class="string">"text :"</span>+text);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            a.recycle();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里使用TypedArray而不是直接使用AttributeSet来访问资源是因为，通过AttributeSet访问的资源可能没有经过解析。比如通过AttributeSet访问引用属性时，并没有解析引用到底是谁，而是会返回资源ID。</p>
+<h4 id="访问asset资源">访问asset资源</h4><p>获得AssetManager对象，然后调用其open方法直接以assets文件中的资源文件路径为参数，即可打开使用。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getResources().getAssets().open(<span class="string">"pathoffilename"</span>);</span><br></pre></td></tr></table></figure></p>
+<h3 id="资源文件和资源ID之间映射的简单说明">资源文件和资源ID之间映射的简单说明</h3><p>一个Apk文件中除了AndroidManifest.xm，dex和签名文件外，剩下的就是资源文件：</p>
+<ol>
+<li><p>res 文件夹，但是不包括res/values目录， 这是因为res/values目录下的资源文件的内容经过编译之后，都直接写入到资源项索引表去了。</p>
+</li>
+<li><p>asset文件夹</p>
+</li>
+<li><p>资源项索引文件resources.arsc文件</p>
+</li>
+</ol>
+<p>app编译过程中，SDK中的aapt工具负责将生成resources.arsc文件。</p>
+<p>关于resources.arsc文件的生成过程，参考<a href="http://blog.csdn.net/luoshengyang/article/details/8744683" target="_blank" rel="external">老罗的文章</a>。只要记住一点，resources.arsc可以理解为一张索引表，AssetManager类负责将resources.arsc转换为索引表数据结构。</p>
+<p>使用资源ID可以在表中快速检索出对应的资源在res文件中的路径信息（value类型的值直接包含在了表中）。</p>
+<h4 id="资源ID格式">资源ID格式</h4><p>前面介绍了在代码中是通过R.res_type.XXX,实现对资源文件的索引.</p>
+<p>这个R.res_type.XXX是一个32bit的数字，格式是PPTTNNNN :</p>
+<p>PP代表资源所属的包(package) :对于App的资源，PP值为0x7f，如果是Android系统的资源，pp值为0x01.一个app包含多个资源包时，PP范围[0x01,0x7f]，一般情况下，一个app只有一个资源包；</p>
+<p>TT代表资源的类型(type)；</p>
+<p>NNNN代表这个类型下面的资源的名称（entry；</p>
+<p>TT 和NNNN 的取值是由aapt工具随意指定的——基本上每一种新的资源类型的数字都是从上一个数字累加的（从1开始）；而每一个新的资源entry条目也是从数字1开始向上累加的。</p>
+<p>假设3个资源文件按照下面的顺序排列：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layout/main.xml&#10;&#10;drawable/icon.xml&#10;&#10;layout/listitem.xml</span><br></pre></td></tr></table></figure>
+<p>aapt会依次处理：</p>
+<p>按照顺序，第一个资源的类型是”layout” 所以指定TT=1， 这个类型下面的第一个资源是”main” ，所以指定NNNN=1 ，最后这个资源就是0x7f010001。</p>
+<p>第二个资源类型是”drawable”，所以指定TT=2，这个类型下的”icon” 指定NNNN =1，所以最终的资源ID 是 0x7f020001。</p>
+<p>第三个资源类型是”layout”，而这个资源类型在前面已经有定义了，所以TT仍然是1，但是”listitem”这个名字是新出现的，所以指定NNNN=2，因此最终的资源ID 就是 0x7f010002。</p>
+<p>也就是说NNNN是可以重复的，因为可以结合TT来区分。</p>
+<p>注意的是，aapt在每一次编译的时候不会去保存上一次生成的资源ID标示，每当/res目录发生变化的时候，AAPT可能会去重新给资源指定ID号，然后重新生成一个R.java文件。因此，在做开发的时候，不应该在程序中将资源ID持久化保存到文件或者数据库。而资源ID在每一次编译后都有可能变化。</p>
+<p>所谓使用资源ID在resources.arsc索引资源的过程，实际上就是在resources.arsc中利用这三段数据查找的过程。</p>
+<h3 id="资源的匹配过程">资源的匹配过程</h3><p>请参考<a href="https://developer.android.com/guide/topics/resources/providing-resources.html#BestMatch" target="_blank" rel="external">官方文档</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/05/Android_context/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App中的Context解析</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="android_resource_1" data-title="Android6.0之App中的资源管理前奏" data-url="http://www.iloveandroid.net/2016/08/15/android_resource_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

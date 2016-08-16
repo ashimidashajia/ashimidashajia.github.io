@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iloveandroid.net/2016/08/15/android_resource_1/</loc>
+    <lastmod>2016-08-15T16:08:07.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2016/08/05/context_service/</loc>
     <lastmod>2016-08-05T10:06:23.000Z</lastmod>
   </url>
@@ -127,6 +132,11 @@
   </url>
   
   <url>
+    <loc>http://www.iloveandroid.net/2015/12/06/jvm%E6%8C%87%E4%BB%A4%E9%9B%86/</loc>
+    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://www.iloveandroid.net/2015/12/16/AndroguardEnvironment/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
@@ -168,11 +178,6 @@
   
   <url>
     <loc>http://www.iloveandroid.net/2015/12/20/AndroidART-8/</loc>
-    <lastmod>2015-12-21T11:03:58.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.iloveandroid.net/2015/12/06/jvm%E6%8C%87%E4%BB%A4%E9%9B%86/</loc>
     <lastmod>2015-12-21T11:03:58.000Z</lastmod>
   </url>
   
