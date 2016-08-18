@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="一个APK文件中，除了有代码文件之外，还有很多资源文件。这些资源文件是通过Android资源打包工具aapt（Android Asset Package Tool）打包到APK文件里面的。
 那么Android中究竟包含哪些资源，这些资源是如何组织的，如何打包的等就有必要搞清楚了。">
-<meta property="og:updated_time" content="2016-08-15T16:08:07.000Z">
+<meta property="og:updated_time" content="2016-08-16T02:26:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之App中的资源管理前奏">
 <meta name="twitter:description" content="一个APK文件中，除了有代码文件之外，还有很多资源文件。这些资源文件是通过Android资源打包工具aapt（Android Asset Package Tool）打包到APK文件里面的。
@@ -282,10 +282,7 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"format_string"</span>&gt;</span>hello,%1$s,your waiting number is %2$d<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>在代码中可以这么来使用：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String.format(res.getString.format_string,name,number);</span><br></pre></td></tr></table></figure>
-<p>还可以使用:</p>
-<p><b>用于加粗显示；</b></p>
-<p><i>用于斜体显示</i></p>
-<p><u>用于加入下划线</u></p>
+<p>还可以使用:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#60;b&#62;&#29992;&#20110;&#21152;&#31895;&#26174;&#31034;&#65307;&#10;&#10;&#60;i&#62;&#29992;&#20110;&#26012;&#20307;&#26174;&#31034;&#10;&#10;&#60;u&#62;&#29992;&#20110;&#21152;&#20837;&#19979;&#21010;&#32447;</span><br></pre></td></tr></table></figure></p>
 <p>在介绍两种资源，其他资源就不在介绍了。</p>
 <h4 id="id类型的资源">id类型的资源</h4><p>可以像字符串资源那样，在res/values.xml中创建一个ids.xml：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="title">item</span> <span class="attribute">type</span>=<span class="value">"id"</span> <span class="attribute">name</span>=<span class="value">"id_name"</span> /&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -407,8 +404,8 @@
 <nav id="article-nav">
   
   
-    <a href="/2016/08/05/Android_context/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Android6.0之App中的Context解析</div>
+    <a href="/2016/08/15/android_resource_2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App中的资源Rsources.arsc详解</div>
       <strong class="article-nav-caption">></strong>
     </a>
   

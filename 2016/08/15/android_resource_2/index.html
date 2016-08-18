@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之App中的资源Rsources.arsc详解 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Apk中的resources.arsc是aapt工具编译资源时生成的一个重要文件。App资源能根据配置的变化，索引到相应的资源都要依赖它。例如Android设备语言，屏幕设备尺寸不同时，app通过同样的ID但却能找到不同的资源进行显示。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之App中的资源Rsources.arsc详解">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/15/android_resource_2/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Apk中的resources.arsc是aapt工具编译资源时生成的一个重要文件。App资源能根据配置的变化，索引到相应的资源都要依赖它。例如Android设备语言，屏幕设备尺寸不同时，app通过同样的ID但却能找到不同的资源进行显示。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/resources-2.jpg">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-33.png">
+<meta property="og:updated_time" content="2016-08-18T13:51:55.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之App中的资源Rsources.arsc详解">
+<meta name="twitter:description" content="Apk中的resources.arsc是aapt工具编译资源时生成的一个重要文件。App资源能根据配置的变化，索引到相应的资源都要依赖它。例如Android设备语言，屏幕设备尺寸不同时，app通过同样的ID但却能找到不同的资源进行显示。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-android_resource_2" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/15/android_resource_2/" class="article-date">
+  	<time datetime="2016-08-14T16:12:23.000Z" itemprop="datePublished">2016-08-15</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之App中的资源Rsources.arsc详解
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Apk中的resources.arsc是aapt工具编译资源时生成的一个重要文件。App资源能根据配置的变化，索引到相应的资源都要依赖它。例如Android设备语言，屏幕设备尺寸不同时，app通过同样的ID但却能找到不同的资源进行显示。</p>
+<a id="more"></a>
+<h3 id="资源打包过程简述">资源打包过程简述</h3><p>开发app时，需要代码和资源。最终生成的apk中代码转换为了dex文件，那么apk文件中的资源是否还是app开发时那些资源文件呢？或者说这些资源文件是否发生了什么变化？</p>
+<p>引用老罗一张关于资源打包过程以及查找的图：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/resources-2.jpg" alt=""></p>
+<p>从上图可以看出：</p>
+<ol>
+<li><p>除了assets和res/raw资源被原装不动地打包进APK之外，其它的资源都会被编译或者处理.xml文件会被编译为二进制的xml，所以解压apk后，无法直接打开xml文件。</p>
+</li>
+<li><p>除了assets资源之外，其它的资源都会被赋予一个资源ID。</p>
+</li>
+<li><p>打包工具负责编译和打包资源，编译完成之后，会生成一个resources.arsc文件和一个R.java，前者保存的是一个资源索引表，后者定义了各个资源ID常量，供在代码中索引资源。</p>
+</li>
+<li><p>应用程序配置文件AndroidManifest.xml同样会被编译成二进制的XML文件，然后再打包到APK里面去。</p>
+</li>
+<li><p>应用程序在运行时最终是通过AssetManager来访问资源，或通过资源ID来访问，或通过文件名来访问。</p>
+</li>
+</ol>
+<p>在生成的apk中，只有assets和res/raw资源被原装不动地打包进apk。其它的资源都会被编译或者处理。可以使用如下命令查看apk中的文件列表：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aapt l -v apkfile</span><br></pre></td></tr></table></figure>
+<p>将apk直接解压后，会发现xml都打不开，提示格式不对，因为其已经变为二进制xml了。另外PNG等图片也会进行相应的优化。还有就是多了一个resources.arsc文件。</p>
+<h3 id="需要准备的东西">需要准备的东西</h3><p>分析resources.arsc文件，肯定要现有它了。利用Android studio创建一个ResourceDemo的工程，</p>
+<p>资源从取值上来分，可分为两类：bag类型资源和非bag类型的资源。</p>
+<p>bag资源：通俗的说，就是这类资源在赋值的时候，不能随便赋值，只能从事先定义好的值中选取一个赋值。很像枚举。</p>
+<p>类型为values的资源除了是string之外，还有其它很多类型的资源，其中有一些比较特殊，如bag、style、plurals和array类的资源。这些资源会给自己定义一些专用的值，这些带有专用值的资源就统称为Bag资源。</p>
+<p>例如，Android系统提供的android:orientation属性的取值范围为｛“vertical”、“horizontal”｝，就相当于是定义了vertical和horizontal两个Bag。</p>
+<p>在res/values中创建attrs.xml文件，在其中自定一个bag类型的属性资源。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"custom_orientation"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">enum</span> <span class="attribute">name</span>=<span class="value">"custom_vertical"</span> <span class="attribute">value</span>=<span class="value">"100"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">enum</span> <span class="attribute">name</span>=<span class="value">"custom_horizontal"</span> <span class="attribute">value</span>=<span class="value">"200"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">attr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个文件定义了一个名称为“custom_orientation”的属性资源，它是一个枚举格式（也可理解为枚举类型）的属性，可以取值为“custom_vertical”或者“custom_horizontal”。</p>
+<p>custom_vertical和custom_horizontal是custom_orientation的两个bag，我们可以将custom_vertical和custom_horizontal看成是custom_orientation的两个元数据，用来描述custom_orientation的取值集合。</p>
+<p>“custom_orientation”是一个枚举类型的attr属性资源，也要使用一个内部元数据来描述其属性类型，这个元数据也使用一个bag来表示。</p>
+<p>也就是说custom_orientation是由三个bag构成的：</p>
+<p>第一个bag：名称是“^type”，值是TYPE_ENUM(TYPE_ENUM = 1&lt;&lt;16)</p>
+<p>第二个bag：名称是“custom_vertical”，值是100</p>
+<p>第三个bag: 名称是“custom_horizontal”，值是200</p>
+<p>另外还要给这个bag分配资源ID，因为这些枚举值是通过名称，例如custom_vertical被引用使用的，所以也要给其分配资源ID，</p>
+<p>资源ID的格式是PPTTEEEE,其中TT代表资源类型。那么：</p>
+<p>名称是“^type”的bag其分配的资源ID是attr类型的，而“custom_vertical”和“custom_horizontal”被分配到的资源ID是id类型的，所以在代码中可以通过下面的形式引用其值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">R.attr.custom_orientation;</span><br><span class="line">R.id.custom_horizontal;</span><br><span class="line">R.id.custom_vertical;</span><br></pre></td></tr></table></figure>
+<p>非bag资源：通俗的说，就是这类资源赋值的时候，很随意，可以任意指定。</p>
+<p>以res/values/strings.xml为例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span>oolHd-&gt;stylesStart)/sizeof(uint32_t);</span><br><span class="line">  &#125;</span><br><span class="line">  for(int i=0;i<span class="tag">&lt;<span class="title">resStrPoolHd-</span>&gt;</span>stringCount;i++)&#123;</span><br><span class="line">    // 加2是跳过长度</span><br><span class="line">    if(strcmp(((char*)mString)+mEntries[i]+2,"ResourceDemo")==0)&#123;</span><br><span class="line">        const uint8_t * str = (((uint8_t*)mString)+mEntries[i]);</span><br><span class="line">        // 字符串长度</span><br><span class="line">        int len = decodeLength(&amp;str);</span><br><span class="line">        printf("--&gt;len = %p\n",len);</span><br><span class="line">        printf("--&gt;idx = %p\n",i);</span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"app_name"</span>&gt;</span>ResourceDemo<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>该文件中定义了一个名字为“app_name”的string类型的资源，资源值为ResourceDemo。</p>
+<p>将这个ResourceDemo工程编译之后，解压APK，就可以得到resources.arsc文件了。</p>
+<h3 id="要做什么">要做什么</h3><p>接下来就是分析resources.arsc，看看前面我们指出的那三个bag资源和一个非bag资源是以什么样的形式存储在resources.arsc的什么位置的。</p>
+<p>只要搞清楚了这个，那么就沉底搞清楚resources.arsc文件的格式了。</p>
+<p>使用C/C++编写解析代码。</p>
+<h3 id="resources-arsc">resources.arsc</h3><p>resources.arsc文件，被称为资源索引表，其作用就是通过一样的ID，根据不同的配置索引到最佳的资源显示在UI中。</p>
+<p>从整体上来看，其结构为：资源索引表头部+字符串资源池+N个Package数据块。文件格式：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/AMS-33.png" alt=""></p>
+<p>这张神图在网上广为流传，但是其下半部分很容易让人产生误解，因为实际上Type Spec和 Config List是交替出现的，而且一个Type Spec通常有不止一个config list.</p>
+<p>不想在画图了，所以仍旧以此神图为模板分析resources.arsc文件吧。</p>
+<p>这里不去纠结这个文件是如何生成的，咱们逆其道而行，从文件本身窥探它是有什么组成的。</p>
+<h4 id="resources-arsc文件的结构分割符">resources.arsc文件的结构分割符</h4><p>从上面所示的神图中可以看到arsc文件是由若干种chunk组成的，而每一种chunk都是由一个头部来记录一些相关信息，例如该部分是什么，占多大空间等。</p>
+<p>而每种chunk的头部又是在一个基础头部上扩展而来的的，这个基础头部是strcut Resheader：</p>
+<p>源码路径：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AOSP-6.0/frameworks/base/include/androidfw/ResourceTypes.h</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> Resheader</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//表示这是一个什么chunk</span></span><br><span class="line">    <span class="keyword">uint16_t</span> type;</span><br><span class="line">    <span class="comment">//chunk header 大小</span></span><br><span class="line">    <span class="keyword">uint16_t</span> headerSize;</span><br><span class="line">    <span class="comment">// chunk headr + chunk data，也就是 chunk的总大小</span></span><br><span class="line">    <span class="keyword">uint32_t</span> size;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>每一部分的头部也是一个结构体，这个结构体继承自Resheader（按照C语言来理解，就是结构体的首元素是Resheader）。</p>
+<p>在resources.arsc中type的取值有：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">RES_NULL_TYPE               = <span class="number">0x0000</span>,</span><br><span class="line">RES_STRING_POOL_TYPE        = <span class="number">0x0001</span>,</span><br><span class="line">RES_TABLE_TYPE              = <span class="number">0x0002</span>,</span><br><span class="line">RES_XML_TYPE                = <span class="number">0x0003</span>,</span><br><span class="line"><span class="comment">// Chunk types in RES_TABLE_TYPE</span></span><br><span class="line">RES_TABLE_PACKAGE_TYPE      = <span class="number">0x0200</span>,</span><br><span class="line">RES_TABLE_TYPE_TYPE         = <span class="number">0x0201</span>,</span><br><span class="line">RES_TABLE_TYPE_SPEC_TYPE    = <span class="number">0x0202</span>,</span><br><span class="line">RES_TABLE_LIBRARY_TYPE      = <span class="number">0x0203</span></span><br></pre></td></tr></table></figure>
+<h4 id="resources-arsc头部">resources.arsc头部</h4><p>resources.arsc头部，即索引表头部，其结构如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_header</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> Resheader header;</span><br><span class="line">    <span class="comment">// 该resources.arsc文件中包含几个package资源包，</span></span><br><span class="line">    <span class="comment">// 通常一个app只会包一个package资源包，就是自己</span></span><br><span class="line">    <span class="keyword">uint32_t</span> packageCount;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里header.headerSize就是这个struct ResTable_header的大小，header.size是这个resources.arsc文件的大小。而pacakageCount为1.</p>
+<p>resources.arsc的文件是一个索引表，是RES_TABLE_TYPE，也就是说header.type为RES_TABLE_TYPE。</p>
+<p>代码验证：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> stat buf;</span><br><span class="line">stat(<span class="string">"./resources.arsc"</span>, &amp;buf);</span><br><span class="line"><span class="keyword">int</span> fd = open(<span class="string">"./resources.arsc"</span>,<span class="number">0644</span>);</span><br><span class="line"><span class="keyword">uint8_t</span> *data = (<span class="keyword">uint8_t</span>*)mmap(<span class="literal">NULL</span>,buf.st_size,PROT_READ,MAP_PRIVATE,fd,<span class="number">0</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"################# res 文件头部信息 #################\n"</span>);</span><br><span class="line">ResTable_header *resHd = (ResTable_header*)data;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"res type           = %p\n"</span>,resHd-&gt;header.type);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"res chunk hd size  = %p\n"</span>,resHd-&gt;header.headerSize);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"res chunk    size  = %p\n"</span>,resHd-&gt;header.size);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"res packages count = %p\n"</span>,resHd-&gt;packageCount);</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">################# res &#25991;&#20214;&#22836;&#37096;&#20449;&#24687; #################&#10;res type           = 0x2&#10;res chunk hd size  = 0xc&#10;res chunk    size  = 0x2f268&#10;res packages count = 0x1</span><br></pre></td></tr></table></figure>
+<p>0x2与RES_TABLE_TYPE相等，packages count为1都与预期相一致。</p>
+<h4 id="字符串资源值池">字符串资源值池</h4><p>这一部分的存储的字符串，都是资源的值，而且值是字符串类型。</p>
+<p>以res/values/strings.xml为例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"app_name"</span>&gt;</span>ResourceDemo<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>该文件中定义了一个名字为“app_name”的string类型的资源，资源值为ResourceDemo。</p>
+<p>ResourceDemo就存在这一部分，而”app_name”与”string”并没有存储在这里。</p>
+<p>这一字符串池也包含一个头部：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResStringPool_header</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> Resheader header;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 字符串个数</span></span><br><span class="line">    <span class="keyword">uint32_t</span> stringCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//字符串样式个数</span></span><br><span class="line">    <span class="keyword">uint32_t</span> styleCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Flags</span></span><br><span class="line">    <span class="keyword">enum</span> &#123;</span><br><span class="line">        <span class="comment">// If set, the string index is sorted by the string values (based</span></span><br><span class="line">        <span class="comment">// on strcmp16()).</span></span><br><span class="line">        SORTED_FLAG = <span class="number">1</span>&lt;&lt;<span class="number">0</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// String pool is encoded in UTF-8</span></span><br><span class="line">        UTF8_FLAG = <span class="number">1</span>&lt;&lt;<span class="number">8</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 该字符串是string16还是string8类型</span></span><br><span class="line">    <span class="keyword">uint32_t</span> flags;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//字符数组相对头部的位置</span></span><br><span class="line">    <span class="keyword">uint32_t</span> stringsStart;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//样式数组相对头部的位置</span></span><br><span class="line">    <span class="keyword">uint32_t</span> stylesStart;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单介绍这个字符串池如何存储和索引字符串。</p>
+<p>从神图中可以看出紧跟着头部的后面是两个uint32类型的数组：字符串偏移数组和样式偏移数组，数组元素个数分别为stringCount和styleCount.</p>
+<p>这两个数组后面之后还有两个字符数组：字符串字符数组和与样式字符数组。这两个字符数组都很大很大。。。。</p>
+<p>字符串偏移数组中的元素，就是一个字符串在字符串字符数组中的索引，而且根据索引得到的字符串的前面两个字节表示其长度，而且是以NULL结尾的，所以不会索引到其他内容。</p>
+<p>样式偏移数组中的元素，就是一个样式在样式字符数组中的索引。这里不考虑样式的情况。有兴趣的可以参考老罗的博客。</p>
+<p>现在已经搞清楚这个字符串池的结构了，而且也知道”ResourceDemo”这个字符串应该就这个字符串池里，只不过在这个字符串前面加了两个字节，表示其长度。</p>
+<p>这两个用于存储长度的字节，并不是单纯的把长度存储在这两个字节中，而是有规则的：</p>
+<ol>
+<li><p>与字符串格式是string8还是string16相关</p>
+</li>
+<li><p>string8类型的长度解码如下：</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> inline size_t</span><br><span class="line"><span class="title">decodeLength</span><span class="params">(<span class="keyword">const</span> uint8_t** str)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    size_t len = **str;</span><br><span class="line">    <span class="keyword">if</span> ((len &amp; <span class="number">0x80</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">        (*str)++;</span><br><span class="line">        len = ((len &amp; <span class="number">0x7F</span>) &lt;&lt; <span class="number">8</span>) | **str;</span><br><span class="line">    &#125;</span><br><span class="line">    (*str)++;</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>传入的参数是从字符串字符数组中以字符串偏移数组中的偏移为索引的字符串（前两个字节是长度）。</p>
+<ol>
+<li>string16类型长度解码如下：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> inline size_t</span><br><span class="line"><span class="title">decodeLength</span><span class="params">(<span class="keyword">const</span> uint16_t** str)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    size_t len = **str;</span><br><span class="line">    <span class="keyword">if</span> ((len &amp; <span class="number">0x8000</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">        (*str)++;</span><br><span class="line">        len = ((len &amp; <span class="number">0x7FFF</span>) &lt;&lt; <span class="number">16</span>) | **str;</span><br><span class="line">    &#125;</span><br><span class="line">    (*str)++;</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么来验证一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">printf(<span class="string">"################# resStringPool(资源项的值字符串资源池)头部信息 #################\n"</span>);</span><br><span class="line">ResStringPool_header *resStrPoolHd = (ResStringPool_header *)((uint8_t*)resHd+resHd-&gt;header.headerSize);</span><br><span class="line">printf(<span class="string">"type           = %p\n"</span>,resStrPoolHd-&gt;header.type);</span><br><span class="line"><span class="comment">// 这个chunk数据块头部的大小</span></span><br><span class="line">printf(<span class="string">"chunk hd size  = %p\n"</span>,resStrPoolHd-&gt;header.headerSize);</span><br><span class="line"><span class="comment">// 这个chunk数据块的大小</span></span><br><span class="line">printf(<span class="string">"chunk    size  = %p\n"</span>,resStrPoolHd-&gt;header.size);</span><br><span class="line">printf(<span class="string">"stringCount    = %p\n"</span>,resStrPoolHd-&gt;stringCount);</span><br><span class="line">printf(<span class="string">"styleCount     = %p\n"</span>,resStrPoolHd-&gt;styleCount);</span><br><span class="line">printf(<span class="string">"flags          = %p\n"</span>,resStrPoolHd-&gt;flags);</span><br><span class="line">printf(<span class="string">"stringsStart   = %p\n"</span>,resStrPoolHd-&gt;stringsStart);</span><br><span class="line">printf(<span class="string">"stylesStart    = %p\n"</span>,resStrPoolHd-&gt;stylesStart);</span><br><span class="line"><span class="comment">// header后面紧接着是两个偏移数组，之后才是数据</span></span><br><span class="line"><span class="comment">// 字符串偏移数组,数组元素个数是stringCount</span></span><br><span class="line"><span class="keyword">const</span> uint32_t*  mEntries = (<span class="keyword">const</span> uint32_t*)(data+sizeof(ResTable_header)+resStrPoolHd-&gt;header.headerSize);</span><br><span class="line"><span class="keyword">const</span> uint32_t*  mEntryStyles;</span><br><span class="line">uint32_t         mStylePoolSize;</span><br><span class="line"><span class="comment">// 字符串池地址</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">void</span> * mString = (<span class="keyword">const</span> <span class="keyword">void</span> *)((<span class="keyword">const</span> uint8_t*)resStrPoolHd+resStrPoolHd-&gt;stringsStart);</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">void</span> * mStyleString;</span><br><span class="line"><span class="keyword">if</span>(resStrPoolHd-&gt;styleCount&gt;<span class="number">0</span>)&#123;</span><br><span class="line">  <span class="comment">// 字符串样式偏移数组，数组个数是styleCount,样式数组和字符串数组一一对应</span></span><br><span class="line">  <span class="comment">// 也就是说在字符串偏移数组中所以为N的字符串，其样式在样式数组中的索引也为Ｎ</span></span><br><span class="line">  mEntryStyles = mEntries + resStrPoolHd-&gt;stringCount;</span><br><span class="line">  mStyleString = (<span class="keyword">void</span> *)((<span class="keyword">const</span> uint8_t*)resStrPoolHd+resStrPoolHd-&gt;stylesStart);</span><br><span class="line">  mStylePoolSize = (resStrPoolHd-&gt;header.size-resStrPoolHd-&gt;stylesStart)/sizeof(uint32_t);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;resStrPoolHd-&gt;stringCount;i++)&#123;</span><br><span class="line">  <span class="comment">// 加2是跳过长度</span></span><br><span class="line">  <span class="keyword">if</span>(strcmp(((<span class="keyword">char</span>*)mString)+mEntries[i]+<span class="number">2</span>,<span class="string">"ResourceDemo"</span>)==<span class="number">0</span>)&#123;</span><br><span class="line">      <span class="keyword">const</span> uint8_t * str = (((uint8_t*)mString)+mEntries[i]);</span><br><span class="line">      <span class="comment">// 字符串长度</span></span><br><span class="line">      <span class="keyword">int</span> len = decodeLength(&amp;str);</span><br><span class="line">      printf(<span class="string">"--&gt;len = %p\n"</span>,len);</span><br><span class="line">      printf(<span class="string">"--&gt;idx = %p\n"</span>,i);</span><br><span class="line">      <span class="comment">// 前两字节是长度</span></span><br><span class="line">      printf(<span class="string">"--&gt;%s\n"</span>,(((uint8_t*)mString)+mEntries[i])+<span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">################# resStringPool(&#36164;&#28304;&#39033;&#30340;&#20540;&#23383;&#31526;&#20018;&#36164;&#28304;&#27744;)&#22836;&#37096;&#20449;&#24687; #################&#10;type           = 0x1&#10;chunk hd size  = 0x1c&#10;chunk    size  = 0xcfb8&#10;stringCount    = 0x610&#10;styleCount     = (nil)&#10;flags          = 0x100&#10;stringsStart   = 0x185c&#10;stylesStart    = (nil)&#10;--&#62;len = 0xc&#10;--&#62;idx = 0x148&#10;--&#62;ResourceDemo</span><br></pre></td></tr></table></figure>
+<p>type为RES_STRING_POOL_TYPE正确。</p>
+<p>flags为0x100，表明是string8，也就是utf-8字符串。</p>
+<p>len为0xc,即12，而ResourceDemo长度为12，也正确。也找到了ResourceDemo。</p>
+<h4 id="package数据部分">package数据部分</h4><p>这一部分最为复杂。索引表头部中的packageCount记录了索引表中有多少各package数据部分。通常只有一个。</p>
+<p>同样这一部分的开头也是一个头部，结构如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_package</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> Resheader header;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 包ID</span></span><br><span class="line">    <span class="keyword">uint32_t</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//package名字，string16形式存储</span></span><br><span class="line">    <span class="keyword">uint16_t</span> name[<span class="number">128</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 类型字符串池，相对package头部的偏移</span></span><br><span class="line">    <span class="keyword">uint32_t</span> typeStrings;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 包中共有资源类型的种数</span></span><br><span class="line">    <span class="keyword">uint32_t</span> lastPublicType;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 资源项名称字符串池，相对package头部的偏移</span></span><br><span class="line">    <span class="keyword">uint32_t</span> keyStrings;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 资源项的数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> lastPublicKey;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint32_t</span> typeIdOffset;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中ID是由命名规则的，系统资源包id为0x1,而app的资源包ID为0x7f,0x1-0x7f的都是合法的。</p>
+<p>从神图中可以看到紧跟着这个头部的是两个字符串池，都和前面介绍的资源项字符串池结构一样。</p>
+<p>那么这两个字符串池用来存储什么东东呢？</p>
+<p>仍以res/values/strings.xml为例：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">string</span> <span class="attribute">name</span>=<span class="value">"app_name"</span>&gt;</span>ResourceDemo<span class="tag">&lt;/<span class="title">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>该文件中定义了一个名字为“app_name”的string类型的资源项，资源值为ResourceDemo。</p>
+<p>ResourceDemo就存在在前面介绍的资源项字符串池中，”string”存储在类型字符串池中，“app_name”存储在资源项名称字符串池中。</p>
+<p>代码验证下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"################# ResTablePackage头部信息 #################\n"</span>);</span><br><span class="line"></span><br><span class="line">  ResTablePackage_header *resTablePackageHd = (ResTablePackage_header *)(data+<span class="keyword">sizeof</span>(ResTable_header)+resStrPoolHd-&gt;header.size);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage type           = %p\n"</span>,resTablePackageHd-&gt;header.type);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage chunk hd size  = %p\n"</span>,resTablePackageHd-&gt;header.headerSize);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage chunk    size  = %p\n"</span>,resTablePackageHd-&gt;header.size);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage id             = %p\n"</span>,resTablePackageHd-&gt;id);</span><br><span class="line">  <span class="keyword">char</span> *name = allocFromUTF16(resTablePackageHd-&gt;name,<span class="number">128</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage name           = %s\n"</span>,name);</span><br><span class="line">  <span class="built_in">free</span>(name);</span><br><span class="line">  name = <span class="literal">NULL</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage typeStrings    = %p\n"</span>,resTablePackageHd-&gt;typeStrings);</span><br><span class="line">  <span class="comment">//目前这个值设置为类型字符串资源池的元素个数</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage lastPublicType = %p\n"</span>,resTablePackageHd-&gt;lastPublicType);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage keyStrings     = %p\n"</span>,resTablePackageHd-&gt;keyStrings);</span><br><span class="line">  <span class="comment">//目前这个值设置为资源项名称字符串资源池的元素个数</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage lastPublicKey  = %p\n"</span>,resTablePackageHd-&gt;lastPublicKey);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"resTablePackage typeIdOffset   = %p\n"</span>,resTablePackageHd-&gt;typeIdOffset);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"################# Type String pool信息 #################\n"</span>);</span><br><span class="line">  ResStringPool_header *typeStringPoolHd = (ResStringPool_header *)((<span class="keyword">uint8_t</span>*)resTablePackageHd+resTablePackageHd-&gt;header.headerSize);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"typeStringPoolHd type           = %p\n"</span>,typeStringPoolHd-&gt;header.type);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"typeStringPoolHd chunk hd size  = %p\n"</span>,typeStringPoolHd-&gt;header.headerSize);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"typeStringPoolHd chunk    size  = %p\n"</span>,typeStringPoolHd-&gt;header.size);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"stringCount    = %p\n"</span>,typeStringPoolHd-&gt;stringCount);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"styleCount     = %p\n"</span>,typeStringPoolHd-&gt;styleCount);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"flags          = %p\n"</span>,typeStringPoolHd-&gt;flags);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"stringsStart   = %p\n"</span>,typeStringPoolHd-&gt;stringsStart);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"stylesStart    = %p\n"</span>,typeStringPoolHd-&gt;stylesStart);</span><br><span class="line">  <span class="comment">// header后面紧接着是两个偏移数组，之后才是数据</span></span><br><span class="line">  <span class="comment">// 字符串偏移数组,数组元素个数是stringCount</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint32_t</span>*  mTypeEntries = (<span class="keyword">const</span> <span class="keyword">uint32_t</span>*)((<span class="keyword">uint8_t</span>*)typeStringPoolHd+typeStringPoolHd-&gt;header.headerSize);</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint32_t</span>*  mTypeEntryStyles;</span><br><span class="line">  <span class="keyword">uint32_t</span>         mTypeStylePoolSize;</span><br><span class="line">  <span class="comment">// 字符串池地址</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">void</span> * mTypeString = (<span class="keyword">const</span> <span class="keyword">void</span> *)((<span class="keyword">const</span> <span class="keyword">uint8_t</span>*)typeStringPoolHd+typeStringPoolHd-&gt;stringsStart);</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">void</span> * mTypeStyleString;</span><br><span class="line">  <span class="keyword">if</span>(typeStringPoolHd-&gt;styleCount&gt;<span class="number">0</span>)&#123;</span><br><span class="line">    <span class="comment">// 字符串样式偏移数组，数组个数是styleCount,样式数组和字符串数组一一对应</span></span><br><span class="line">    <span class="comment">// 也就是说在字符串偏移数组中所以为N的字符串，其样式在样式数组中的索引也为Ｎ</span></span><br><span class="line">    mTypeEntryStyles = mTypeEntries + typeStringPoolHd-&gt;stringCount;</span><br><span class="line">    mTypeStyleString = (<span class="keyword">void</span> *)((<span class="keyword">const</span> <span class="keyword">uint8_t</span>*)typeStringPoolHd+typeStringPoolHd-&gt;stylesStart);</span><br><span class="line">    mTypeStylePoolSize = (typeStringPoolHd-&gt;header.size-typeStringPoolHd-&gt;stylesStart)/<span class="keyword">sizeof</span>(<span class="keyword">uint32_t</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"----&gt;res type: \n"</span>);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;typeStringPoolHd-&gt;stringCount;i++)&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">uint8_t</span> * str = (((<span class="keyword">uint8_t</span>*)mTypeString)+mTypeEntries[i]);</span><br><span class="line">        <span class="keyword">int</span> len = decodeLength(&amp;str);</span><br><span class="line">        <span class="comment">//printf("--&gt;len = %p\n",decodeLength(&amp;str));</span></span><br><span class="line">        <span class="comment">//printf("--&gt;idx = %p\n",i);</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"--&gt;%s\n"</span>,(((<span class="keyword">uint8_t</span>*)mTypeString)+mTypeEntries[i])+<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"################# key String pool信息 #################\n"</span>);</span><br><span class="line">  ResStringPool_header *keyStringPoolHd = (ResStringPool_header *)((<span class="keyword">uint8_t</span>*)typeStringPoolHd+typeStringPoolHd-&gt;header.size);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"keyStringPoolHd type           = %p\n"</span>,keyStringPoolHd-&gt;header.type);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"keyStringPoolHd chunk hd size  = %p\n"</span>,keyStringPoolHd-&gt;header.headerSize);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"keyStringPoolHd chunk    size  = %p\n"</span>,keyStringPoolHd-&gt;header.size);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"stringCount    = %p\n"</span>,keyStringPoolHd-&gt;stringCount);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"styleCount     = %p\n"</span>,keyStringPoolHd-&gt;styleCount);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"flags          = %p\n"</span>,keyStringPoolHd-&gt;flags);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"stringsStart   = %p\n"</span>,keyStringPoolHd-&gt;stringsStart);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"stylesStart    = %p\n"</span>,keyStringPoolHd-&gt;stylesStart);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// header后面紧接着是两个偏移数组，之后才是数据</span></span><br><span class="line">  <span class="comment">// 字符串偏移数组,数组元素个数是stringCount</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint32_t</span>*  mKeyEntries = (<span class="keyword">const</span> <span class="keyword">uint32_t</span>*)((<span class="keyword">uint8_t</span>*)keyStringPoolHd+keyStringPoolHd-&gt;header.headerSize);</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">uint32_t</span>*  mKeyEntryStyles;</span><br><span class="line">  <span class="keyword">uint32_t</span>         mKeyStylePoolSize;</span><br><span class="line">  <span class="comment">// 字符串池地址</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">void</span> * mKeyString = (<span class="keyword">const</span> <span class="keyword">void</span> *)((<span class="keyword">const</span> <span class="keyword">uint8_t</span>*)keyStringPoolHd+keyStringPoolHd-&gt;stringsStart);</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">void</span> * mKeyStyleString;</span><br><span class="line">  <span class="keyword">if</span>(keyStringPoolHd-&gt;styleCount&gt;<span class="number">0</span>)&#123;</span><br><span class="line">    <span class="comment">// 字符串样式偏移数组，数组个数是styleCount,样式数组和字符串数组一一对应</span></span><br><span class="line">    <span class="comment">// 也就是说在字符串偏移数组中所以为N的字符串，其样式在样式数组中的索引也为Ｎ</span></span><br><span class="line">    mKeyEntryStyles = mKeyEntries + keyStringPoolHd-&gt;stringCount;</span><br><span class="line">    mKeyStyleString = (<span class="keyword">void</span> *)((<span class="keyword">const</span> <span class="keyword">uint8_t</span>*)keyStringPoolHd+keyStringPoolHd-&gt;stylesStart);</span><br><span class="line">    mKeyStylePoolSize = (keyStringPoolHd-&gt;header.size-keyStringPoolHd-&gt;stylesStart)/<span class="keyword">sizeof</span>(<span class="keyword">uint32_t</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"----&gt;res key: \n"</span>);</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;keyStringPoolHd-&gt;stringCount;i++)&#123;</span><br><span class="line">      <span class="keyword">if</span>(<span class="built_in">strcmp</span>(((<span class="keyword">char</span>*)mKeyString)+mKeyEntries[i]+<span class="number">2</span>,<span class="string">"app_name"</span>)==<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">uint8_t</span> * str = (((<span class="keyword">uint8_t</span>*)mKeyString)+mKeyEntries[i]);</span><br><span class="line">        <span class="keyword">int</span> len = decodeLength(&amp;str);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"--&gt;%s\n"</span>,(((<span class="keyword">uint8_t</span>*)mKeyString)+mKeyEntries[i])+<span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">################# ResTablePackage&#22836;&#37096;&#20449;&#24687; #################&#10;resTablePackage type           = 0x200&#10;resTablePackage chunk hd size  = 0x120&#10;resTablePackage chunk    size  = 0x222a4&#10;resTablePackage id             = 0x7f&#10;resTablePackage name           = com.godin.resourcedemo&#10;resTablePackage typeStrings    = 0x120&#10;resTablePackage lastPublicType = 0xc&#10;resTablePackage keyStrings     = 0x1d0&#10;resTablePackage lastPublicKey  = 0x3a8&#10;resTablePackage typeIdOffset   = (nil)&#10;################# Type String pool&#20449;&#24687; #################&#10;typeStringPoolHd type           = 0x1&#10;typeStringPoolHd chunk hd size  = 0x1c&#10;typeStringPoolHd chunk    size  = 0xb0&#10;stringCount    = 0xc&#10;styleCount     = (nil)&#10;flags          = 0x100&#10;stringsStart   = 0x4c&#10;stylesStart    = (nil)&#10;----&#62;res type:&#10;--&#62;attr&#10;--&#62;drawable&#10;--&#62;mipmap&#10;--&#62;layout&#10;--&#62;anim&#10;--&#62;string&#10;--&#62;bool&#10;--&#62;dimen&#10;--&#62;style&#10;--&#62;integer&#10;--&#62;color&#10;--&#62;id&#10;################# key String pool&#20449;&#24687; #################&#10;keyStringPoolHd type           = 0x1&#10;keyStringPoolHd chunk hd size  = 0x1c&#10;keyStringPoolHd chunk    size  = 0x7f38&#10;stringCount    = 0x3a8&#10;styleCount     = (nil)&#10;flags          = 0x100&#10;stringsStart   = 0xebc&#10;stylesStart    = (nil)&#10;----&#62;res key:&#10;--&#62;app_name</span><br></pre></td></tr></table></figure>
+<p>resTablePackage type 是RES_TABLE_PACKAGE_TYPE 正确。</p>
+<p>也打印出该资源包中的所有资源类型和找到了”app_name”这个资源项。</p>
+<h4 id="Type_Spec与Config_List">Type Spec与Config List</h4><p>神图中的Type Spec 和 Config List 仍然归属在package数据部分.</p>
+<p>这块内容是资源索引表中最重要的部分，但也是神图没能表达清楚的地方。这一部分也是同一个资源ID在不同配置下，找到不同资源文件的关键。所以这里先对这部分结构进行补充。</p>
+<p>该部分的整体结构以资源类型Type分段，每段的数据结构相似，都是以ResTable_typeSpec开头，后面紧跟着一个spec数组，若干ResTable_type，每个ResTable_type之后紧跟着ResTable_entry偏移数组和若干ResTable_entry。</p>
+<p>要注意：ResTable_typeSpec中的chunk header的size包括了其后面紧跟的spec数组所占空间大小，ResTable_type中的chunk header的size同样包括了跟随在其后面的数据大小。</p>
+<p>然后又以一个资源type的ResTable_typeSpec开头，后面还跟这上面说的那些结构。直到所有的资源Type都存放完毕。</p>
+<p>也就是说一个resources.arsc中的资源type有多少，就会有多少个。ResTable_typeSpec结构。</p>
+<p>Type Spec数结构定义如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_typeSpec</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> Resheader header;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 类型ID</span></span><br><span class="line">    <span class="keyword">uint8_t</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Must be 0.</span></span><br><span class="line">    <span class="keyword">uint8_t</span> res0;</span><br><span class="line">    <span class="comment">// Must be 0.</span></span><br><span class="line">    <span class="keyword">uint16_t</span> res1;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该类型资源项的数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> entryCount;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> &#123;</span><br><span class="line">        <span class="comment">// Additional flag indicating an entry is public.</span></span><br><span class="line">        SPEC_PUBLIC = <span class="number">0x40000000</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>紧跟着这个结构后面的是一个uint32_t类型的数组，该数组元素数量为entryCount。</p>
+<p>数组中的uint32_t数据位图表示资源的配置。而且如果这个资源是可以导出的资源，那么其SPEC_PUBLICbit位置1.其余的配置的bit位如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">    ACONFIGURATION_MCC = <span class="number">0x0001</span>,</span><br><span class="line">    ACONFIGURATION_MNC = <span class="number">0x0002</span>,</span><br><span class="line">    ACONFIGURATION_LOCALE = <span class="number">0x0004</span>,</span><br><span class="line">    ACONFIGURATION_TOUCHSCREEN = <span class="number">0x0008</span>,</span><br><span class="line">    ACONFIGURATION_KEYBOARD = <span class="number">0x0010</span>,</span><br><span class="line">    ACONFIGURATION_KEYBOARD_HIDDEN = <span class="number">0x0020</span>,</span><br><span class="line">    ACONFIGURATION_NAVIGATION = <span class="number">0x0040</span>,</span><br><span class="line">    ACONFIGURATION_ORIENTATION = <span class="number">0x0080</span>,</span><br><span class="line">    ACONFIGURATION_DENSITY = <span class="number">0x0100</span>,</span><br><span class="line">    ACONFIGURATION_SCREEN_SIZE = <span class="number">0x0200</span>,</span><br><span class="line">    ACONFIGURATION_VERSION = <span class="number">0x0400</span>,</span><br><span class="line">    ACONFIGURATION_SCREEN_LAYOUT = <span class="number">0x0800</span>,</span><br><span class="line">    ACONFIGURATION_UI_MODE = <span class="number">0x1000</span>,</span><br><span class="line">    ACONFIGURATION_SMALLEST_SCREEN_SIZE = <span class="number">0x2000</span>,</span><br><span class="line">    ACONFIGURATION_LAYOUTDIR = <span class="number">0x4000</span>,</span><br><span class="line">    ACONFIGURATION_SCREEN_ROUND = <span class="number">0x8000</span>,</span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    CONFIG_MCC = ACONFIGURATION_MCC,</span><br><span class="line">    CONFIG_MNC = ACONFIGURATION_MNC,</span><br><span class="line">    CONFIG_LOCALE = ACONFIGURATION_LOCALE,</span><br><span class="line">    CONFIG_TOUCHSCREEN = ACONFIGURATION_TOUCHSCREEN,</span><br><span class="line">    CONFIG_KEYBOARD = ACONFIGURATION_KEYBOARD,</span><br><span class="line">    CONFIG_KEYBOARD_HIDDEN = ACONFIGURATION_KEYBOARD_HIDDEN,</span><br><span class="line">    CONFIG_NAVIGATION = ACONFIGURATION_NAVIGATION,</span><br><span class="line">    CONFIG_ORIENTATION = ACONFIGURATION_ORIENTATION,</span><br><span class="line">    CONFIG_DENSITY = ACONFIGURATION_DENSITY,</span><br><span class="line">    CONFIG_SCREEN_SIZE = ACONFIGURATION_SCREEN_SIZE,</span><br><span class="line">    CONFIG_SMALLEST_SCREEN_SIZE = ACONFIGURATION_SMALLEST_SCREEN_SIZE,</span><br><span class="line">    CONFIG_VERSION = ACONFIGURATION_VERSION,</span><br><span class="line">    CONFIG_SCREEN_LAYOUT = ACONFIGURATION_SCREEN_LAYOUT,</span><br><span class="line">    CONFIG_UI_MODE = ACONFIGURATION_UI_MODE,</span><br><span class="line">    CONFIG_LAYOUTDIR = ACONFIGURATION_LAYOUTDIR,</span><br><span class="line">    CONFIG_SCREEN_ROUND = ACONFIGURATION_SCREEN_ROUND,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>以mipmap类型的资源（存储app icon）为例：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#9500;&#9472;&#9472; mipmap-hdpi-v4&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; ic_launcher.png&#10;&#9500;&#9472;&#9472; mipmap-mdpi-v4&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; ic_launcher.png&#10;&#9500;&#9472;&#9472; mipmap-xhdpi-v4&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; ic_launcher.png&#10;&#9500;&#9472;&#9472; mipmap-xxhdpi-v4&#10;&#9474;&#160;&#160; &#9492;&#9472;&#9472; ic_launcher.png&#10;&#9492;&#9472;&#9472; mipmap-xxxhdpi-v4&#10;    &#9492;&#9472;&#9472; ic_launcher.png</span><br></pre></td></tr></table></figure>
+<p>mipmap类型的资源，提供了五种配置，以适应mdpi,hdpi,xhdpi，xxhdpi，xxxhpdi等不同屏幕尺寸。</p>
+<p>mipmap类型的资源项名称为ic_launcher（注意不包括文件的后缀），对应着五个文件，app运行时，会根据当时的系统配置选择最佳的文件来显示。</p>
+<p>以此为例的话，entryCount为1.配置数组spec元素数量也是为1了。</p>
+<p>每种资源类型，在resources.arsc中只会存在一个ResTable_typeSpec数据结构，用来规范这个资源类型，比如这个资源类型中的资源项是否有配置（即可选资源），有哪些配置等。</p>
+<p>紧跟在配置数组后面的是Config list,其对于的数据结构是：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_type</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> Resheader header;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> &#123;</span><br><span class="line">        NO_ENTRY = <span class="number">0xFFFFFFFF</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 类型ID</span></span><br><span class="line">    <span class="keyword">uint8_t</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Must be 0.</span></span><br><span class="line">    <span class="keyword">uint8_t</span> res0;</span><br><span class="line">    <span class="comment">// Must be 0.</span></span><br><span class="line">    <span class="keyword">uint16_t</span> res1;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该类型资源项的数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> entryCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该资源项值在 ResTable_entry数据部分的中的偏移</span></span><br><span class="line">    <span class="keyword">uint32_t</span> entriesStart;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该资源的配置.</span></span><br><span class="line">    ResTable_config config;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>ResTable_type这个数据结构的数量，与配置的种类有关，比如这个例子中的ic_launcher有五中配置，那么就会存在五个这样的数据结构。</p>
+<p>假设res/mipmap-hdpi-v4中除了ic_launcher.png外还有一个名为test.png，而其他配置的mipmap文件夹中没有这个文件，那么也还是只有五中配置，也就是五个ResTable_type数据结构。</p>
+<p>也就是说ResTable_type数据结构的数量，由某一种类型资源中配置最多的资源项来决定，其数量等于该资源项的配置数量。</p>
+<p>接下来希望在代码中验证mipmap类型的entryCount是1，有五个ResTable_type数据结构。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">"#################### type spec信息 ####################\n"</span>);</span><br><span class="line"> ResTable_typeSpec *resTableTypeSpecHd     = <span class="literal">NULL</span>;</span><br><span class="line"> ResTable_type     *resTableTypeHd         = <span class="literal">NULL</span>;</span><br><span class="line"> <span class="comment">// 得到第一个type的ResTable_typeSpec结构</span></span><br><span class="line"> Resheader   *chunk_hd               = (Resheader *)((<span class="keyword">uint8_t</span>*)keyStringPoolHd+keyStringPoolHd-&gt;header.size);</span><br><span class="line"> <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line"> <span class="comment">// 资源包中有几个资源类型，就有几个ResTable_typeSpec结构</span></span><br><span class="line"> <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;resTablePackageHd-&gt;lastPublicType;i++)&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ResTable_typeSpec后面有若干ResTable_type，</span></span><br><span class="line">    <span class="comment">// 通过 chunk header的type来区分</span></span><br><span class="line">    <span class="comment">// 说明是TYPE_TYPE</span></span><br><span class="line">    <span class="keyword">while</span>(chunk_hd-&gt;type == RES_TABLE_TYPE_TYPE)&#123;</span><br><span class="line">      resTableTypeHd = (ResTable_type *)chunk_hd;</span><br><span class="line">      <span class="comment">// 统计mipmap类型的的ResTable_type结构有多少</span></span><br><span class="line">      <span class="keyword">if</span>(<span class="built_in">strcmp</span>((((<span class="keyword">uint8_t</span>*)mTypeString)+mTypeEntries[resTableTypeHd-&gt;id-<span class="number">1</span>]+<span class="number">2</span>),<span class="string">"mipmap"</span>)==<span class="number">0</span>)&#123;</span><br><span class="line">         num +=<span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      chunk_hd             = (Resheader *)((<span class="keyword">uint8_t</span>*)chunk_hd+chunk_hd-&gt;size);</span><br><span class="line">    &#125;</span><br><span class="line"> <span class="comment">//这是一个新的ResTable_typeSpec</span></span><br><span class="line"> resTableTypeSpecHd = (ResTable_typeSpec*)chunk_hd;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"resTableTypeSpecHd type           = %p\n"</span>,resTableTypeSpecHd-&gt;header.type);</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"resTableTypeSpecHd chunk hd size  = %p\n"</span>,resTableTypeSpecHd-&gt;header.headerSize);</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"resTableTypeSpecHd chunk    size  = %p\n"</span>,resTableTypeSpecHd-&gt;header.size);</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"resTableTypeSpecHd id             = %p\n"</span>,resTableTypeSpecHd-&gt;id);</span><br><span class="line"> <span class="comment">// 头部后面紧跟着数组元素个数为entryCount的uint32_t数组，每一个数组元素都用来描述一个资源项的配置差异性的。</span></span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"resTableTypeSpecHd entryCount     = %p\n"</span>,resTableTypeSpecHd-&gt;entryCount);</span><br><span class="line"> chunk_hd             = (Resheader *)((<span class="keyword">uint8_t</span>*)chunk_hd+chunk_hd-&gt;size);</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"-mipmap ResTable_type count is:%d\n"</span>,num);</span><br></pre></td></tr></table></figure>
+<p>结果：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#################### type spec信息 ####################</span></span><br><span class="line">resTableTypeSpecHd type           = <span class="number">0x202</span></span><br><span class="line">resTableTypeSpecHd chunk hd size  = <span class="number">0x10</span></span><br><span class="line">resTableTypeSpecHd chunk    size  = <span class="number">0x368</span></span><br><span class="line">resTableTypeSpecHd id             = <span class="number">0x1</span></span><br><span class="line">resTableTypeSpecHd entryCount     = <span class="number">0xd6</span></span><br><span class="line">resTableTypeSpecHd type           = <span class="number">0x202</span></span><br><span class="line">resTableTypeSpecHd chunk hd size  = <span class="number">0x10</span></span><br><span class="line">resTableTypeSpecHd chunk    size  = <span class="number">0x144</span></span><br><span class="line">resTableTypeSpecHd id             = <span class="number">0x2</span></span><br><span class="line">resTableTypeSpecHd entryCount     = <span class="number">0x4d</span></span><br><span class="line">resTableTypeSpecHd type           = <span class="number">0x202</span></span><br><span class="line">resTableTypeSpecHd chunk hd size  = <span class="number">0x10</span></span><br><span class="line">resTableTypeSpecHd chunk    size  = <span class="number">0x14</span></span><br><span class="line">resTableTypeSpecHd id             = <span class="number">0x3</span></span><br><span class="line">resTableTypeSpecHd entryCount     = <span class="number">0x1</span></span><br><span class="line">.................</span><br><span class="line">-mipmap ResTable_type count is:<span class="number">5</span></span><br></pre></td></tr></table></figure></p>
+<p>从结果中看出entryCount为1，mipmap类型的ResTable_type数量也为5，与其配置种类一样。</p>
+<p>然后按照前面假设的做法，在res/mipmap-hdpi-v4放置一个名为test.png的文件。重新编译生成新的resources.arsc文件，再次运行测试(加入了ResTable_type.entryCount)：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="built_in">strcmp</span>((((<span class="keyword">uint8_t</span>*)mTypeString)+mTypeEntries[resTableTypeHd-&gt;id-<span class="number">1</span>]+<span class="number">2</span>),<span class="string">"mipmap"</span>)==<span class="number">0</span>)&#123;</span><br><span class="line">         num +=<span class="number">1</span>;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">"mipmap ResTable_type.entryCount = %d\n"</span>,resTableTypeHd-&gt;entryCount);</span><br><span class="line">..........</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">........&#10;resTableTypeSpecHd type           = 0x202&#10;resTableTypeSpecHd chunk hd size  = 0x10&#10;resTableTypeSpecHd chunk    size  = 0x18&#10;resTableTypeSpecHd id             = 0x3&#10;resTableTypeSpecHd entryCount     = 0x2&#10;mipmap ResTable_type.entryCount = 2&#10;mipmap ResTable_type.entryCount = 2&#10;mipmap ResTable_type.entryCount = 2&#10;mipmap ResTable_type.entryCount = 2&#10;mipmap ResTable_type.entryCount = 2&#10;..........&#10;-mipmap ResTable_type count is:5</span><br></pre></td></tr></table></figure>
+<p>看到了吧，虽然只是在在res/mipmap-hdpi-v4放置一个名为test.png的文件，没有在其他mipmap中放置，但是每个ResTable_type.entryCount同样由1变为了2。</p>
+<p>也就是说ResTable_type.entryCount和ResTable_typeSpec.entryCount应该保持一致，都为该类型资源项的个数，如果一个类型的某个资源项只存在某一个配置文件夹下，那也算一个资源项。</p>
+<h4 id="ResTable_entry">ResTable_entry</h4><p>到这里就只剩下ResTable_type结构中的ResTable_entry了。这里面存储了资源项的值和资源项的资源ID，可以理解为资源项的数据块。</p>
+<p>每一个ResTable_type结构后面都会有若干ResTable_entry，至于ResTable_entry的数量，每个ResTable_type可能回有所不同。</p>
+<p>还以前面res/mipmap-hdpi-v4放置一个名为test.png的文件，其它mipmap文件夹中不放为例，那么与mipmap-hdpi-v4对应的ResTable_type结构后面的ResTable_entry就有两个，其他mipmap对应的ResTable_type后面只有一个ResTable_entry。但是所有的ResTable_type结构后面跟着的ResTable_entry偏移数组元素数都是一样的，还是为2.</p>
+<p>再来看一次ResTable_type：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_type</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> Resheader header;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> &#123;</span><br><span class="line">        NO_ENTRY = <span class="number">0xFFFFFFFF</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 类型ID</span></span><br><span class="line">    <span class="keyword">uint8_t</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Must be 0.</span></span><br><span class="line">    <span class="keyword">uint8_t</span> res0;</span><br><span class="line">    <span class="comment">// Must be 0.</span></span><br><span class="line">    <span class="keyword">uint16_t</span> res1;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该类型资源项的数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> entryCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该资源项值在 ResTable_entry数据部分的中的偏移</span></span><br><span class="line">    <span class="keyword">uint32_t</span> entriesStart;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 该资源的配置.</span></span><br><span class="line">    ResTable_config config;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>ResTable_type结构后面紧跟一个大小为entryCount的uint32_t数组ResTable_entry偏移数组，每一个数组元素都用来描述一个资源项数据块的偏移位置。</p>
+<p>ResTable_type结构中的entriesStart指明了ResTable_type后面的一系列的ResTable_entry的起始位置。</p>
+<p>这里还有一个十分重要的的地方，前面说了资源项值分为两大类：bag类值和非bag类值。</p>
+<p>非bag类值的资源项数据块是ResTable_entry，而bag类值资源项数据块由ResTable_map_entry描述。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_entry</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Number of bytes in this structure.</span></span><br><span class="line">    <span class="keyword">uint16_t</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">enum</span> &#123;  </span><br><span class="line">        FLAG_COMPLEX = <span class="number">0x0001</span>,  </span><br><span class="line">        FLAG_PUBLIC = <span class="number">0x0002</span>,</span><br><span class="line">        FLAG_WEAK = <span class="number">0x0004</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">//根据flags的不同,后面跟随的数据也不相同：bag资源和非bag资源</span></span><br><span class="line">    <span class="comment">//flags为1,则ResTable_entry是ResTable_map_entry</span></span><br><span class="line">    <span class="comment">//资源项标志位。如果是一个Bag资源项，那么FLAG_COMPLEX位就等于1，并且在ResTable_entry后面跟有一个ResTable_map数组，</span></span><br><span class="line">    <span class="comment">//否则的话，在ResTable_entry后面跟的是一个Res_value。如果是一个可以被引用的资源项，那么FLAG_PUBLIC位就等于1。/</span></span><br><span class="line">    <span class="keyword">uint16_t</span> flags;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//对应的资源项名称 资源项名称字符串池中的偏移数组的索引</span></span><br><span class="line">    <span class="keyword">struct</span> ResStringPool_ref key;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> ResTable_map_entry : <span class="keyword">public</span> ResTable_entry</span><br><span class="line">&#123;</span><br><span class="line">    ResTable_ref parent;</span><br><span class="line">    <span class="comment">//bag类可取值的数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> count;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> ResStringPool_ref</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">uint32_t</span> index;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>对应mipmap类型的ic_launcher来说，其值也不是事先就定义好的，所以是一个非bag类值。可以通过flags来验证。</p>
+<p>对于非bag类值来说，ResTable_entry后面紧跟着一个Res_value结构：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * Representation of a value in a resource, supplying type</span><br><span class="line"> * information.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> Res_value</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Number of bytes in this structure.</span></span><br><span class="line">    <span class="keyword">uint16_t</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Always set to 0.</span></span><br><span class="line">    <span class="keyword">uint8_t</span> res0;</span><br><span class="line">    <span class="comment">//数据的类型,可以从上面的枚举类型中获取</span></span><br><span class="line">    <span class="keyword">uint8_t</span> dataType;</span><br><span class="line">    <span class="comment">// The data for this item, as interpreted according to dataType.</span></span><br><span class="line">    <span class="comment">// 对于bag类值来说，data就是其值</span></span><br><span class="line">    <span class="comment">// 对于非bag类值来说，其值是在资源项值字符串池中偏移数组的索引</span></span><br><span class="line">    <span class="keyword">typedef</span> <span class="keyword">uint32_t</span> data_type;</span><br><span class="line">    data_type data;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">copyFrom_dtoh</span><span class="params">(<span class="keyword">const</span> Res_value&amp; src)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>现在以代码获取ic_launcher的值来验证：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">printf("#################### type spec信息 ####################\n");</span><br><span class="line">  ResTable_typeSpec *resTableTypeSpecHd     = NULL;</span><br><span class="line">  ResTable_type     *resTableTypeHd         = NULL;</span><br><span class="line">  Resheader   *chunk_hd               = (Resheader *)((uint8_t*)keyStringPoolHd+keyStringPoolHd-&gt;header.size);</span><br><span class="line">  int num = 0;</span><br><span class="line">  for(int i=0;i&lt;resTablePackageHd-&gt;lastPublicType;i++)&#123;</span><br><span class="line"></span><br><span class="line">     // 说明是TYPE_TYPE</span><br><span class="line">     while(chunk_hd-&gt;type == RES_TABLE_TYPE_TYPE)&#123;</span><br><span class="line">       resTableTypeHd = (ResTable_type *)chunk_hd;</span><br><span class="line"></span><br><span class="line">       if(strcmp((((uint8_t*)mTypeString)+mTypeEntries[resTableTypeHd-&gt;id-1]+2),"mipmap")==0)&#123;</span><br><span class="line">          num +=1;</span><br><span class="line">          printf("mipmap ResTable_type.entryCount = %d\n",resTableTypeHd-&gt;entryCount);</span><br><span class="line">          // 得到数组</span><br><span class="line">          uint32_t * su =(uint32_t *)(resTableTypeHd-&gt;header.headerSize+(uint8_t*)resTableTypeHd);</span><br><span class="line"></span><br><span class="line">          //ResTable_entry data starts</span><br><span class="line">          // 得到ResTable_entry起始位置</span><br><span class="line">          uint8_t * addr = (uint8_t*)((uint8_t*)resTableTypeHd+resTableTypeHd-&gt;header.headerSize+resTableTypeHd-&gt;entryCount*sizeof(uint32_t));</span><br><span class="line">         for(int i=0;i&lt;resTableTypeHd-&gt;entryCount;i++)&#123;</span><br><span class="line">           // 因为偏移数组中元素数量可能比其后面的ResTable_entry数量多，对于没有对应ResTable_entry结构的偏移数组中元素，其值为0xffffffff.</span><br><span class="line">           if(su[i]!=0xffffffff)&#123;</span><br><span class="line">              // 依次加上偏移得到对应的ResTable_entry</span><br><span class="line">              ResTable_entry * entry = (ResTable_entry *)(addr+su[i]);</span><br><span class="line">              // 如果flags是bag值类型的话，flags最低bit位为1</span><br><span class="line">               printf("entry flags:0x%x\n",entry-&gt;flags);</span><br><span class="line">              if(strstr(((char*)mKeyString)+mKeyEntries[entry-&gt;key.index],"ic_launcher"))&#123;</span><br><span class="line">                  //ResTable_entry后面紧跟着Res_Value</span><br><span class="line">                Res_value* value = (Res_value*)((uint8_t*)entry+entry-&gt;size);</span><br><span class="line">                printf("value is:%s\n",((char*)mString)+mEntries[value-&gt;data]+2);</span><br><span class="line">              &#125;</span><br><span class="line">           &#125;</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       chunk_hd             = (Resheader *)((uint8_t*)chunk_hd+chunk_hd-&gt;size);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">  resTableTypeSpecHd = (ResTable_typeSpec*)chunk_hd;</span><br><span class="line">  printf("resTableTypeSpecHd type           = %p\n",resTableTypeSpecHd-&gt;header.type);</span><br><span class="line">  printf("resTableTypeSpecHd chunk hd size  = %p\n",resTableTypeSpecHd-&gt;header.headerSize);</span><br><span class="line">  printf("resTableTypeSpecHd chunk    size  = %p\n",resTableTypeSpecHd-&gt;header.size);</span><br><span class="line">  printf("resTableTypeSpecHd id             = %p\n",resTableTypeSpecHd-&gt;id);</span><br><span class="line">  // 头部后面紧跟着数组元素个数为entryCount的uint32_t数组，每一个数组元素都用来描述一个资源项的配置差异性的。</span><br><span class="line">  printf("resTableTypeSpecHd entryCount     = %p\n",resTableTypeSpecHd-&gt;entryCount);</span><br><span class="line">  chunk_hd             = (Resheader *)((uint8_t*)chunk_hd+chunk_hd-&gt;size);</span><br><span class="line">  &#125;</span><br><span class="line"> printf("-mipmap ResTable_type count is:%d\n",num);</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">...........&#10;resTableTypeSpecHd type           = 0x202&#10;resTableTypeSpecHd chunk hd size  = 0x10&#10;resTableTypeSpecHd chunk    size  = 0x18&#10;resTableTypeSpecHd id             = 0x3&#10;resTableTypeSpecHd entryCount     = 0x2&#10;mipmap ResTable_type.entryCount = 2&#10;entry flags:0&#10;value is:res/mipmap-mdpi-v4/ic_launcher.png&#10;mipmap ResTable_type.entryCount = 2&#10;entry flags:0&#10;value is:res/mipmap-hdpi-v4/ic_launcher.png&#10;entry flags:0&#10;mipmap ResTable_type.entryCount = 2&#10;entry flags:0&#10;value is:res/mipmap-xhdpi-v4/ic_launcher.png&#10;mipmap ResTable_type.entryCount = 2&#10;entry flags:0&#10;value is:res/mipmap-xxhdpi-v4/ic_launcher.png&#10;mipmap ResTable_type.entryCount = 2&#10;entry flags:0&#10;value is:res/mipmap-xxxhdpi-v4/ic_launcher.png&#10;.........&#10;-mipmap ResTable_type count is:5</span><br></pre></td></tr></table></figure>
+<p>那么对于bag值类型，以前面介绍bag时列举的类型：</p>
+<p>在res/values中创建attrs.xml文件，在其中自定一个bag类型的属性资源。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">attr</span> <span class="attribute">name</span>=<span class="value">"custom_orientation"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">enum</span> <span class="attribute">name</span>=<span class="value">"custom_vertical"</span> <span class="attribute">value</span>=<span class="value">"100"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">enum</span> <span class="attribute">name</span>=<span class="value">"custom_horizontal"</span> <span class="attribute">value</span>=<span class="value">"200"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">attr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">resources</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>前面已经知道了custom_orientation是由三个bag构成的：</p>
+<p>第一个bag：名称是“^type”，值是TYPE_ENUM(TYPE_ENUM = 1&lt;&lt;16)</p>
+<p>第二个bag：名称是“custom_vertical”，值是100</p>
+<p>第三个bag: 名称是“custom_horizontal”，值是200</p>
+<p>另外还要给这个bag分配资源ID：</p>
+<p>名称是“^type”的bag其分配的资源ID是attr类型的，而“custom_vertical”和“custom_horizontal”被分配到的资源ID是id类型的。</p>
+<p>对于bag值的资源项数据块是ResTable_map_entry:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable_map_entry : <span class="keyword">public</span> ResTable_entry</span><br><span class="line">&#123;</span><br><span class="line">    ResTable_ref parent;</span><br><span class="line">    <span class="comment">//bag类可取值的数量</span></span><br><span class="line">    <span class="keyword">uint32_t</span> count;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>ResTable_map_entry后面跟着若干ResTable_map，确切来说一个Bag资源项有N个bag，那么在ResTable_map_entry后面就有N个ResTable_map。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span><br><span class="line"> * A single name/value mapping that is part of a complex resource</span><br><span class="line"> * entry.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">struct</span> ResTable_map</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//等于bag的资源项ID。</span></span><br><span class="line">    ResTable_ref name;</span><br><span class="line">    <span class="comment">// 等于bag的资源项值。</span></span><br><span class="line">    <span class="comment">// 确切来说是Res_value.data</span></span><br><span class="line">    Res_value value;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>代码验证：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">printf("#################### type spec信息 ####################\n");</span><br><span class="line">ResTable_typeSpec *resTableTypeSpecHd     = NULL;</span><br><span class="line">ResTable_type     *resTableTypeHd         = NULL;</span><br><span class="line">ResChunk_header   *chunk_hd               = (ResChunk_header *)((uint8_t*)keyStringPoolHd+keyStringPoolHd-&gt;chunk_header.size);</span><br><span class="line">int num = 0;</span><br><span class="line">for(int i=0;i&lt;resTablePackageHd-&gt;lastPublicType;i++)&#123;</span><br><span class="line"></span><br><span class="line">   // 说明是TYPE_TYPE</span><br><span class="line">   while(chunk_hd-&gt;type == RES_TABLE_TYPE_TYPE)&#123;</span><br><span class="line">     resTableTypeHd = (ResTable_type *)chunk_hd;</span><br><span class="line"></span><br><span class="line">     if(strcmp((((uint8_t*)mTypeString)+mTypeEntries[resTableTypeHd-&gt;id-1]+2),"mipmap")==0)&#123;</span><br><span class="line">        num +=1;</span><br><span class="line">        printf("mipmap ResTable_type.entryCount = %d\n",resTableTypeHd-&gt;entryCount);</span><br><span class="line">        // 得到数组</span><br><span class="line">        uint32_t * su =(uint32_t *)(resTableTypeHd-&gt;chunk_header.headerSize+(uint8_t*)resTableTypeHd);</span><br><span class="line"></span><br><span class="line">        //ResTable_entry data starts</span><br><span class="line">        uint8_t * addr = (uint8_t*)((uint8_t*)resTableTypeHd+resTableTypeHd-&gt;chunk_header.headerSize+resTableTypeHd-&gt;entryCount*sizeof(uint32_t));</span><br><span class="line">       for(int i=0;i&lt;resTableTypeHd-&gt;entryCount;i++)&#123;</span><br><span class="line">         if(su[i]!=0xffffffff)&#123;</span><br><span class="line">            ResTable_entry * entry = (ResTable_entry *)(addr+su[i]);</span><br><span class="line">            printf("entry flags:0x%x\n",entry-&gt;flags);</span><br><span class="line">            if(strstr(((char*)mKeyString)+mKeyEntries[entry-&gt;key.index],"ic_launcher"))&#123;</span><br><span class="line">                //ResTable_entry后面紧跟着Res_Value</span><br><span class="line">              Res_value* value = (Res_value*)((uint8_t*)entry+entry-&gt;size);</span><br><span class="line">              printf("value is:%s\n",((char*)mString)+mEntries[value-&gt;data]+2);</span><br><span class="line">            &#125;</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     // 因为custom_orientation本质上是一个属性资源，所以以attr来判断</span><br><span class="line">     if(strcmp((((uint8_t*)mTypeString)+mTypeEntries[resTableTypeHd-&gt;id-1]+2),"attr")==0)&#123;</span><br><span class="line">       uint32_t * su =(uint32_t *)(resTableTypeHd-&gt;chunk_header.headerSize+(uint8_t*)resTableTypeHd);</span><br><span class="line"></span><br><span class="line">       //ResTable_entry data starts</span><br><span class="line">       uint8_t * addr = (uint8_t*)((uint8_t*)resTableTypeHd+resTableTypeHd-&gt;chunk_header.headerSize+resTableTypeHd-&gt;entryCount*sizeof(uint32_t));</span><br><span class="line">       for(int i=0;i&lt;resTableTypeHd-&gt;entryCount;i++)&#123;</span><br><span class="line">         if(su[i]!=0xffffffff)&#123;</span><br><span class="line">            ResTable_map_entry * map_entry = (ResTable_map_entry *)(addr+su[i]);</span><br><span class="line">             if(strstr(((char*)mKeyString)+mKeyEntries[map_entry-&gt;key.index],"custom_orientation"))&#123;</span><br><span class="line">                  printf("entry flags:0x%x\n",map_entry-&gt;flags);</span><br><span class="line">                  // 等于本bag资源的可取值数量，也预示着后面紧跟着count个ResTable_map结构</span><br><span class="line">                  printf("bag count: %d\n",map_entry-&gt;count);</span><br><span class="line">                  for(int j=0;j&lt;map_entry-&gt;count;j++)&#123;</span><br><span class="line">                    ResTable_map* map_value = (ResTable_map*)((uint8_t*)map_entry+map_entry-&gt;size);</span><br><span class="line">                    ResTable_map* map_value1 = map_value+j;</span><br><span class="line">                    printf("bag value--&gt;%p\n",map_value1-&gt;value.data);</span><br><span class="line">                    printf("bag id--&gt;%p\n" ,  map_value1-&gt;name);</span><br><span class="line"></span><br><span class="line">                  &#125;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     chunk_hd             = (ResChunk_header *)((uint8_t*)chunk_hd+chunk_hd-&gt;size);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">resTableTypeSpecHd = (ResTable_typeSpec*)chunk_hd;</span><br><span class="line">printf("resTableTypeSpecHd type           = %p\n",resTableTypeSpecHd-&gt;chunk_header.type);</span><br><span class="line">printf("resTableTypeSpecHd chunk hd size  = %p\n",resTableTypeSpecHd-&gt;chunk_header.headerSize);</span><br><span class="line">printf("resTableTypeSpecHd chunk    size  = %p\n",resTableTypeSpecHd-&gt;chunk_header.size);</span><br><span class="line">printf("resTableTypeSpecHd id             = %p\n",resTableTypeSpecHd-&gt;id);</span><br><span class="line">// 头部后面紧跟着数组元素个数为entryCount的uint32_t数组，每一个数组元素都用来描述一个资源项的配置差异性的。</span><br><span class="line">printf("resTableTypeSpecHd entryCount     = %p\n",resTableTypeSpecHd-&gt;entryCount);</span><br><span class="line">chunk_hd             = (ResChunk_header *)((uint8_t*)chunk_hd+chunk_hd-&gt;size);</span><br><span class="line">&#125;</span><br><span class="line">printf("-mipmap ResTable_type count is:%d\n",num);</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#################### type spec&#20449;&#24687; ####################&#10;resTableTypeSpecHd type           = 0x202&#10;resTableTypeSpecHd chunk hd size  = 0x10&#10;resTableTypeSpecHd chunk    size  = 0x368&#10;resTableTypeSpecHd id             = 0x1&#10;resTableTypeSpecHd entryCount     = 0xd6&#10;entry flags:0x1 //&#39044;&#31034;&#30528;&#26159;&#19968;&#20010;bag&#20540;&#31867;&#22411;&#10;bag count: 3&#10;bag value--&#62;0x10000 //TYPE_ENUM = 1&#60;&#60;16&#10;bag id--&#62;0x1000000&#10;bag value--&#62;0xc8 //200&#10;bag id--&#62;0x7f0c0009&#10;bag value--&#62;0x64 //100&#10;bag id--&#62;0x7f0c000a</span><br></pre></td></tr></table></figure>
+<p>结果和预期都是符合的，否则使无法解析的。</p>
+<p>这里特别指出一点，ResTable_type后面的资源项数据块可能既有ResTable_entry又有ResTable_map_entry，例如本例中资源类型attr的ResTable_type就是这种情况。</p>
+<p>但ResTable_map_entry继承自ResTable_entry。</p>
+<p>ResTable_entry后面跟这个的是一个Res_value,而ResTable_map_entry后面跟着的是若干ResTable_map,数量是ResTable_map_entry.count决定。每个ResTable_map中都有一个Res_value。</p>
+<p>好了到这里位置就彻底搞清楚resources.arsc的格式了。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/15/android_resource_1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之App中的资源管理前奏
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/05/Android_context/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App中的Context解析</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="android_resource_2" data-title="Android6.0之App中的资源Rsources.arsc详解" data-url="http://www.iloveandroid.net/2016/08/15/android_resource_2/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
