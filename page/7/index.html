@@ -183,6 +183,65 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-setPyqtEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/06/setPyqtEnvironment/" class="article-date">
+  	<time datetime="2015-10-06T06:58:40.000Z" itemprop="datePublished">2015-10-06</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/06/setPyqtEnvironment/">ubuntu 14.04+QT5.5+PyQt5.5+Eric-6开发环境搭建</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="安装QT5-5">安装QT5.5</h3><p>去QT官网或者qtcn论坛下载最新的QT版本,然后安装.此步骤忽略.</p>
+<p>ubuntu系统自带了qmke，但是版本较低，要使用前面安装的最新版本QT中的qmake。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln <span class="operator">-s</span> /usr/<span class="built_in">local</span>/QT5.<span class="number">5</span>/<span class="number">5.5</span>/gcc_64/bin/qmake /usr/bin/qmake</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Python/">Python</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/06/setPyqtEnvironment/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-studyGit_5" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -735,68 +794,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/29/Android_SEAndroid_2/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Android_SEAndroid_1" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/28/Android_SEAndroid_1/" class="article-date">
-  	<time datetime="2015-09-28T05:55:41.000Z" itemprop="datePublished">2015-09-28</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/28/Android_SEAndroid_1/">Android 5.1 SEAndroid分析之启动篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面介绍了init进程中启动的核心服务中的zygote和property,接下来就介绍下SEAndroid.init进程中加载了SEAndroid的策略文件,开启了SEAndroid.SEAndroid主要用来提升Android系统的安全体验,基于SElinux实现.在完备的SEAndroid策略的支持下,纵然获取了root权限,也没有多大用处,再也不能像以前那样为所欲为了.因为在SEAndroid中,root用户,也仅仅是一个普通用户而已.</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/28/Android_SEAndroid_1/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
