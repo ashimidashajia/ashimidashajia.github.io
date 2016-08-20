@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之App中的资源查找过程 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="给定一个相同的资源ID，在不同的设备配置之下，查找到的可能是不同的资源。这个资源查找过程对应用程序来说，是完全透明的。现在就详细分析资源管理框架是如何根据ID来查找资源的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之App中的资源查找过程">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/20/android_resource_4/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="给定一个相同的资源ID，在不同的设备配置之下，查找到的可能是不同的资源。这个资源查找过程对应用程序来说，是完全透明的。现在就详细分析资源管理框架是如何根据ID来查找资源的。">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/resources-8.jpg">
+<meta property="og:image" content="http://7xj6ce.com1.z0.glb.clouddn.com/resources-.png">
+<meta property="og:updated_time" content="2016-08-20T07:16:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之App中的资源查找过程">
+<meta name="twitter:description" content="给定一个相同的资源ID，在不同的设备配置之下，查找到的可能是不同的资源。这个资源查找过程对应用程序来说，是完全透明的。现在就详细分析资源管理框架是如何根据ID来查找资源的。">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-android_resource_4" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/20/android_resource_4/" class="article-date">
+  	<time datetime="2016-08-20T02:06:17.000Z" itemprop="datePublished">2016-08-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之App中的资源查找过程
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给定一个相同的资源ID，在不同的设备配置之下，查找到的可能是不同的资源。这个资源查找过程对应用程序来说，是完全透明的。现在就详细分析资源管理框架是如何根据ID来查找资源的。</p>
+<a id="more"></a>
+<p>资源按照是否有文件可以分为两类：。第一类资源是不对应有文件的，例如字符串资源，而第二类资源是对应有文件的，例如drawable资源。</p>
+<p>分别对这两种情况进行分析。</p>
+<h3 id="资源ID格式">资源ID格式</h3><p>前面的文章中已经介绍了资源ID格式，这里在啰嗦一遍。</p>
+<p>资源ID是一个32位四字节数字，格式：PPTTEEEE。</p>
+<p>其中PP代表package id.系统资源的package id为0x1,而app自己的资源包package id为0x7f。0x1与0x7f之间的package id都合法。</p>
+<p>TT代表资源的类型(type)；</p>
+<p>NNNN代表这个类型下面的资源项的名称（entry）；</p>
+<p>TT 和NNNN 的取值是由aapt工具随意指定的——基本上每一种新的资源类型的数字都是从上一个数字累加的（从1开始）；而每一个新的资源entry条目也是从数字1开始向上累加的。</p>
+<p>假设3个资源文件按照下面的顺序排列：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">layout/main.xml&#10;&#10;drawable/icon.xml&#10;&#10;layout/listitem.xml</span><br></pre></td></tr></table></figure></p>
+<p>aapt会依次处理：</p>
+<p>按照顺序，第一个资源的类型是”layout” 所以指定TT=1， 这个类型下面的第一个资源是”main” ，所以指定NNNN=1 ，最后这个资源就是0x7f010001。</p>
+<p>第二个资源类型是”drawable”，所以指定TT=2，这个类型下的”icon” 指定NNNN =1，所以最终的资源ID 是 0x7f020001。</p>
+<p>第三个资源类型是”layout”，而这个资源类型在前面已经有定义了，所以TT仍然是1，但是”listitem”这个名字是新出现的，所以指定NNNN=2，因此最终的资源ID 就是 0x7f010002。</p>
+<p>也就是说NNNN是可以重复的，因为可以结合TT来区分。</p>
+<h3 id="从资源ID获取字符串资源">从资源ID获取字符串资源</h3><p>下面的代码用来获得一个app的名字。以此为入口点来分析字符串资源的查找过程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String appName = getResources().getString(R.string.app_name);</span><br></pre></td></tr></table></figure>
+<p>R.string.app_name是一个资源ID。</p>
+<p>整个过程如下所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/resources-8.jpg" alt=""></p>
+<p>其中第6步返回的Restable对象，通过上一篇的介绍已经知道了，它里面包含了本app所有的resoureces.arsc。</p>
+<p>重点关注ResTable的getReouces方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">ssize_t</span> ResTable::getResource(<span class="keyword">uint32_t</span> resID, Res_value* outValue, <span class="keyword">bool</span> mayBeBag, <span class="keyword">uint16_t</span> density,</span><br><span class="line">        <span class="keyword">uint32_t</span>* outSpecFlags, ResTable_config* outConfig) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (mError != NO_ERROR) &#123;</span><br><span class="line">        <span class="keyword">return</span> mError;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 得到package  id:PP</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">ssize_t</span> p = getResourcePackageIndex(resID);</span><br><span class="line">    <span class="comment">// 得到 type : TT</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> t = Res_GETTYPE(resID);</span><br><span class="line">    <span class="comment">// 得到 entry: EEEE</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> e = Res_GETENTRY(resID);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      ......................</span><br><span class="line">        <span class="keyword">return</span> BAD_INDEX;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (t &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      ................</span><br><span class="line">        <span class="keyword">return</span> BAD_INDEX;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 得到packageGroup，里面有package</span></span><br><span class="line">    <span class="comment">// 标准Android中app的资源包中只会包含一个package ,id为0x7f</span></span><br><span class="line">    <span class="comment">// 而系统资源的package  id 为 0x1</span></span><br><span class="line">    <span class="comment">// 也就是说PackageGroup虽然可以包含多个package,但实际上只会包含一个package</span></span><br><span class="line">    <span class="keyword">const</span> PackageGroup* <span class="keyword">const</span> grp = mPackageGroups[p];</span><br><span class="line">    <span class="keyword">if</span> (grp == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ALOGW(<span class="string">"Bad identifier when getting value for resource number 0x%08x"</span>, resID);</span><br><span class="line">        <span class="keyword">return</span> BAD_INDEX;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Allow overriding density</span></span><br><span class="line">    <span class="comment">// 配置相关</span></span><br><span class="line">    ResTable_config desiredConfig = mParams;</span><br><span class="line">    <span class="keyword">if</span> (density &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        desiredConfig.density = density;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Entry entry;</span><br><span class="line">    <span class="comment">// 实际上就是根据grp,t,e在resources.arsc索引资源</span></span><br><span class="line">    <span class="keyword">status_t</span> err = getEntry(grp, t, e, &amp;desiredConfig, &amp;entry);</span><br><span class="line">    <span class="keyword">if</span> (err != NO_ERROR) &#123;</span><br><span class="line">    ................</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 根据flags判断是否是flags资源，这是处理非bag资源的</span></span><br><span class="line">    <span class="keyword">if</span> ((dtohs(entry.entry-&gt;flags) &amp; ResTable_entry::FLAG_COMPLEX) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!mayBeBag) &#123;</span><br><span class="line">            ALOGW(<span class="string">"Requesting resource 0x%08x failed because it is complex\n"</span>, resID);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> BAD_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ResTable_entry后面跟着的就是Res_value</span></span><br><span class="line">    <span class="keyword">const</span> Res_value* value = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> Res_value*&gt;(</span><br><span class="line">            <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">uint8_t</span>*&gt;(entry.entry) + entry.entry-&gt;size);</span><br><span class="line"></span><br><span class="line">    outValue-&gt;size = dtohs(value-&gt;size);</span><br><span class="line">    outValue-&gt;res0 = value-&gt;res0;</span><br><span class="line">    <span class="comment">// 得到数据类型</span></span><br><span class="line">    outValue-&gt;dataType = value-&gt;dataType;</span><br><span class="line">    <span class="comment">// 得到数据在字符串值池中索引数组的索引</span></span><br><span class="line">    outValue-&gt;data = dtohl(value-&gt;data);</span><br><span class="line">    <span class="keyword">if</span> (grp-&gt;dynamicRefTable.lookupResourceValue(outValue) != NO_ERROR) &#123;</span><br><span class="line">        ALOGW(<span class="string">"Failed to resolve referenced package: 0x%08x"</span>, outValue-&gt;data);</span><br><span class="line">        <span class="keyword">return</span> BAD_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (kDebugTableNoisy) &#123;</span><br><span class="line">        <span class="keyword">size_t</span> len;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Found value: pkg=%zu, type=%d, str=%s, int=%d\n"</span>,</span><br><span class="line">                entry.package-&gt;header-&gt;index,</span><br><span class="line">                outValue-&gt;dataType,</span><br><span class="line">                outValue-&gt;dataType == Res_value::TYPE_STRING ?</span><br><span class="line">                    String8(entry.package-&gt;header-&gt;values.stringAt(outValue-&gt;data, &amp;len)).<span class="built_in">string</span>() :</span><br><span class="line">                    <span class="string">""</span>,</span><br><span class="line">                outValue-&gt;data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (outSpecFlags != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// 该资源项在ResTable_typeSpec后面的spec数组中的配置</span></span><br><span class="line">        *outSpecFlags = entry.specFlags;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (outConfig != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        *outConfig = entry.config;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回的是资源所在的resources.arsc在ResTable。mHeaders中的索引</span></span><br><span class="line">    <span class="keyword">return</span> entry.package-&gt;header-&gt;index;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中getEntry()用来获取Entry:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable::Entry &#123;</span><br><span class="line">    <span class="comment">// 该资源项的配置，来自ResTable_type.config</span></span><br><span class="line">    ResTable_config config;</span><br><span class="line">    <span class="comment">//ResTable_entry.flags，据此可以判断资源是否是bag资源</span></span><br><span class="line">    <span class="keyword">const</span> ResTable_entry* entry;</span><br><span class="line">    <span class="keyword">const</span> ResTable_type* type;</span><br><span class="line">    <span class="comment">// 来自ResTable_typeSpec后面紧跟着的spec数组中对该资源项的配置</span></span><br><span class="line">    <span class="keyword">uint32_t</span> specFlags;</span><br><span class="line">    <span class="comment">// 所在的资源包</span></span><br><span class="line">    <span class="keyword">const</span> Package* package;</span><br><span class="line">    <span class="comment">// 所在资源包的类型字符串池</span></span><br><span class="line">    StringPoolRef typeStr;</span><br><span class="line">    <span class="comment">// 所在资源包的资源项名称字符串池</span></span><br><span class="line">    StringPoolRef keyStr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>前面分析resources.arsc格式的时候，已经知道了resources.arsc中的每个资源类型type，都有唯一的一个ResTable_typeSpec,其后面跟着若干ResTable_type。ResTable_type的数量为这个资源类型的配置数量。每个ResTable_type后面跟着该类型资源项的值入口，在resouces.arsc中entry是ResTable_entry。其后面跟着Res_value.当然这是非bag值时的情况。如果是bag资源的话，在resouces.arsc中entry是ResTable_map_entry,其后面跟着ResTable_map数组，数组元素数量是bag可取值的数量。</p>
+<p>对于上面的Entry结构就很好理解了.</p>
+<p>getEntry方法定义：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">status_t</span> ResTable::getEntry(</span><br><span class="line">        <span class="keyword">const</span> PackageGroup* packageGroup, <span class="keyword">int</span> typeIndex, <span class="keyword">int</span> entryIndex,</span><br><span class="line">        <span class="keyword">const</span> ResTable_config* config,</span><br><span class="line">        Entry* outEntry) <span class="keyword">const</span></span><br></pre></td></tr></table></figure>
+<p>至于getEntry的代码就不贴出来了，直接说一下他的操作流程.</p>
+<p>packageGroup中包含了资源包数据，也就包含了该资源包的所有ResTable_typeSpec。只不过这里使用下面的Type来代表一个类型：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable::Type</span><br><span class="line">&#123;   </span><br><span class="line">    <span class="comment">// 所在资源包的索引表头部</span></span><br><span class="line">    <span class="keyword">const</span> Header* <span class="keyword">const</span>             header;</span><br><span class="line">    <span class="comment">// 所在的package</span></span><br><span class="line">    <span class="keyword">const</span> Package* <span class="keyword">const</span>            package;</span><br><span class="line">    <span class="comment">// 该类型资源的数量</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">size_t</span>                    entryCount;</span><br><span class="line">    <span class="comment">// 该类型的ResTable_typeSpec，只有一个</span></span><br><span class="line">    <span class="keyword">const</span> ResTable_typeSpec*        typeSpec;</span><br><span class="line">    <span class="comment">// ResTable_typeSpec后面紧跟着的spec数组</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">uint32_t</span>*                 typeSpecFlags;</span><br><span class="line">    IdmapEntries                    idmapEntries;</span><br><span class="line">    <span class="comment">// 该类型所有资源项的配置</span></span><br><span class="line">    Vector&lt;<span class="keyword">const</span> ResTable_type*&gt;    configs;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上一篇介绍创建ResTable对象时，已经直到会利用add方法将resources.arsc加入到ResTable中，此时会调用parsePackage()方法解析resources.arsc中的package数据。其中解析到的类型规范数据块，也就是ResTable_typeSpec便以上述Type的结构保存在了packageGroup.types.</p>
+<p>所以在genEntry()中可以通过传入的packageGroup参数，迅速拿到该package中的所有Type,即ResTable_typeSpec.</p>
+<p>然后通过传入的第二个参数typeIndex,即类型索引，就可以直接找到该类对应的Type。</p>
+<p>传入的第三个参数是资源在该类型中的索引，也就是在ResTable_type后面跟着的ResTable_entry的索引（实际上是ResTable_type后面紧跟着的entry偏移数组的索引）。</p>
+<p>那么根据前面三个参数，就可以毫不费力的找到资源项对应的ResTable_entry了。只不过将找到的entry，解析数据后，封装在Entry结构中返回。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> ResTable::Entry &#123;</span><br><span class="line">    <span class="comment">// 该资源项的配置，来自ResTable_type.config</span></span><br><span class="line">    ResTable_config config;</span><br><span class="line">    <span class="comment">//ResTable_entry.flags，据此可以判断资源是否是bag资源</span></span><br><span class="line">    <span class="keyword">const</span> ResTable_entry* entry;</span><br><span class="line">    <span class="keyword">const</span> ResTable_type* type;</span><br><span class="line">    <span class="comment">// 来自ResTable_typeSpec后面紧跟着的spec数组中对该资源项的配置</span></span><br><span class="line">    <span class="keyword">uint32_t</span> specFlags;</span><br><span class="line">    <span class="comment">// 所在的资源包</span></span><br><span class="line">    <span class="keyword">const</span> Package* package;</span><br><span class="line">    <span class="comment">// 所在资源包的类型字符串池</span></span><br><span class="line">    StringPoolRef typeStr;</span><br><span class="line">    <span class="comment">// 所在资源包的资源项名称字符串池</span></span><br><span class="line">    StringPoolRef keyStr;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>而entry后面就是Res_vale（非bag情况下）了。</p>
+<p>在回头看ResTable.getResources()方法中得到Entry之后的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Res_value* value = <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> Res_value*&gt;(</span><br><span class="line">        <span class="keyword">reinterpret_cast</span>&lt;<span class="keyword">const</span> <span class="keyword">uint8_t</span>*&gt;(entry.entry) + entry.entry-&gt;size);</span><br><span class="line"></span><br><span class="line">outValue-&gt;size = dtohs(value-&gt;size);</span><br><span class="line">outValue-&gt;res0 = value-&gt;res0;</span><br><span class="line">outValue-&gt;dataType = value-&gt;dataType;</span><br><span class="line">outValue-&gt;data = dtohl(value-&gt;data);</span><br></pre></td></tr></table></figure>
+<p>java层AssetManager的jni方法loadResourceValue()中通过ResTable.getResources()得到资源项的Entry和Res_value之后，又调用ResTable.resolveReference()解析引用。</p>
+<p>因为可能Res_value中的data，可能是一个资源ID.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">ssize_t</span> ResTable::resolveReference(Res_value* value, <span class="keyword">ssize_t</span> blockIndex,</span><br><span class="line">        <span class="keyword">uint32_t</span>* outLastRef, <span class="keyword">uint32_t</span>* inoutTypeSpecFlags,</span><br><span class="line">        ResTable_config* outConfig) <span class="keyword">const</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> count=<span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 只有引用类型的数据，才会解析</span></span><br><span class="line">    <span class="keyword">while</span> (blockIndex &gt;= <span class="number">0</span> &amp;&amp; value-&gt;dataType == Res_value::TYPE_REFERENCE</span><br><span class="line">            &amp;&amp; value-&gt;data != <span class="number">0</span> &amp;&amp; count &lt; <span class="number">20</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (outLastRef) *outLastRef = value-&gt;data;</span><br><span class="line">        <span class="keyword">uint32_t</span> newFlags = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 再次解析</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">ssize_t</span> newIndex = getResource(value-&gt;data, value, <span class="literal">true</span>, <span class="number">0</span>, &amp;newFlags,</span><br><span class="line">                outConfig);</span><br><span class="line">        <span class="keyword">if</span> (newIndex == BAD_INDEX) &#123;</span><br><span class="line">            <span class="keyword">return</span> BAD_INDEX;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (kDebugTableTheme) &#123;</span><br><span class="line">            ALOGI(<span class="string">"Resolving reference 0x%x: newIndex=%d, type=0x%x, data=0x%x\n"</span>,</span><br><span class="line">                    value-&gt;data, (<span class="keyword">int</span>)newIndex, (<span class="keyword">int</span>)value-&gt;dataType, value-&gt;data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//printf("Getting reference 0x%08x: newIndex=%d\n", value-&gt;data, newIndex);</span></span><br><span class="line">        <span class="keyword">if</span> (inoutTypeSpecFlags != <span class="literal">NULL</span>) *inoutTypeSpecFlags |= newFlags;</span><br><span class="line">        <span class="keyword">if</span> (newIndex &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// This can fail if the resource being referenced is a style...</span></span><br><span class="line">            <span class="comment">// in this case, just return the reference, and expect the</span></span><br><span class="line">            <span class="comment">// caller to deal with.</span></span><br><span class="line">            <span class="keyword">return</span> blockIndex;</span><br><span class="line">        &#125;</span><br><span class="line">        blockIndex = newIndex;</span><br><span class="line">        count++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> blockIndex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>juava层AssetManager的jni方法loadResourceValue()中调用ResTable.resolveReference()之后，又会调用copyValue()方法将数据封装为java层的TypedValue返回。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TypedValue</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 资源类型</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> type;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 如果type是string，那么对应的字符串就存在这里</span></span><br><span class="line">   <span class="keyword">public</span> CharSequence string;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// bag类型的资源，值就是data</span></span><br><span class="line">   <span class="comment">// 非bag类型的资源，其值就是字符串资源池中的索引</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> data;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// string 所在的resources.arsc的资源包，即apk路径，在AssetManager.mAssetPaths的索引</span></span><br><span class="line">   <span class="comment">// 其值减1是索引</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> assetCookie;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 资源ID</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> resourceId;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> changingConfigurations = -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 像素尺寸</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">int</span> density;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>copyValue()方法就是给TypedValue赋值的，其返回值block是resources.arsc在ResTable对象中的索引。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">jint <span class="title">copyValue</span><span class="params">(JNIEnv* env, jobject outValue, <span class="keyword">const</span> ResTable* table,</span><br><span class="line">               <span class="keyword">const</span> Res_value&amp; value, uint32_t ref, ssize_t block,</span><br><span class="line">               uint32_t typeSpecFlags, ResTable_config* config)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">// 设置TypedValue.type</span></span><br><span class="line">    env-&gt;SetIntField(outValue, gTypedValueOffsets.mType, value.dataType);</span><br><span class="line">    <span class="comment">// 设置TypedValue.assetCookie</span></span><br><span class="line">    env-&gt;SetIntField(outValue, gTypedValueOffsets.mAssetCookie,</span><br><span class="line">                     <span class="keyword">static_cast</span>&lt;jint&gt;(table-&gt;getTableCookie(block)));</span><br><span class="line">    <span class="comment">// 设置TypedValue.data</span></span><br><span class="line">    env-&gt;SetIntField(outValue, gTypedValueOffsets.mData, value.data);</span><br><span class="line">    <span class="comment">// 设置TypedValue.string为null，后面就知道为啥了</span></span><br><span class="line">    env-&gt;SetObjectField(outValue, gTypedValueOffsets.mString, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="comment">// 设置TypedValue.resourceId</span></span><br><span class="line">    env-&gt;SetIntField(outValue, gTypedValueOffsets.mResourceId, ref);</span><br><span class="line">    <span class="comment">// 设置TypedValue.changingConfigurations</span></span><br><span class="line">    env-&gt;SetIntField(outValue, gTypedValueOffsets.mChangingConfigurations,</span><br><span class="line">            typeSpecFlags);</span><br><span class="line">    <span class="comment">// 设置TypedValue.density</span></span><br><span class="line">    <span class="keyword">if</span> (config != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        env-&gt;SetIntField(outValue, gTypedValueOffsets.mDensity, config-&gt;density);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> block;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>回到java层AssetManager.getResourceText()方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> CharSequence <span class="title">getResourceText</span><span class="params">(<span class="keyword">int</span> ident)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            TypedValue tmpValue = mValue;</span><br><span class="line">            <span class="keyword">int</span> block = loadResourceValue(ident, (<span class="keyword">short</span>) <span class="number">0</span>, tmpValue, <span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">//针对字符串，因为TypedValue中其值被设置为NULL，所以单独处理</span></span><br><span class="line">            <span class="keyword">if</span> (block &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (tmpValue.type == TypedValue.TYPE_STRING) &#123;</span><br><span class="line">                    <span class="comment">// TypedValue.data是资源项值在字符串值池中的索引，所以就可以直接取出来了</span></span><br><span class="line">                    <span class="keyword">return</span> mStringBlocks[block].get(tmpValue.data);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> tmpValue.coerceToString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上就是字符串的索引过程，可以发现这类没有资源文件对应的资源，处理是很简单的，因为这类资源的值都已经在字符串池中了，只要拿到其索引就好了。而对于有资源文件的资源来说，还要打开资源文件进行处理。</p>
+<p>这里还要明白一点，就是TypedValue中的type和Res_value中的dataType是一样的，但是和resources.arsc中所说的资源类型不是一回事。resources.arsc中的资源类型，以及资源ID中的资源类都是指那些attr,xml,string,drawable等类型。</p>
+<p>而TypedValue中的type和Res_value中的dataType,是将传统的type又做了一次划分：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">        <span class="comment">// The 'data' is either 0 or 1, specifying this resource is either</span></span><br><span class="line">        <span class="comment">// undefined or empty, respectively.</span></span><br><span class="line">        TYPE_NULL = <span class="number">0x00</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds a ResTable_ref, a reference to another resource</span></span><br><span class="line">        <span class="comment">// table entry.</span></span><br><span class="line">        TYPE_REFERENCE = <span class="number">0x01</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds an attribute resource identifier.</span></span><br><span class="line">        TYPE_ATTRIBUTE = <span class="number">0x02</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds an index into the containing resource table's</span></span><br><span class="line">        <span class="comment">// global value string pool.</span></span><br><span class="line">        TYPE_STRING = <span class="number">0x03</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds a single-precision floating point number.</span></span><br><span class="line">        TYPE_FLOAT = <span class="number">0x04</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds a complex number encoding a dimension value,</span></span><br><span class="line">        <span class="comment">// such as "100in".</span></span><br><span class="line">        TYPE_DIMENSION = <span class="number">0x05</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds a complex number encoding a fraction of a</span></span><br><span class="line">        <span class="comment">// container.</span></span><br><span class="line">        TYPE_FRACTION = <span class="number">0x06</span>,</span><br><span class="line">        <span class="comment">// The 'data' holds a dynamic ResTable_ref, which needs to be</span></span><br><span class="line">        <span class="comment">// resolved before it can be used like a TYPE_REFERENCE.</span></span><br><span class="line">        TYPE_DYNAMIC_REFERENCE = <span class="number">0x07</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Beginning of integer flavors...</span></span><br><span class="line">        TYPE_FIRST_INT = <span class="number">0x10</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// The 'data' is a raw integer value of the form n..n.</span></span><br><span class="line">        TYPE_INT_DEC = <span class="number">0x10</span>,</span><br><span class="line">        <span class="comment">// The 'data' is a raw integer value of the form 0xn..n.</span></span><br><span class="line">        TYPE_INT_HEX = <span class="number">0x11</span>,</span><br><span class="line">        <span class="comment">// The 'data' is either 0 or 1, for input "false" or "true" respectively.</span></span><br><span class="line">        TYPE_INT_BOOLEAN = <span class="number">0x12</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Beginning of color integer flavors...</span></span><br><span class="line">        TYPE_FIRST_COLOR_INT = <span class="number">0x1c</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// The 'data' is a raw integer value of the form #aarrggbb.</span></span><br><span class="line">        TYPE_INT_COLOR_ARGB8 = <span class="number">0x1c</span>,</span><br><span class="line">        <span class="comment">// The 'data' is a raw integer value of the form #rrggbb.</span></span><br><span class="line">        TYPE_INT_COLOR_RGB8 = <span class="number">0x1d</span>,</span><br><span class="line">        <span class="comment">// The 'data' is a raw integer value of the form #argb.</span></span><br><span class="line">        TYPE_INT_COLOR_ARGB4 = <span class="number">0x1e</span>,</span><br><span class="line">        <span class="comment">// The 'data' is a raw integer value of the form #rgb.</span></span><br><span class="line">        TYPE_INT_COLOR_RGB4 = <span class="number">0x1f</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...end of integer flavors.</span></span><br><span class="line">        TYPE_LAST_COLOR_INT = <span class="number">0x1f</span>,</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...end of integer flavors.</span></span><br><span class="line">        TYPE_LAST_INT = <span class="number">0x1f</span></span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="从资源ID获取drawable资源的过程">从资源ID获取drawable资源的过程</h3><p>drawable资源是由实际资源文件的。这类资源索引的过程大体上分为两个步骤：</p>
+<ol>
+<li><p>解析资源ID代表的资源的路径</p>
+</li>
+<li><p>装载资源文件并缓存</p>
+</li>
+</ol>
+<p>app中获取获取drawable例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Drawable drawable = getResources().getDrawable(R.drawable.background, getTheme());</span><br></pre></td></tr></table></figure>
+<p>其中R.drawable.background是drawable文件的资源ID。</p>
+<p>整个过程如下所示：</p>
+<p><img src="http://7xj6ce.com1.z0.glb.clouddn.com/resources-.png" alt=""></p>
+<p>其中第一大步骤，也就是解析资源ID代表的资源的路径，和前面字符串的索引过程是一样的，只不过前面资源项是String类型的，所以资源项的值就是想要的数据。</p>
+<p>而这里这里资源项是drawable类型的，其值是一个文件的路径。上图中第五步返回的TypedValue中已经有了表示资源文件路径路径的字符串在资源值池中的索引等信息。</p>
+<p>然后就是第二大步骤了，加载资源文件。这里先说明以下，针对有文件的资源，都会在第一次使用该资源时，将资源文件缓存到Resources中，下次在使用的时候，先尝试从缓存中找，有的话，就直接返回了。</p>
+<p>以drawable为例来说，是缓存到Resources.mDrawableCache中。从图中也可以看出，加载drawable的时候，要先检查下这个缓存中是否有，有的话，直接返回，就不需要加载了。</p>
+<p>没有缓存的话，说明还没在加载该资源文件，所以要先加载加载之后在缓存到mDrawableCache中。</p>
+<p>而loadDrawable()方法中又是通过loadDrawableForCookie()来加载drawable的：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Drawable <span class="title">loadDrawableForCookie</span><span class="params">(TypedValue value, <span class="keyword">int</span> id, Theme theme)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// drawable资源项的值是一个字符串，代表文件的路径</span></span><br><span class="line">    <span class="keyword">if</span> (value.<span class="built_in">string</span> == null) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NotFoundException(<span class="string">"Resource \""</span> + getResourceName(id) + <span class="string">"\" ("</span></span><br><span class="line">                + Integer.toHexString(id) + <span class="string">") is not a Drawable (color or path): "</span> + value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    final String file = value.<span class="built_in">string</span>.toString();</span><br><span class="line"></span><br><span class="line">   .</span><br><span class="line">    final Drawable dr;</span><br><span class="line"></span><br><span class="line">    Trace.traceBegin(Trace.TRACE_TAG_RESOURCES, file);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (file.endsWith(<span class="string">".xml"</span>)) &#123;</span><br><span class="line">            final XmlResourceParser rp = loadXmlResourceParser(</span><br><span class="line">                    file, id, value.assetCookie, <span class="string">"drawable"</span>);</span><br><span class="line">            dr = Drawable.createFromXml(<span class="keyword">this</span>, rp, theme);</span><br><span class="line">            rp.close();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 如果drawable是图片文件的话，打开它</span></span><br><span class="line">            <span class="comment">// assetCookie-1就是图片所在的资源包路径在native层AssetManager.mAssetPaths数组中的索引</span></span><br><span class="line">            <span class="comment">// 下面这个方法就是打开这个文件了</span></span><br><span class="line">            final InputStream is = mAssets.openNonAsset(</span><br><span class="line">                    value.assetCookie, file, AssetManager.ACCESS_STREAMING);</span><br><span class="line">            dr = Drawable.createFromResourceStream(<span class="keyword">this</span>, value, is, file, null);</span><br><span class="line">            is.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_RESOURCES);</span><br><span class="line">        final NotFoundException rnf = <span class="keyword">new</span> NotFoundException(</span><br><span class="line">                <span class="string">"File "</span> + file + <span class="string">" from drawable resource ID #0x"</span> + Integer.toHexString(id));</span><br><span class="line">        rnf.initCause(e);</span><br><span class="line">        <span class="keyword">throw</span> rnf;</span><br><span class="line">    &#125;</span><br><span class="line">    Trace.traceEnd(Trace.TRACE_TAG_RESOURCES);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个打开的过程要依赖TypedValue.assetCookie这个参数。原因很简单，因为resources.arsc中的资源文件路径：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">res/drawable/........</span><br></pre></td></tr></table></figure>
+<p>也就是说一个相对资源包的相对路径。要打开这个文件的话，当然先要得到资源包的路径了。资源包的路径就在native层的AssetManager.mAssetPaths数组中。assetCookie-1就是要找的资源包的路径索引。</p>
+<p>加载有资源的文件是一个耗时耗力的操作，所以都会将这些加载过的资源缓存起来：</p>
+<p>传入的参数caches是Resources.mDrawableCache,dr是前面加载的Drawable。这样就缓存到Resources中了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">cacheDrawable</span><span class="params">(TypedValue value, <span class="keyword">boolean</span> isColorDrawable, DrawableCache caches,</span><br><span class="line">        Theme theme, <span class="keyword">boolean</span> usesTheme, <span class="keyword">long</span> key, Drawable dr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> ConstantState cs = dr.getConstantState();</span><br><span class="line">    <span class="keyword">if</span> (cs == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// zygote启动时，mPreloading为真</span></span><br><span class="line">    <span class="keyword">if</span> (mPreloading) &#123;</span><br><span class="line">      .....</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (mAccessLock) &#123;</span><br><span class="line">            caches.put(key, theme, cs, usesTheme);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这里为止就彻底搞清楚资源的查找与加载过程了。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/19/android_resource_3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App中的资源管理对象创建</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="android_resource_4" data-title="Android6.0之App中的资源查找过程" data-url="http://www.iloveandroid.net/2016/08/20/android_resource_4/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

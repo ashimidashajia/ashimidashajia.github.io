@@ -183,6 +183,68 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-studyPtorobuf" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/08/studyPtorobuf/" class="article-date">
+  	<time datetime="2015-10-08T14:32:37.000Z" itemprop="datePublished">2015-10-08</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/08/studyPtorobuf/">Protobuf简单使用</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Protobuf是Google开发一种数据描述语言,能够将结构化数据序列化,可用于数据存储、通信协议等方面。据Google官方文档介绍,现在Google内部已经有48,162个消息类型定义在12,183个proto文件中。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用开发/">应用开发</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/开源框架/">开源框架</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2015/10/08/studyPtorobuf/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-setPyqtEnvironment" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -727,73 +789,6 @@
       
         <p class="article-more-link">
           <a  href="/2015/09/30/Android_SEAndroid_3/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Android_SEAndroid_2" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/29/Android_SEAndroid_2/" class="article-date">
-  	<time datetime="2015-09-29T06:02:40.000Z" itemprop="datePublished">2015-09-29</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/29/Android_SEAndroid_2/">Android 5.1 SEAndroid分析之安全上下文语法篇</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面文章最后介绍了如何查看安全上下文.现在介绍下安全上下文的含义和规则.</p>
-<p>上下文是一个有固定格式的字符串:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username:role:<span class="built_in">type</span>:an optional MLS security range</span><br></pre></td></tr></table></figure>
-<p>如u:object_r:rootfs:s0就是一个安全上下文.在SEAndroid中最重要的是type字段的值,username和MLS字段通常都为u和s0.role也就两个角色罢了.所以说SEAndroid是基于类型控制的MAC机制.意味着SEAndroid的策略文件相比较SELinux来说,是比较简单的.</p>
-<p>与SEAndroid相关的核心源码在</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Android源码/external/sepolicy 里面是Android系统默认的策略文件,厂商可以在device目录中添加和覆盖策略文件</span><br><span class="line">Android源码/external/libselinux 里面是SEAndroid核心库</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/29/Android_SEAndroid_2/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
