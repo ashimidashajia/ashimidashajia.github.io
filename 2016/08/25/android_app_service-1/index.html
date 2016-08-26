@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Android6.0之App的Service组件运行机制介绍. | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="App中耗时的操作都会放到service中去完成。那么这个Service究竟是什么？线程or进程？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0之App的Service组件运行机制介绍.">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/25/android_app_service-1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="App中耗时的操作都会放到service中去完成。那么这个Service究竟是什么？线程or进程？">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-516d6cd68ac84e43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-70f563b2485f5ae4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-08-26T08:42:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0之App的Service组件运行机制介绍.">
+<meta name="twitter:description" content="App中耗时的操作都会放到service中去完成。那么这个Service究竟是什么？线程or进程？">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-android_app_service-1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/08/25/android_app_service-1/" class="article-date">
+  	<time datetime="2016-08-25T09:26:23.000Z" itemprop="datePublished">2016-08-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android6.0之App的Service组件运行机制介绍.
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>App中耗时的操作都会放到service中去完成。那么这个Service究竟是什么？线程or进程？</p>
+<a id="more"></a>
+<h3 id="Service与线程和进程的关系">Service与线程和进程的关系</h3><p>service是Android的四大组件之一，Android系统的一个宗旨就是弱化进程的概念，强化组件。App中的不同组件可以运行在不同的进程里，也可以运行在相同的进程。</p>
+<p>简单的说，service和线程，进程半毛钱关系都没有。service是一个组件，一个对象而已。这个组件对象可以运行某个进程中的某个线程。然而进程线程中可以存在多个对象。</p>
+<p>zygote孵化而来的进程的代码执行入口点是ActivityThread.main()方法。main()方法初始化运行环境，最后创建一个looper并进入looper消息处理循环。main()方法所在的线程是进程的主线程，也称为UI线程。当启动的service没有通过android:process属性指定运行在一个新的进程中时，这个service也是运行在UI线程中的。那么这种情况下的service作用就大大折扣了，因为一旦这里执行耗时操作，后果可想而知。</p>
+<h3 id="Service生命周期">Service生命周期</h3><p>service既然是一个组件，那么必然有其生命周期了。其生命周期相较于activity来说简单的太多了，如下图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2780242-516d6cd68ac84e43.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="android_app_service-1.png"></p>
+<p>上图是两种启动service的方法下启动的service的生命周期图示。</p>
+<p>第一次 startService 会触发 onCreate 和 onStartCommand，以后在服务运行过程中，每次 startService 都只会触发 onStartCommand。而且不论 startService 多少次，stopService 一次就会停止服务。</p>
+<p>第一次 bindService 会触发 onCreate 和 onBind，以后在服务运行过程中，每次 bindService 都不会触发service的任何回调。这里要注意的是 bindService 多少次，就要有对应多少次的 unbindService， 最后的一次uunbindService执行完后，就会停止当前服务。</p>
+<p>启动和停止service的操作均是异步操作。</p>
+<p>对services生命周期的最后阶段，也就是何时执行onUbind()和onDestroy()后续会对其进行总结。</p>
+<h3 id="service在AMS中的代表">service在AMS中的代表</h3><p>组件的生命周期方法都是AMS负责管理的，service当然也不例外了。一个运行着的service在AMS中的代表是ServiceRecord：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceRecord</span> <span class="keyword">extends</span> <span class="title">Binder</span> </span>&#123;</span><br><span class="line">    ...............</span><br><span class="line">    <span class="keyword">final</span> ActivityManagerService ams;</span><br><span class="line">    <span class="keyword">final</span> ComponentName name; <span class="comment">// service component.</span></span><br><span class="line">    <span class="keyword">final</span> String shortName; <span class="comment">// name.flattenToShortString().</span></span><br><span class="line">    <span class="keyword">final</span> Intent.FilterComparison intent;<span class="comment">// original intent used to find service.</span></span><br><span class="line">    <span class="keyword">final</span> ServiceInfo serviceInfo;<span class="comment">// all information about the service.</span></span><br><span class="line">    <span class="keyword">final</span> ApplicationInfo appInfo;  <span class="comment">// information about service's app.</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> userId;       <span class="comment">// user that this service is running as</span></span><br><span class="line">    <span class="keyword">final</span> String packageName; <span class="comment">// the package implementing intent's component</span></span><br><span class="line">    <span class="keyword">final</span> String processName; <span class="comment">// process where this component wants to run</span></span><br><span class="line">    <span class="keyword">final</span> String permission;<span class="comment">// permission needed to access service</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> exported; <span class="comment">// from ServiceInfo.exported</span></span><br><span class="line">    <span class="keyword">final</span> Runnable restarter; <span class="comment">// used to schedule retries of starting the service</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> createTime;  <span class="comment">// when this service was created</span></span><br><span class="line">    <span class="keyword">final</span> ArrayMap&lt;Intent.FilterComparison, IntentBindRecord&gt; bindings</span><br><span class="line">               = <span class="keyword">new</span> ArrayMap&lt;Intent.FilterComparison, IntentBindRecord&gt;();<span class="comment">// All active bindings to the service.</span></span><br><span class="line">    <span class="keyword">final</span> ArrayMap&lt;IBinder, ArrayList&lt;ConnectionRecord&gt;&gt; connections</span><br><span class="line">                = <span class="keyword">new</span> ArrayMap&lt;IBinder, ArrayList&lt;ConnectionRecord&gt;&gt;();<span class="comment">// IBinder -&gt; ConnectionRecord of all bound clients</span></span><br><span class="line">    <span class="comment">// service所在的进程</span></span><br><span class="line">    ProcessRecord app;      <span class="comment">// where this service is running or null.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>serviceInfo和appInfo都是从PMS中获取的，PMS又是在该apk安装的时候通过解析AndroidManifest.xml中的service和applictaion标签获取的，并将信息存储到serviceInfo和appInfo。</p>
+<p>重点介绍一下后面三个成员，其他成员注释已经解释的很清楚了。</p>
+<p>每个Service均可能有不同的应用进程来bind，bind service时需要用到intent。 AMS为每个bind 该service的Intent分配了一个IntentBindRecord类型对象，并存储在ServiceRecord.bindings成员变量中；</p>
+<p>AMS为每次bind的连接分配一个ConnectionRecord类型对象，并存储在ServiceRecord.connections成员变量中:</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/**</span><br><span class="line"> * Description of a single binding to a service.</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ConnectionRecord</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> AppBindRecord binding;    <span class="comment">// The application/service binding.</span></span><br><span class="line">    <span class="keyword">final</span> ActivityRecord activity;  <span class="comment">// If non-null, the owning activity.</span></span><br><span class="line">    <span class="comment">// 这里是绑定服务的客户端的一个binder，通过它可以调用客户端的方法</span></span><br><span class="line">    <span class="comment">// ServiceConnection.onServiceConnected()</span></span><br><span class="line">    <span class="keyword">final</span> IServiceConnection conn;  <span class="comment">// The client connection.</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> flags;                <span class="comment">// Binding options.</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> clientLabel;          <span class="comment">// String resource labeling this client.</span></span><br><span class="line">    <span class="keyword">final</span> PendingIntent clientIntent; <span class="comment">// How to launch the client.</span></span><br><span class="line">    String stringName;              <span class="comment">// Caching of toString.</span></span><br><span class="line">    <span class="keyword">boolean</span> serviceDead;            <span class="comment">// Well is it?</span></span><br></pre></td></tr></table></figure>
+<p>这里暂时不关心clientIntent，这个数据结构在一个特殊情况下会使用：多个不同进程可能使用同一个Intent来bind serice。</p>
+<p>重点关注IServiceConnection对象conn。这是app进程中的一个代理binder对象，通过这个对象AMS最终可以调用ServiceConnection.onServiceConnected()。后面会详细分析。</p>
+<p>ProcessRecord是一个运行的进程在AMS中的代表，与service相关的重要成员：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ProcessRecord</span> </span>&#123;</span><br><span class="line">  .........</span><br><span class="line">  IApplicationThread thread;  <span class="comment">// the actual proc...  may be null only if</span></span><br><span class="line">  <span class="comment">// all ServiceRecord running in this process</span></span><br><span class="line">  <span class="keyword">final</span> ArraySet&lt;ServiceRecord&gt; services = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line">  <span class="comment">// All ConnectionRecord this process holds</span></span><br><span class="line">  <span class="keyword">final</span> ArraySet&lt;ConnectionRecord&gt; connections = <span class="keyword">new</span> ArraySet&lt;&gt;();</span><br><span class="line">  .........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中IApplicationThread类型的对象thread就是app进程中的ActivityThread.mAppThread这个binder在AMS中的代理。通过这个代理binder对象，AMS就可以间接跨进程调用app进程中的ActivityThread中的相关方法来创建一个service对象，并执行其生命周期方法了。</p>
+<p>ProcessRecord中的services是这个进程中的运行着的service的集合。connections是bind这个进程中的service时，分配的所有ConnectionRecord集合。</p>
+<p>另外ServiceRecord继承自Binder,说明在AMS中，负责管理service的ServiceRecord节点本身就是个binder实体。</p>
+<h3 id="service在app进程的代表">service在app进程的代表</h3><p>app开发中都需要继承Service类，来自定义一个service,service在App的进程就是Service类对象了:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Service</span> <span class="keyword">extends</span> <span class="title">ContextWrapper</span> <span class="keyword">implements</span> <span class="title">ComponentCallbacks2</span> </span>&#123;</span><br><span class="line">  <span class="comment">// set by the thread after the constructor and before onCreate(Bundle icicle) is called.</span></span><br><span class="line">   <span class="keyword">private</span> ActivityThread mThread = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> String mClassName = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> IBinder mToken = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> Application mApplication = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> IActivityManager mActivityManager = <span class="keyword">null</span>;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">boolean</span> mStartCompatibility = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过以上代码可以看出来，service紧紧是一个Context而已，与线程啊，进程啊真没啥关系。</p>
+<p>注释中也说的很清楚了，在这个service被创建之后，有thread，也就是ActivityThread来设置这些属性成员，之后在执行service的第一个声明周期方法：onCreate.</p>
+<p>mThread就是service所在进程的ActivityThread对象。</p>
+<p>mToken就是这个service在AMS中的代表ServiceRecord的一个代理对象。</p>
+<p>mActivityManager是AMS在当前进程的代理对象。</p>
+<p>当service创建之后，它和AMS的关系如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2780242-70f563b2485f5ae4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="android_app_service-2.png"></p>
+<ol>
+<li><p>service所在的进程是一个普通的app进程，是由zygote孵化的，这样的进程中有一个唯一的ActivityThread对象；</p>
+</li>
+<li><p>app进程在AMS中用ProcessRecord对象来表示；</p>
+</li>
+<li><p>ActivityThread.mAppThread是一个ApplicationThread类型的binder实体对象，在app进程启动后，会在ActivityThread.main()方法中传递给AMS，在AMS进程中这个binder的代理binder保存在ProcessRecord.thread中，这样的AMS可以通过这个代理binder跨进程调用某个app进程中的方法；</p>
+</li>
+<li><p>ActivityThread同样保存了AMS的代理binder，这样app进程也可以跨进程请求AMS中的方法。</p>
+</li>
+<li><p>ActivityThread.mServices：</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> ArrayMap&lt;IBinder, Service&gt; mServices = <span class="keyword">new</span> ArrayMap&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>这个map中的key 是一个运行在该进程中的service在AMS中的代表ServiceRecord这个实体binder在app进程中的代理binder。当AMS请求app进程运行一个service时，会将这个代理binder传递到app进程，然后作为key保存mservice中。value就是运行在这个进程中的service。这个代理binder还会在Service对象创建之后，在service.attach中以参数的形式传入service,并作保存在service.mToken中。</p>
+<ol>
+<li>AMS中代表一个运行着的Service的ServiceRecord对象中保存了其所在的ProcessRecord。</li>
+</ol>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/25/android_app_service-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App的Service组件运行机制之StartService</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="android_app_service-1" data-title="Android6.0之App的Service组件运行机制介绍." data-url="http://www.iloveandroid.net/2016/08/25/android_app_service-1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
