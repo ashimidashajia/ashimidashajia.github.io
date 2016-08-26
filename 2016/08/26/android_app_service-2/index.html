@@ -8,13 +8,13 @@
   <meta name="description" content="现在来分析service是如何启动的。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android6.0之App的Service组件运行机制之StartService">
-<meta property="og:url" content="http://www.iloveandroid.net/2016/08/25/android_app_service-2/index.html">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/08/26/android_app_service-2/index.html">
 <meta property="og:site_name" content="码农故事">
 <meta property="og:description" content="现在来分析service是如何启动的。">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-cb5bd51a6cf035e2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-370b73b1a00c3c65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-f0eb4cdc7954cab8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2016-08-26T08:37:39.000Z">
+<meta property="og:updated_time" content="2016-08-26T08:43:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之App的Service组件运行机制之StartService">
 <meta name="twitter:description" content="现在来分析service是如何启动的。">
@@ -188,8 +188,8 @@
       <div class="body-wrap"><article id="post-android_app_service-2" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/08/25/android_app_service-2/" class="article-date">
-  	<time datetime="2016-08-25T09:26:23.000Z" itemprop="datePublished">2016-08-25</time>
+      <a href="/2016/08/26/android_app_service-2/" class="article-date">
+  	<time datetime="2016-08-26T09:26:23.000Z" itemprop="datePublished">2016-08-26</time>
 </a>
     </div>
   
@@ -308,7 +308,7 @@
 <p>然后调用realStartServiceLocked()又调用sendServiceArgsLocked()方法，该方法在发送一个SERVICE_ARGS消息。</p>
 <p>这两个异步消息均通过service所在进程的handler发送， 都在service所在的主线程中的looper中被处理，而且线处理CREATE_SERVICE，后处理SERVICE_ARGS消息。也就是先调用service.onCreate(),后执行service.onStartCommand()方法。</p>
 <p>但实际上service中最先执行的是service.attach()方法。</p>
-<p>通过前面的分析可知，CREATE_SERVICE和SERVICE_ARGS 这两个消息都实在进程的主线程也就是ui线程中执行的，所以onCreate()和onStartCommand()有太耗时的操作时，要在开启一个线程来成执行。</p>
+<p>CREATE_SERVICE和SERVICE_ARGS 这两个消息都实在进程的主线程也就是ui线程中执行的，所以onCreate()和onStartCommand()有太耗时的操作时，要在开启一个线程来成执行。</p>
 <p>到这里为止应该对startService()启动service的过程有了大体上的了解了。</p>
 
       
@@ -319,18 +319,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/08/25/android_app_service-1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          Android6.0之App的Service组件运行机制介绍.
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/08/20/android_resource_4/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Android6.0之App中的资源查找过程</div>
+    <a href="/2016/08/25/android_app_service-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App的Service组件运行机制介绍.</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -359,7 +350,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="android_app_service-2" data-title="Android6.0之App的Service组件运行机制之StartService" data-url="http://www.iloveandroid.net/2016/08/25/android_app_service-2/"></div>
+	<div class="ds-thread" data-thread-key="android_app_service-2" data-title="Android6.0之App的Service组件运行机制之StartService" data-url="http://www.iloveandroid.net/2016/08/26/android_app_service-2/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
