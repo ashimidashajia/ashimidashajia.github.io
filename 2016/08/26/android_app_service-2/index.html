@@ -14,7 +14,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-cb5bd51a6cf035e2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-370b73b1a00c3c65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-f0eb4cdc7954cab8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2016-08-26T08:43:50.000Z">
+<meta property="og:updated_time" content="2016-08-29T10:16:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0之App的Service组件运行机制之StartService">
 <meta name="twitter:description" content="现在来分析service是如何启动的。">
@@ -274,6 +274,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 拿到前面找到的ServiceRecord</span></span><br><span class="line">ServiceRecord r = res.record;</span><br><span class="line">.....</span><br><span class="line">r.lastActivity = SystemClock.uptimeMillis();</span><br><span class="line">r.startRequested = <span class="keyword">true</span>;</span><br><span class="line">r.delayedStop = <span class="keyword">false</span>;</span><br><span class="line">r.pendingStarts.add(<span class="keyword">new</span> ServiceRecord.StartItem(r, <span class="keyword">false</span>, r.makeNextStartId(),</span><br><span class="line">        service, neededGrants));</span><br></pre></td></tr></table></figure>
 <p>这段代码的无非就是设置一下ServiceRecord的一些字段，注意这里没有设置ServiceRecord.app,也就是说如果这个ServiceRecord对象是新创建的，那么它还没有与进程关联，此时r.app为NULL.如果ServiceRecord已经存在，也就是service已经启动了，那么r.app就不会为null。</p>
 <p>重点看r.pendingStarts.add操作。这个操作将启动service所需要的信息，如intent等都保存了起来，只要这个pendingStarts不为null，就说明有启动该service的请求还没处理。当后面处理完之后，会将存储的信息从r.pendingStarts移动到r.deliveredStarts中。这两个成员都是ArrayList<startitem>类型的数组。</startitem></p>
+<p>另外一点要特别注意r.pendingStarts和r.deliveredStarts只对startService()有意义，对bindservice()无意义。</p>
 <p>继续分析startServiceLocked()，略过启动service的发起者不处于前台的情况，那么：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> startServiceInnerLocked(smap, service, r, callerFg, addToStarting);</span><br></pre></td></tr></table></figure>
 <p>这个方法中又是通过bringUpServiceLocked()来启动的service的，此时应该可以分为如下几种情况：</p>
@@ -318,6 +319,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/08/27/android_app_service-3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Android6.0之App的Service组件运行机制之bindService
+        
+      </div>
+    </a>
   
   
     <a href="/2016/08/25/android_app_service-1/" id="article-nav-older" class="article-nav-link-wrap">
