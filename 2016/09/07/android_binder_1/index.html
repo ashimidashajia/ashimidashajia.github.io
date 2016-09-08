@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>初探Android中的binder机制 | 码农故事</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Binder机制是Android系统中最主要的进程间通信机制。虽然Android底层使用的是linux内核，但是除了匿名管道，socket外，Android并没有使用linux中的命名管道，信号量，消息队列等传统的IPC通信方式。Binder犹如一张大网，将Android整个系统中的组件，跨进程的组织在一起。淡化进程，强化组件是Android的一个设计理念。在这个过程中，Binder发挥了巨大作用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初探Android中的binder机制">
+<meta property="og:url" content="http://www.iloveandroid.net/2016/09/07/android_binder_1/index.html">
+<meta property="og:site_name" content="码农故事">
+<meta property="og:description" content="Binder机制是Android系统中最主要的进程间通信机制。虽然Android底层使用的是linux内核，但是除了匿名管道，socket外，Android并没有使用linux中的命名管道，信号量，消息队列等传统的IPC通信方式。Binder犹如一张大网，将Android整个系统中的组件，跨进程的组织在一起。淡化进程，强化组件是Android的一个设计理念。在这个过程中，Binder发挥了巨大作用">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2780242-689c589cec8e2a4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2016-09-08T10:10:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="初探Android中的binder机制">
+<meta name="twitter:description" content="Binder机制是Android系统中最主要的进程间通信机制。虽然Android底层使用的是linux内核，但是除了匿名管道，socket外，Android并没有使用linux中的命名管道，信号量，消息队列等传统的IPC通信方式。Binder犹如一张大网，将Android整个系统中的组件，跨进程的组织在一起。淡化进程，强化组件是Android的一个设计理念。在这个过程中，Binder发挥了巨大作用">
+  
+    <link rel="alternative" href="/atom.xml" title="码农故事" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">genglei.cuan</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">不断成长的见证</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/categories/linux基础">linux基础</a></li>
+				        
+							<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+				        
+							<li><a href="/categories/App开发">App开发</a></li>
+				        
+							<li><a href="/categories/项目管理">项目管理</a></li>
+				        
+							<li><a href="/categories/Python">Python</a></li>
+				        
+							<li><a href="/categories/开源框架">开源框架</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android刷机/" style="font-size: 10px;">Android刷机</a> <a href="/tags/Android底层/" style="font-size: 10px;">Android底层</a> <a href="/tags/Android核心服务/" style="font-size: 20px;">Android核心服务</a> <a href="/tags/Android编译/" style="font-size: 11.43px;">Android编译</a> <a href="/tags/Gradle/" style="font-size: 15.71px;">Gradle</a> <a href="/tags/linux常用命令/" style="font-size: 10px;">linux常用命令</a> <a href="/tags/uml/" style="font-size: 10px;">uml</a> <a href="/tags/代码管理/" style="font-size: 18.57px;">代码管理</a> <a href="/tags/应用开发/" style="font-size: 10px;">应用开发</a> <a href="/tags/提高效率/" style="font-size: 10px;">提高效率</a> <a href="/tags/构建/" style="font-size: 15.71px;">构建</a> <a href="/tags/签名认证/" style="font-size: 11.43px;">签名认证</a> <a href="/tags/自动化测试/" style="font-size: 14.29px;">自动化测试</a> <a href="/tags/调试/" style="font-size: 12.86px;">调试</a> <a href="/tags/逆向工程/" style="font-size: 17.14px;">逆向工程</a> <a href="/tags/逆向开发/" style="font-size: 18.57px;">逆向开发</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">码农的成长之路，不要让昨日的悲伤，浪费今天的眼泪。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">genglei.cuan</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="http://7xj6ce.com1.z0.glb.clouddn.com/android.jpg" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">genglei.cuan</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">不断成长的见证</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/categories/linux基础">linux基础</a></li>
+		        
+					<li><a href="/categories/Android底层开发">Android底层开发</a></li>
+		        
+					<li><a href="/categories/App开发">App开发</a></li>
+		        
+					<li><a href="/categories/项目管理">项目管理</a></li>
+		        
+					<li><a href="/categories/Python">Python</a></li>
+		        
+					<li><a href="/categories/开源框架">开源框架</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-android_binder_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/09/07/android_binder_1/" class="article-date">
+  	<time datetime="2016-09-07T06:01:46.000Z" itemprop="datePublished">2016-09-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      初探Android中的binder机制
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Binder机制是Android系统中最主要的进程间通信机制。虽然Android底层使用的是linux内核，但是除了匿名管道，socket外，Android并没有使用linux中的命名管道，信号量，消息队列等传统的IPC通信方式。Binder犹如一张大网，将Android整个系统中的组件，跨进程的组织在一起。淡化进程，强化组件是Android的一个设计理念。在这个过程中，Binder发挥了巨大作用。</p>
+<a id="more"></a>
+<h3 id="binder_的作用">binder 的作用</h3><p> binder的作用可以概括为两点：</p>
+<ol>
+<li><p>IPC:是一种跨进程通信手段。</p>
+</li>
+<li><p>RPC:是一种远程过程调用手段，即一个进程中可以透明的调用另外一个进程中的方法。</p>
+</li>
+</ol>
+<p> 两者经常相互伴随，例如跨进程调用的时候，参数的传递以及结果的传递等。</p>
+<h3 id="binder机制简述">binder机制简述</h3><p>binder实体对象： 就是binder服务的提供者，一个提供binder服务的类必须继承BBinder类（native层），因此binder实体对象又叫做BBinder对象。</p>
+<p>binder引用对象： 是binder服务提供者在客户端进程的代表，每个引用对象类型必须继承BpBinder类（native层），因此binder引用对象有叫做BpBinder对象。</p>
+<p>binder代理对象： 代理对象简单理解为内聚了一个binder引用对象，因此可以通过这个内聚的引用对象发起RPC调用。可以有多个不同的代理对象，但却内聚了同一个引用对象。</p>
+<p>IBinder对象：  BBinder和BpBinder都是继承自IBinder.因此binder实体对象和binder引用对象都可以称为IBinder对象。可以通过IBinder.queryLocalInterface()方法来判断到底是binder实体对象还是binder引用对象。</p>
+<p>binder跨进程传输的数据类型是Parcel。</p>
+<p>以RPC为例的示意图如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2780242-689c589cec8e2a4e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="android_binder-1.png"></p>
+<p>实际上有了binder引用对象之后，就可以进行RPC调用了。</p>
+<p>假设App中的MainActivity中以startActivityForResult()方法启动了该App中的Main2Activity，那么Main2Activity可以通过AMS这个binder服务中的getCallingActivity()方法查询是谁启动了自己。</p>
+<p>AMS.getCallingActivity():</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ComponentName <span class="title">getCallingActivity</span><span class="params">(IBinder token)</span></span></span><br></pre></td></tr></table></figure>
+<p>去参数是Activity.mToken. 可以通过反射从客户端Activity组件中获取。</p>
+<ol>
+<li>获得AMS的引用binder</li>
+</ol>
+<p>AMS作为一个系统服务，在Android系统启动过程中，会将自己注册到ServiceManager中（注册过程以后在分析）。现在只要知道客户端可以通过ServiceManager来获得AMS的引用binder即可。</p>
+<ol>
+<li>使用引用binder进行RPC调用时，需要直到要调用的方法的编号，这个编号可以从Android源码中获取。</li>
+</ol>
+<p>在Android 6.0 中该方法编号如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> GET_CALLING_ACTIVITY_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+<span class="number">21</span>;</span><br></pre></td></tr></table></figure>
+<p>服务端根据这个编号，执行相应的逻辑。</p>
+<ol>
+<li>方法参数的传递</li>
+</ol>
+<p>binder中唯一能的传递的数据结构就是Parcel，所以必须将方法的参数打包到Parcel中。针对不同的数据类型Parcle提供了不同的方法，来将这些对应的数据打入Parcel中。</p>
+<p>另外还要准备一个Parcel用于接收服务端的返回数据。</p>
+<p>Parcel中对于对象的传递实际上是序列化与反序列化的过程。</p>
+<ol>
+<li>发起RPC调用</li>
+</ol>
+<p>通过引用对象的transact()方法，发起RPC调用，绝大多数情况下，此调用是一个同步调用，也就是说会一直阻塞到服务端将数据返回为止。</p>
+<p>但是当transact()方法中传入的flag为FLAG_ONEWAY时，方法会立即返回，不会等到服务端返回数据。</p>
+<p>该方法会最终将上述信息传入binder驱动中去。</p>
+<ol>
+<li>客户端从返回的Parcel中读取数据</li>
+</ol>
+<p>服务端中将请求的方法执行完毕之后，将方法返回值打入到parcel中，binder驱动将其返回到客户端组件中，然后客户端组件按照调用方法的返回值类型，从返回的parcel中读取即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main2Activity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main2);</span><br><span class="line">        <span class="comment">// 拿到AMS的引用对象</span></span><br><span class="line">        IBinder sm = (IBinder) Reflect.on(<span class="string">"android.os.ServiceManager"</span>).call(<span class="string">"getService"</span>,<span class="string">"activity"</span>).get();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 拿到方法编号</span></span><br><span class="line">        <span class="keyword">int</span> funCode = IBinder.FIRST_CALL_TRANSACTION+<span class="number">21</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 准备方法参数数据</span></span><br><span class="line">        Parcel data = Parcel.obtain();</span><br><span class="line">        <span class="comment">// 首先要写入的数据必须是binder服务端的descriptor</span></span><br><span class="line">        data.writeInterfaceToken(<span class="string">"android.app.IActivityManager"</span>);</span><br><span class="line">        <span class="comment">// 接下来是方法的参数</span></span><br><span class="line">        data.writeStrongBinder((IBinder)Reflect.on(<span class="keyword">this</span>).field(<span class="string">"mToken"</span>).get());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 用于接受返回数据</span></span><br><span class="line">        Parcel reply = Parcel.obtain();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 发起RPC调用，同步调用，直到调用结束，期间一直阻塞</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            sm.transact(funCode,data,reply,<span class="number">0</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 读取返回数据</span></span><br><span class="line">        reply.readException();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 解析返回数据</span></span><br><span class="line">        ComponentName res = ComponentName.readFromParcel(reply);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 回收parcle</span></span><br><span class="line">        data.recycle();</span><br><span class="line">        reply.recycle();</span><br><span class="line"></span><br><span class="line">        Log.i(<span class="string">"shajia"</span>,<span class="string">"calling Activity name: "</span>+res.getClassName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="通过binder代理对象发起RPC操作">通过binder代理对象发起RPC操作</h4><p>对于前面例子中获取调用者的情况，实际开发中都是通过Activiy.getCallingActivity()来获取的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ComponentName <span class="title">getCallingActivity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="keyword">return</span> ActivityManagerNative.getDefault().getCallingActivity(mToken);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>其中ActivityManagerNative.getDefault()返回的是ActivityManagerProxy对象。</p>
+<p>ActivityManagerProxy是AMS的binder代理类。</p>
+<p>binder代理对象通过内聚的binder引用对象间接发起RPC操作。对于系统服务来说，它的binder代理对象都是事先定义好的。binder代理对象还要实现服务接口，实际上就是对binder引用对象发起RPC操作的二次封装。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActivityManagerProxy</span> <span class="keyword">implements</span> <span class="title">IActivityManager</span></span><br><span class="line"></span>&#123;</span><br><span class="line">...............</span><br><span class="line"><span class="function"><span class="keyword">public</span> ComponentName <span class="title">getCallingActivity</span><span class="params">(IBinder token)</span></span><br><span class="line">        <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">    Parcel data = Parcel.obtain();</span><br><span class="line">    Parcel reply = Parcel.obtain();</span><br><span class="line">    data.writeInterfaceToken(IActivityManager.descriptor);</span><br><span class="line">    data.writeStrongBinder(token);</span><br><span class="line">    mRemote.transact(GET_CALLING_ACTIVITY_TRANSACTION, data, reply, <span class="number">0</span>);</span><br><span class="line">    reply.readException();</span><br><span class="line">    ComponentName res = ComponentName.readFromParcel(reply);</span><br><span class="line">    data.recycle();</span><br><span class="line">    reply.recycle();</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line">...............</span><br></pre></td></tr></table></figure>
+<p>可以看到代理类中已经帮我们封装好了getCallingActivity（）的操作。因为直接通过binder引用发起RPC操作的话，需要开发者知道方法的编号，而方法的编号又是随着Android版本的变化而可能发生改变的。所以一般来说都会为binder服务封装一个binder代理类。这样做还有一个好处是通过一个binder引用对象，可以创建多个binder代理对象。</p>
+<h3 id="binder服务分类">binder服务分类</h3><p>分为两大类：</p>
+<h4 id="向ServiceManager注册的binder服务">向ServiceManager注册的binder服务</h4><p>Android系统中自带的绝大多数服务，例如AMS,PMS等都会向ServiceManager注册，注册时会传入一个service名字，例如AMS注册是传入的是“activity”。</p>
+<p>客户端可以通过名字向ServiceManager查询对象的binder服务，ServiceManager会返回一个IBinder对象。</p>
+<p>至于说返回的IBinder对象究竟是实体bidner呢还是引用binder，按照下面的规则决定：</p>
+<ol>
+<li><p>当binder服务端同进程请求该服务时，返回的是binder实体对象。</p>
+</li>
+<li><p>当请求者与binder服务端在一个进程时，返回的是引用对象。</p>
+</li>
+</ol>
+<p>通过向ServiceManager的注册，可以让binder服务端在binder驱动中建立好相关的数据结构（后面在分析）。</p>
+<h4 id="没有向ServiceManager注册的的bidner服务，又被称为匿名binder服务">没有向ServiceManager注册的的bidner服务，又被称为匿名binder服务</h4><p>典型代表就是App中通过aidl实现的service组件。</p>
+<p>aidl实际上帮我们完整实现了服务代理类，以及是是实现了binder服务类中与语义处理相关的所有操作，例如方法编号的分配，方法参数从parcel中的提取，以及返回值打入parcel中等所有的操作。开发者只需要实现服务接口即可。</p>
+<p>因为app是没有权限向ServiceManager注册服务的，那么怎么获取app中的额service实体的引用binder呢？？？</p>
+<p>那就是直接传递binder实体，将binder实体对象打入到Parcel中，跨进程传入到AMS中去。</p>
+<p>Binder实体在Binder驱动中的传输，会被特殊处理，最终返回到AMS中的是一个binder引用对象。（详细过程后续在分析喽！！！）</p>
+<p>其他App进程中的组件便可以通过AMS拿到要请求的service服务的binder引用对象了。要注意的是，此过程中是AMS将所请求的binder服务的引用对象打入Parcel,然后通过Binder驱动传递到请求者进程中。</p>
+<p>当然Binder实体也可以不通过AMS中转，而直接发送到另一个进程中，但是最终目标进程收到的还是一个binder引用对象。</p>
+<p>简单的说就是Binder实体对象的传递过程，伴随着binder服务实体在Binder驱动中相关数据结构初始化以及binder引用对象的创建过程。</p>
+<p>不使用aidl实现一个service,来熟悉一下整个过程：</p>
+<h4 id="1-_首先顶定义一个服务接口，即服务要对外提供哪些方法。">1. 首先顶定义一个服务接口，即服务要对外提供哪些方法。</h4><p>IBinderService.java:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IBinderService</span> <span class="keyword">extends</span> <span class="title">IInterface</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">getMessage</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 服务的描述，客户端在使用parcel跨进程传输数据的时候</span><br><span class="line">     * 必须首先写入服务的描述，即该数据是发给哪个binder的。</span><br><span class="line">     * 将来服务端收到数据后会检查这个服务描述是否和自己的一致，不一致就不做处理了</span><br><span class="line">     */</span></span><br><span class="line">    String DESCRIPITON = <span class="string">"MyBinderService"</span>;</span><br><span class="line">    <span class="comment">// 定义方法编号</span></span><br><span class="line">    <span class="keyword">int</span> GET_MESSAGE = IBinder.FIRST_CALL_TRANSACTION+<span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>binder服务接口必须继承自IInterface接口，该接口中只有一个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> IBinder <span class="title">asBinder</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<p>binder服务接口一般要包含三部分内容：</p>
+<p>首先是该binder服务的描述DESCRIPITON，发送数据时必须先发送该描述，接收数据时必须先对该描述进行检查，和自己不匹配的话那就不用继续进行了。</p>
+<p>然后是方法编号，这个编号实际含义要在binder实体对象中的onTransact()方法中才能体现出来。可以理解为onTransact()根据这个编号调用不同的处理分支。</p>
+<p>最后就是该服务对外提供的具体方法声明了。</p>
+<p>binder实体端和代理对象端必须都继承这个服务接口，并实现其中的方法。另外服务端还要重载binder的onTransact()方法。</p>
+<h4 id="2-_实现bidner服务端">2. 实现bidner服务端</h4><p>binder服务端的重点在于实现onTransact()方法，该方法中会依据客户端传入的方法编号，调用恰当的分支进行处理。</p>
+<p>处理过程也是很简单的，就是从parcel中解析参数，调用对应的方法执行，将执行结果打入parcel中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BinderServiceStub</span> <span class="keyword">extends</span> <span class="title">Binder</span> <span class="keyword">implements</span> <span class="title">IBinderService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BinderServiceStub</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">// 调用该方法后binder实体端的binder.queryLocalInterface()</span></span><br><span class="line">        <span class="comment">// 返回就不会为null。</span></span><br><span class="line">        attachInterface(<span class="keyword">this</span>,DESCRIPITON);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 实现服务接口方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">" i am from Message!!!!!"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 顾名思义，将自身转换为一个IBinder对象，</span><br><span class="line">     * 因为Binder继承子Binder,Binder继承自IBinder</span><br><span class="line">     */</span></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">asBinder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, Parcel data, Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (code)&#123;</span><br><span class="line">            <span class="keyword">case</span> GET_MESSAGE:&#123;</span><br><span class="line">                <span class="comment">// 客户端先发送的是服务描述，所以这里先接收服务描述并判断是否和自己一致</span></span><br><span class="line">                data.enforceInterface(DESCRIPITON);</span><br><span class="line">                <span class="comment">// 开始执行客户端请求的服务端的方法</span></span><br><span class="line">                String msg = getMessage();</span><br><span class="line">                <span class="comment">// 将结果打入Parcel</span></span><br><span class="line">                reply.writeNoException();</span><br><span class="line">                reply.writeString(msg);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span><br><span class="line">         * 必须调用父类onTransact处理其他code</span><br><span class="line">         */</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code, data, reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="实现binder代理端">实现binder代理端</h3><p>前面介绍了，binder代理对象类会内聚一个binder引用对象,该引用对象通过构造方法传入即可:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BinderServiceProxy</span> <span class="keyword">implements</span> <span class="title">IBinderService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * 内聚的binder引用对象</span><br><span class="line">     */</span></span><br><span class="line">    <span class="keyword">private</span> IBinder remote;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BinderServiceProxy</span><span class="params">(IBinder binder)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(binder.queryLocalInterface(DESCRIPITON) == <span class="keyword">null</span> )</span><br><span class="line">            remote = binder;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">" this is not a BpBinder."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Parcel data = Parcel.obtain();</span><br><span class="line">        Parcel reply = Parcel.obtain();</span><br><span class="line">        data.writeInterfaceToken(DESCRIPITON);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            remote.transact(GET_MESSAGE,data,reply,<span class="number">0</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        reply.readException();</span><br><span class="line">        String msg =  reply.readString();</span><br><span class="line">        data.recycle();</span><br><span class="line">        data.recycle();</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">asBinder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里要特别注意的是，因为binder代理对象类内聚的是一个binder引用对象，所以要对构造方法中传入的Ibinder对象进行检查，保证其是binder引用对象。</p>
+<p>然后就是实现服务接口方法，这里很简单了，就是组装Parcel数据，然后利用引用binder对象发起RPC调用。</p>
+<h4 id="4-_获取binder引用对象">4. 获取binder引用对象</h4><p>这就要借助Android中的service组件了，并且以bindService()方法启动该service。</p>
+<p>首先定义service组件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBinderService</span> <span class="keyword">extends</span> <span class="title">Service</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Nullable</span></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IBinder <span class="title">onBind</span><span class="params">(Intent intent)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BinderServiceStub();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在清单文件中，声明该service组件，并且设置process属性，保证该service运行在另外一个进程中：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">service</span> <span class="attribute">android:name</span>=<span class="value">"com.godin.studydemo.MyBinderService"</span></span><br><span class="line">                 <span class="attribute">android:process</span>=<span class="value">":S0"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>最后以bindService()方式绑定该service：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent();</span><br><span class="line">        intent.setClass(<span class="keyword">this</span>,MyBinderService.class);</span><br><span class="line">        bindService(intent, <span class="keyword">new</span> ServiceConnection() &#123;</span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span>(service.queryLocalInterface(IBinderService.DESCRIPITON)==<span class="keyword">null</span>)&#123;</span><br><span class="line">                    <span class="comment">// 得到binder代理对象</span></span><br><span class="line">                    BinderServiceProxy proxy = <span class="keyword">new</span> BinderServiceProxy(service);</span><br><span class="line">                    <span class="comment">// 开始执行方法</span></span><br><span class="line">                    Log.i(<span class="string">"shajia"</span>,<span class="string">"message: "</span>+proxy.getMessage());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="annotation">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,BIND_AUTO_CREATE);</span><br></pre></td></tr></table></figure>
+<h3 id="binder_安全基础">binder 安全基础</h3><p>binder服务端可以通过binder提供的两个api拿到客户端的uid和pid，从而决定是否要对这次请求进行处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">getCallingUid();</span><br><span class="line">getCallingPid();</span><br></pre></td></tr></table></figure>
+<h3 id="binder_死亡通知机制">binder 死亡通知机制</h3><p>当端服务进程挂掉的时候，客户端是有必要知道的，可以通过binder引用对象的linkToDeath()方法来设置binder服务死亡监听机制。</p>
+<p>如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BinderServiceProxy</span><span class="params">(IBinder binder)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(binder.queryLocalInterface(DESCRIPITON) == <span class="keyword">null</span> )&#123;</span><br><span class="line">            remote = binder;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                binder.linkToDeath(<span class="keyword">new</span> IBinder.DeathRecipient() &#123;</span><br><span class="line">                    <span class="annotation">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">binderDied</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        Log.i(<span class="string">"shajia"</span>,<span class="string">" binder server is deaded."</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,<span class="number">0</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">" this is not a BpBinder."</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以在死亡通知处理中做一些资源回收的操作，或者再次重启服务等操作。</p>
+<p>到现在为止，已经对binder的表象有了一个大概的了解了，注意只是表象。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/08/27/android_app_service-3/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android6.0之App的Service组件运行机制之bindService</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="android_binder_1" data-title="初探Android中的binder机制" data-url="http://www.iloveandroid.net/2016/09/07/android_binder_1/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"iloveandroid"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 genglei.cuan
+   <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1256335558'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1256335558%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script> 
+</footer>
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

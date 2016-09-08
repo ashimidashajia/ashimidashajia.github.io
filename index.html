@@ -183,6 +183,68 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-android_binder_1" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/09/07/android_binder_1/" class="article-date">
+  	<time datetime="2016-09-07T06:01:46.000Z" itemprop="datePublished">2016-09-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/09/07/android_binder_1/">初探Android中的binder机制</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Binder机制是Android系统中最主要的进程间通信机制。虽然Android底层使用的是linux内核，但是除了匿名管道，socket外，Android并没有使用linux中的命名管道，信号量，消息队列等传统的IPC通信方式。Binder犹如一张大网，将Android整个系统中的组件，跨进程的组织在一起。淡化进程，强化组件是Android的一个设计理念。在这个过程中，Binder发挥了巨大作用。</p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a  href="/2016/09/07/android_binder_1/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-android_app_service-3" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -726,68 +788,6 @@
       
         <p class="article-more-link">
           <a  href="/2016/08/05/context_service/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-Android_ActivityManagerService-10" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/07/27/Android_ActivityManagerService-10/" class="article-date">
-  	<time datetime="2016-07-27T11:57:23.000Z" itemprop="datePublished">2016-07-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/27/Android_ActivityManagerService-10/">Android6.0之AMS管理Service前奏</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>前面分析了AMS使如何启动一个Activity的，现在开始分析AMS如何启动一个service。那么在分析AMS管理Service的源码之前，先要知道在App有哪些使用Service的方法。</p>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android核心服务/">Android核心服务</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android底层开发/">Android底层开发</a>
-	</div>
-
-
-      
-        <p class="article-more-link">
-          <a  href="/2016/07/27/Android_ActivityManagerService-10/#more">more >></a>
         </p>
       
       <div class="clearfix"></div>
